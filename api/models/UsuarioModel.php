@@ -20,6 +20,22 @@ class UsuarioModel
             handleException($e);
         }
     }
+
+    public function AllTec()
+    {
+        try {
+            //Consulta sql
+            $vSql = "SELECT u.id AS user_id,u.display_name,u.email,r.name 
+            AS role_name,t.id AS technician_id,t.employee_code,t.availability,t.current_load 
+            FROM users u JOIN technicians t ON u.id = t.user_id JOIN roles r ON u.role_id = r.id;";
+            //Ejecutar la consulta
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            // Retornar el objeto
+            return $vResultado;
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
     /*Obtener por email*/
     public function get($email)
     {
