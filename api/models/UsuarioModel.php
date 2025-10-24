@@ -2,65 +2,63 @@
 class UsuarioModel
 {
     public $enlace;
+
     public function __construct()
     {
         $this->enlace = new MySqlConnect();
     }
-    /*Listar */
-    public function all()
+
+    /* Listar todos los usuarios */
+    public function ListaUsuarios()
     {
         try {
-            //Consulta sql
-            $vSql = "SELECT * FROM usuario;";
-            //Ejecutar la consulta
+            // Consulta SQL
+            $vSql = "SELECT u.id,u.nombre,u.email, r.nombre AS rol FROM usuario u INNER JOIN rol r ON u.IDRol = r.id;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
-            // Retornar el objeto
             return $vResultado;
         } catch (Exception $e) {
             handleException($e);
         }
     }
 
-    public function AllTec()
+    /* Listar únicamente los técnicos */
+    public function ListaTecnicos()
     {
         try {
-            //Consulta sql
-            $vSql = "";
-            //Ejecutar la consulta
+            // Consulta SQL: usuarios cuyo rol sea Técnico (IDRol = 2)
+            $vSql = "SELECT u.id,u.nombre,u.email, r.nombre AS rol FROM usuario u INNER JOIN rol r ON u.IDRol = r.id where u.IDRol = 2;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
-            // Retornar el objeto
             return $vResultado;
         } catch (Exception $e) {
             handleException($e);
         }
     }
-    /*Obtener por email*/
+
+    /* Obtener por email */
     public function get($email)
     {
         try {
-            //Consulta sql
-            $vSql = "SELECT * FROM usuario where email=$email";
-            //Ejecutar la consulta
+            // Evitar inyección SQL — se usa comillas
+            $vSql = "SELECT * FROM usuarios WHERE email = '$email'";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
-            // Retornar el objeto
             return $vResultado[0];
+
         } catch (Exception $e) {
             handleException($e);
         }
     }
 
-    /*Obtener por el tipo de rol*/
+    /* Obtener por tipo de rol */
     public function getRol($IdRol)
     {
         try {
-            //Consulta sql
-            $vSql = "SELECT * FROM usuario where IdRol=$IdRol";
-            //Ejecutar la consulta
+            $vSql = "SELECT * FROM usuarios WHERE IDRol = $IdRol";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
-            // Retornar el objeto
-            return $vResultado[0];
+            return $vResultado;
+
         } catch (Exception $e) {
             handleException($e);
         }
     }
 }
+?>

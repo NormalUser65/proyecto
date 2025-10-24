@@ -15,7 +15,9 @@ const rutas=createBrowserRouter([
       //Ruta por defecto localhost:5173
       {index:true, element:<Home/>},
       //Ruta comodín 404
-      {path: '*', element: <PageNotFound/>}
+      {path: '*', element: <PageNotFound/>},
+      //Rutas componentes
+      { path: "tecnicos", element: <ListaTecnicos /> },// lista de tecnicos
     ]
   }
 ])

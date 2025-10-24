@@ -10,7 +10,7 @@ class Usuario
             //Instancia modelo
             $UsuarioM = new UsuarioModel;
             //Método del modelo
-            $result = $UsuarioM->all();
+            $result = $UsuarioM->ListaUsuarios();
             //Dar respuesta
             $response->toJSON($result);
         } catch (Exception $e) {
@@ -20,6 +20,22 @@ class Usuario
     }
     //GET Obtener 
     // localhost:81/appejemplo/api/Usuario/1
+    public function ListaTecnicos()
+    {
+        try {
+            $response = new Response();
+            //Instancia del modelo
+            $Usuario = new UsuarioModel();
+            //Acción del modelo a ejecutar
+            $result = $Usuario->ListaTecnicos();
+            //Dar respuesta
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            $response->toJSON($result);
+            handleException($e);
+        }
+    }
+
     public function get($id)
     {
         try {
@@ -35,4 +51,5 @@ class Usuario
             handleException($e);
         }
     }
+
 }
