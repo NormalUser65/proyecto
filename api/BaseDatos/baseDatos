@@ -1,0 +1,351 @@
+CREATE DATABASE IF NOT EXISTS EduhelpBD CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE EduhelpBD;
+
+-- rol
+CREATE TABLE rol (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(60) NOT NULL,
+  description TEXT
+) ENGINE=InnoDB;
+
+-- Inserts
+INSERT INTO rol (nombre, description) VALUES
+('Administrador', 'Acceso total al sistema'),
+('Técnico', 'Encargado de resolver tickets'),
+('Cliente', 'Usuario que reporta incidencias');
+
+-- users
+CREATE TABLE usuario (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  contrasenna VARCHAR(255) NOT NULL,
+  nombre VARCHAR(150) NOT NULL,
+  IDRol INT NOT NULL,
+  language CHAR(2) DEFAULT 'es',
+  activo TINYINT(1) DEFAULT 1,
+  disponibilidad VARCHAR(40) NOT NULL DEFAULT 'disponible',
+  CONSTRAINT fk_usuario_rol FOREIGN KEY (IDRol) REFERENCES rol(id)
+) ENGINE=InnoDB;
+
+-- specialities
+CREATE TABLE especialidad (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  code VARCHAR(60) NOT NULL UNIQUE,
+  name VARCHAR(120) NOT NULL,
+  description TEXT
+) ENGINE=InnoDB;
+
+-- technician_specialities (N:N)
+CREATE TABLE Tecnico_especialidad (
+  IDTecnico BIGINT NOT NULL,
+  IDEspecialidad INT NOT NULL,
+  PRIMARY KEY (IDTecnico, IDEspecialidad),
+  CONSTRAINT fk_ts_tech FOREIGN KEY (IDTecnico) REFERENCES usuario(id) ON DELETE CASCADE,
+  CONSTRAINT fk_ts_spec FOREIGN KEY (IDEspecialidad) REFERENCES especialidad(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- sla_profiles
+CREATE TABLE sla (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(120) NOT NULL,
+  max_resp_minutos INT NOT NULL,
+  max_resol_minutos INT NOT NULL,
+  activo TINYINT(1) DEFAULT 1,
+  CHECK (max_resp_minutos >= 0 AND max_resol_minutos >= 0),
+  CHECK (max_resp_minutos < max_resol_minutos)
+) ENGINE=InnoDB;
+
+-- categories
+CREATE TABLE categoria (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(120) NOT NULL,
+  description TEXT,
+  sla_id INT DEFAULT NULL,
+  CONSTRAINT fk_categories_sla FOREIGN KEY (sla_id) REFERENCES sla(id)
+) ENGINE=InnoDB;
+
+-- tags
+CREATE TABLE etiqueta (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(80) NOT NULL,
+  UNIQUE KEY uq_Nombre_Etiqueta (nombre)
+) ENGINE=InnoDB;
+
+-- category_tags (N:N)
+CREATE TABLE Categoria_Etiqueta (
+  IDCategoria INT NOT NULL,
+  IDEtiqueta INT NOT NULL,
+  PRIMARY KEY (IDCategoria, IDEtiqueta),
+  CONSTRAINT fk_ct_cat FOREIGN KEY (IDCategoria) REFERENCES categoria(id) ON DELETE CASCADE,
+  CONSTRAINT fk_ct_Et FOREIGN KEY (IDEtiqueta) REFERENCES etiqueta(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- speciality_categories (N:N)
+CREATE TABLE especialidad_categoria (
+  IDEspecialidad INT NOT NULL,
+  IDCategoria INT NOT NULL,
+  PRIMARY KEY (IDEspecialidad, IDCategoria),
+  CONSTRAINT fk_sc_spec FOREIGN KEY (IDEspecialidad) REFERENCES especialidad(id) ON DELETE CASCADE,
+  CONSTRAINT fk_sc_cat FOREIGN KEY (IDCategoria) REFERENCES categoria(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- ticket
+CREATE TABLE ticket (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  Titulo VARCHAR(255) NOT NULL,
+  descripcion TEXT NOT NULL,
+  IDUsuario BIGINT NOT NULL,
+  creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
+  ult_Actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  IDCategoria INT DEFAULT NULL,
+  prioridad TINYINT NOT NULL DEFAULT 3,
+  estado VARCHAR(40) NOT NULL DEFAULT 'pendiente',
+  IDTecnico BIGINT DEFAULT NULL,
+  sla_resp_deadline DATETIME DEFAULT NULL,
+  sla_resol_deadline DATETIME DEFAULT NULL,
+  sla_resp_met TINYINT(1) DEFAULT NULL,
+  sla_resol_met TINYINT(1) DEFAULT NULL,
+  cerrado_el DATETIME DEFAULT NULL,
+  resumen_res TEXT DEFAULT NULL,
+  activo TINYINT(1) DEFAULT 1,
+  CONSTRAINT fk_ticket_Usuario FOREIGN KEY (IDUsuario) REFERENCES usuario(id),
+  CONSTRAINT fk_ticket_category FOREIGN KEY (IDCategoria) REFERENCES categoria(id),
+  CONSTRAINT fk_ticket_IDTecnico FOREIGN KEY (IDTecnico) REFERENCES usuario(id)
+) ENGINE=InnoDB;
+
+-- ticket_history
+CREATE TABLE Historial_ticket (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  IDticket BIGINT NOT NULL,
+  from_state VARCHAR(40) DEFAULT NULL,
+  to_state VARCHAR(40) NOT NULL,
+  cambiado_por BIGINT NOT NULL,
+  comentario TEXT DEFAULT NULL,
+  Creado_el DATETIME DEFAULT CURRENT_TIMESTAMP,
+  Imagenes_Incluidas JSON DEFAULT NULL,
+  CONSTRAINT fk_th_ticket FOREIGN KEY (IDticket) REFERENCES ticket(id) ON DELETE CASCADE,
+  CONSTRAINT fk_th_user FOREIGN KEY (cambiado_por) REFERENCES usuario(id)
+) ENGINE=InnoDB;
+
+-- attachments 
+CREATE TABLE Imagen (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  IDHistorial BIGINT NOT NULL,
+  url VARCHAR(1024) NOT NULL,
+  CONSTRAINT fk_img_historial FOREIGN KEY (IDHistorial) REFERENCES Historial_ticket(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- assignments
+CREATE TABLE asignacion (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  IDTicket BIGINT NOT NULL,
+  IDTecnico BIGINT NOT NULL,
+  asignado_por BIGINT NOT NULL,
+  hora_Asig DATETIME DEFAULT CURRENT_TIMESTAMP,
+  method VARCHAR(40) NOT NULL DEFAULT 'manual',
+  calificacion DECIMAL(10,4) DEFAULT NULL,
+  descripcion TEXT DEFAULT NULL,
+  activo TINYINT(1) DEFAULT 1,
+  CONSTRAINT fk_asg_ticket FOREIGN KEY (IDTicket) REFERENCES ticket(id) ON DELETE CASCADE,
+  CONSTRAINT fk_asg_tech FOREIGN KEY (IDTecnico) REFERENCES usuario(id),
+  CONSTRAINT fk_asg_by FOREIGN KEY (asignado_por) REFERENCES usuario(id)
+) ENGINE=InnoDB;
+
+-- autotriage_rules
+CREATE TABLE Reglas_Autotriage (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  codigo VARCHAR(80) NOT NULL UNIQUE,
+  nombre VARCHAR(160) NOT NULL,
+  descrripcion TEXT,
+  prioridad DECIMAL(6,2) DEFAULT 1.00,
+  urgencia_SLA DECIMAL(6,2) DEFAULT 1.00,
+  weight_load DECIMAL(6,2) DEFAULT 1.00,
+  max_tech_load DECIMAL(7,2) DEFAULT 100.00,
+  activo TINYINT(1) DEFAULT 1,
+  deleted_logical TINYINT(1) DEFAULT 0,
+  creado_por BIGINT DEFAULT NULL,
+  fecha_Creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+  Fecha_act DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  CONSTRAINT fk_rule_creator FOREIGN KEY (creado_por) REFERENCES usuario(id)
+) ENGINE=InnoDB;
+
+-- autotriage_rule_conditions
+CREATE TABLE Condiciones_Autotriage (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  IDRegla INT NOT NULL,
+  condition_key VARCHAR(120) NOT NULL,
+  operator VARCHAR(10) NOT NULL,
+  value VARCHAR(255) NOT NULL,
+  CONSTRAINT fk_arc_rule FOREIGN KEY (IDRegla) REFERENCES Reglas_Autotriage(id) ON DELETE CASCADE
+) ENGINE=InnoDB;
+
+-- notifications
+CREATE TABLE notificacion (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  IDCliente BIGINT NOT NULL,
+  IDAdmin BIGINT DEFAULT NULL,
+  IDTicket BIGINT DEFAULT NULL,
+  tipo VARCHAR(80) NOT NULL,
+  mensaje VARCHAR(80) NOT NULL,
+  Fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+  Estado VARCHAR(40) NOT NULL DEFAULT 'pendiente',
+  CONSTRAINT fk_not_Cliente FOREIGN KEY (IDCliente) REFERENCES usuario(id),
+  CONSTRAINT fk_not_Admin FOREIGN KEY (IDAdmin) REFERENCES usuario(id),
+  CONSTRAINT fk_not_ticket FOREIGN KEY (IDTicket) REFERENCES ticket(id) ON DELETE SET NULL
+) ENGINE=InnoDB;
+
+-- ratings
+CREATE TABLE valoracion (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  IDTicket BIGINT NOT NULL UNIQUE,
+  IDcliente BIGINT NOT NULL,
+  puntaje TINYINT NOT NULL CHECK (puntaje BETWEEN 1 AND 5),
+  comentario TEXT DEFAULT NULL,
+  Fecha_Creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT fk_valoracion_ticket FOREIGN KEY (IDTicket) REFERENCES ticket(id) ON DELETE CASCADE,
+  CONSTRAINT fk_valoracion_client FOREIGN KEY (IDcliente) REFERENCES usuario(id)
+) ENGINE=InnoDB;
+
+-- usuario
+INSERT INTO usuario (email, contrasenna, nombre, IDRol, language, activo, disponibilidad)
+VALUES
+('admin@eduhelp.com', 'admin123', 'Ana Paula Fernández', 1, 'es', 1, 'disponible'),
+('tecnico_aulas@eduhelp.com', 'tec123', 'Carlos Jiménez', 2, 'es', 1, 'disponible'),
+('tecnico_ti@eduhelp.com', 'ti123', 'Laura Gómez', 2, 'es', 1, 'disponible'),
+('estudiante1@eduhelp.com', 'user123', 'María López', 3, 'es', 1, 'disponible'),
+('docente1@eduhelp.com', 'user456', 'Luis Herrera', 3, 'es', 1, 'disponible');
+
+-- SLA
+INSERT INTO sla (nombre, max_resp_minutos, max_resol_minutos, activo)
+VALUES
+('SLA Equipos', 60, 360, 1),
+('SLA Pagos', 60, 720, 1),
+('SLA Datos', 15, 30, 1),
+('SLA Infraestructura', 180, 2880, 1),
+('SLA General', 120, 480, 1);
+
+-- CATEGORÍAS
+INSERT INTO categoria (nombre, description, sla_id)
+VALUES
+('Fallas en equipo de clase', 'Computadoras, proyectores o impresoras con fallas en aulas o laboratorios', 1),
+('Fallos en pagos de matrícula', 'Errores en sistema de cobros o pagos no procesados', 2),
+('Pérdida de datos de usuario', 'Problemas con contraseñas, perfiles o recuperación de acceso', 3),
+('Fallos de infraestructura', 'Daños eléctricos, aires acondicionados o mobiliario del centro educativo', 4),
+('Soporte general', 'Consultas generales o ticket administrativos menores', 5);
+
+-- ETIQUETAS
+INSERT INTO etiqueta (nombre)
+VALUES
+('Computadora dañada'),
+('Proyector sin señal'),
+('Pago no procesado'),
+('Recuperar contraseña'),
+('Daño eléctrico');
+
+-- CATEGORÍA – ETIQUETA
+INSERT INTO Categoria_Etiqueta (IDCategoria, IDEtiqueta)
+VALUES
+(1, 1),
+(1, 2),
+(2, 3),
+(3, 4),
+(4, 5);
+
+-- ESPECIALIDADES
+INSERT INTO especialidad (code, name, description)
+VALUES
+('ESP001', 'Soporte técnico de Aulas', 'Encargado del mantenimiento y soporte de equipos en aulas'),
+('ESP002', 'Finanzas', 'Área de control de pagos y matrículas'),
+('ESP003', 'Administración de sistemas', 'Gestión de usuario y recuperación de datos'),
+('ESP004', 'Mantenimiento', 'Soporte de infraestructura y servicios del campus'),
+('ESP005', 'Soporte TI', 'Soporte general en tecnologías de la información');
+
+-- ESPECIALIDAD – CATEGORÍA
+INSERT INTO especialidad_categoria (IDEspecialidad, IDCategoria)
+VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
+
+-- TÉCNICO – ESPECIALIDAD
+INSERT INTO Tecnico_especialidad (IDTecnico, IDEspecialidad)
+VALUES
+(2, 1),
+(2, 5),
+(3, 2),
+(3, 3),
+(3, 4);
+
+-- ticket
+INSERT INTO ticket (Titulo, descripcion, IDUsuario, IDCategoria, prioridad, estado, IDTecnico)
+VALUES
+('Proyector sin señal', 'El proyector del aula 302 no muestra imagen.', 4, 1, 2, 'pendiente', 2),
+('Pago de matrícula no procesado', 'El sistema indica error al pagar la matrícula.', 5, 2, 3, 'en progreso', 3),
+('Recuperar contraseña', 'No puedo ingresar a mi cuenta institucional.', 4, 3, 2, 'pendiente', 3),
+('Problemas eléctricos en aula 102', 'Tomacorrientes dañados en varios puestos.', 5, 4, 1, 'pendiente', 3),
+('Consulta general sobre correo institucional', 'Solicitud de acceso a correo de docente.', 4, 5, 3, 'pendiente', 2);
+
+-- HISTORIAL DE TICKET
+INSERT INTO Historial_ticket (IDticket, from_state, to_state, cambiado_por, comentario)
+VALUES
+(1, 'pendiente', 'en progreso', 2, 'Asignado a técnico de aulas'),
+(2, 'pendiente', 'en progreso', 3, 'Revisión en proceso'),
+(3, 'pendiente', 'resuelto', 3, 'Contraseña restablecida'),
+(4, 'pendiente', 'en progreso', 3, 'Mantenimiento asignado'),
+(5, 'pendiente', 'cerrado', 2, 'Consulta atendida');
+
+-- IMÁGENES
+INSERT INTO Imagen (IDHistorial, url)
+VALUES
+(1, 'https://eduhelp.com/img/proyector.png'),
+(2, 'https://eduhelp.com/img/pago.png'),
+(3, 'https://eduhelp.com/img/usuario.png'),
+(4, 'https://eduhelp.com/img/electricidad.png'),
+(5, 'https://eduhelp.com/img/correo.png');
+
+-- ASIGNACIONES
+INSERT INTO asignacion (IDTicket, IDTecnico, asignado_por, method, descripcion)
+VALUES
+(1, 2, 1, 'manual', 'Asignado por administrador a soporte de aulas'),
+(2, 3, 1, 'manual', 'Asignado a técnico financiero'),
+(3, 3, 1, 'manual', 'Asignado a administración de sistemas'),
+(4, 3, 1, 'manual', 'Asignado a mantenimiento'),
+(5, 2, 1, 'manual', 'Asignado a soporte TI');
+
+-- REGLAS AUTOTRIAGE
+INSERT INTO Reglas_Autotriage (codigo, nombre, descrripcion, prioridad, urgencia_SLA, weight_load, max_tech_load, activo, creado_por)
+VALUES
+('R001', 'Asignación de Aulas', 'Asignar automáticamente tickets de aulas a técnicos correspondientes', 1.0, 1.0, 1.0, 100.0, 1, 1),
+('R002', 'Pagos', 'Priorizar fallos de matrícula para técnicos financieros', 1.5, 1.2, 1.0, 90.0, 1, 1),
+('R003', 'usuario', 'Asignar incidencias de datos a administración de sistemas', 1.2, 1.0, 1.0, 100.0, 1, 1),
+('R004', 'Infraestructura', 'Enviar tickets eléctricos o físicos a mantenimiento', 1.8, 1.5, 1.0, 85.0, 1, 1),
+('R005', 'General', 'Asignar consultas menores a soporte TI', 1.0, 1.0, 1.0, 100.0, 1, 1);
+
+-- CONDICIONES AUTOTRIAGE
+INSERT INTO Condiciones_Autotriage (IDRegla, condition_key, operator, value)
+VALUES
+(1, 'categoria', '=', 'Fallas en equipo de clase'),
+(2, 'categoria', '=', 'Fallos en pagos de matrícula'),
+(3, 'categoria', '=', 'Pérdida de datos de usuario'),
+(4, 'categoria', '=', 'Fallos de infraestructura'),
+(5, 'categoria', '=', 'Soporte general');
+
+-- NOTIFICACIONES
+INSERT INTO notificacion (IDCliente, IDAdmin, IDTicket, tipo, mensaje, Estado)
+VALUES
+(4, 1, 1, 'Actualización', 'Su ticket ha sido asignado al técnico de aulas.', 'pendiente'),
+(5, 1, 2, 'Progreso', 'El técnico está revisando su solicitud de pago.', 'pendiente'),
+(4, 1, 3, 'Resuelto', 'Su contraseña ha sido restablecida.', 'enviado'),
+(5, 1, 4, 'Asignación', 'Se ha asignado personal de mantenimiento a su reporte.', 'pendiente'),
+(4, 1, 5, 'Cierre', 'Su consulta fue atendida exitosamente.', 'enviado');
+
+-- VALORACIONES
+INSERT INTO valoracion (IDTicket, IDcliente, puntaje, comentario)
+VALUES
+(1, 4, 5, 'Atención rápida y efectiva'),
+(2, 5, 4, 'Tardó un poco pero se resolvió'),
+(3, 4, 5, 'Excelente soporte'),
+(4, 5, 4, 'El mantenimiento fue correcto'),
+(5, 4, 5, 'Buena atención del soporte técnico');
