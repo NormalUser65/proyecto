@@ -1,4 +1,4 @@
-<?php
+ <?php
 class TicketModel
 {
     public $enlace;
@@ -20,12 +20,13 @@ class TicketModel
             handleException($e);
         }
     }
-    /*Obtener por email*/
-    public function get($id)
+    /*Obtiene una cantidad de tickets asignados a un tecnico por medio de su id*/
+    public function CantTrabajoTecnico($id)
     {
         try {
             //Consulta sql
-            $vSql = "SELECT * FROM ticket where id=$id";
+            $vSql = "SELECT COUNT(t.id) AS Total_Tickets from ticket t INNER JOIN usuario u 
+            ON t.IDTecnico = u.id WHERE u.id = $id;";
             //Ejecutar la consulta
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             // Retornar el objeto

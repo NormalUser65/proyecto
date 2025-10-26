@@ -20,9 +20,11 @@ require_once "middleware/AuthMiddleware.php";
 
 /***--- Agregar todos los modelos*/
 require_once "models/UsuarioModel.php";
+require_once "models/EspecialidadModel.php";
 
 /***--- Agregar todos los controladores*/
 require_once "controllers/UsuarioController.php";
+require_once "controllers/EspecialidadController.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";
