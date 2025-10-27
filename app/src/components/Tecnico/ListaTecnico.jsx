@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MovieService from "../../Servicios/MovieService";
-import { ListCardMovies } from "./ListCardMovies";
+import { ListCardMovies } from "./ListaCartTecnico";
 import { LoadingGrid } from "../ui/custom/LoadingGrid";
 import { EmptyState } from "../ui/custom/EmptyState";
 import { ErrorAlert } from "../ui/custom/ErrorAlert";

@@ -1,5 +1,6 @@
 "use client";
 
+import EduhelpLogo from "../../assets/EduhelpLogo.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -26,10 +27,10 @@ import {
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 
 const userData = { email: "demo@correo.com" };
-const ticketCount = 3; // reemplaza con el contador real desde tu estado/prop
+const ticketCount = 0; // reemplaza con el contador real desde tu estado/prop
 
 const navItems = [
-  { title: "Tickets", href: "/tickets", icon: <Ticket className="h-4 w-4" /> },
+  { title: "Tickets", href: "/movie", icon: <Ticket className="h-4 w-4" /> },
   { title: "Catálogo", href: "/catalog", icon: <Layers className="h-4 w-4" /> },
 ];
 
@@ -41,9 +42,6 @@ const userItems = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-
-  // Ajusta esta clase para mover la navegación más/menos a la derecha.
-  // Ejemplos: "translate-x-16" (más a la derecha), "translate-x-8" (ligeramente) o "translate-x-0" (centrado exacto)
   const SHIFT_CLASS = "translate-x-16";
 
   return (
@@ -52,7 +50,6 @@ export default function Header() {
       role="banner"
     >
       <div className="relative flex items-center px-6 py-4 max-w-7xl mx-auto text-white">
-        {/* Logo izquierda */}
         <div className="flex items-center gap-2">
           <Link
             to="/"
@@ -60,13 +57,11 @@ export default function Header() {
             aria-label="Inicio"
           >
             <div className="bg-white/20 p-2 rounded-full shadow-sm">
-              <Clapperboard className="h-6 w-6 text-white" />
+              <img src={EduhelpLogo} alt="Logo EduHelp" className="h-12"/>
             </div>
-            <span className="hidden sm:inline">MovieSphere</span>
+            <span className="hidden sm:inline">Eduhelp</span>
           </Link>
         </div>
-
-        {/* Navegación central (posicionada absolutamente en el centro, luego desplazada a la derecha) */}
         <nav
           className={`hidden md:flex items-center gap-2 absolute left-1/2 top-1/2 transform -translate-y-1/2 -translate-x-1/2 ${SHIFT_CLASS}`}
           aria-label="Navegación principal"

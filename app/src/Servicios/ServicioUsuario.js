@@ -9,7 +9,7 @@ class ServicioUsuario {
         return axios.get(BASE_URL + '/' + IDUsuario);
     }*/
     //lo que está entre // es el método que se está llamando a la clase
-    getListaTecnicos() {
+    ListaDetalleTecnicos() {
         return axios.get(BASE_URL + '/ListaTecnicos/');
     }
     /*getCustomerbyShopRental(ShopRentalId) {
