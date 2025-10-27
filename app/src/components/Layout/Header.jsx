@@ -3,20 +3,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
+  Ticket,
   Layers,
-  Film,
-  BookOpen,
-  Filter,
-  Wrench,
+  User,
   LogIn,
-  UserPlus,
   LogOut,
-  ShoppingCart,
+  UserPlus,
   Menu,
   X,
   ChevronDown,
   Clapperboard,
-  User,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -30,162 +26,132 @@ import {
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 
 const userData = { email: "demo@correo.com" };
+const ticketCount = 3; // reemplaza con el contador real desde tu estado/prop
 
 const navItems = [
-  { title: "Películas", href: "/movie", icon: <Film className="h-4 w-4" /> },
-  {
-    title: "Catálogo de Películas",
-    href: "/movie/",
-    icon: <BookOpen className="h-4 w-4" />,
-  },
-  {
-    title: "Filtrar Películas",
-    href: "/movie/filter",
-    icon: <Filter className="h-4 w-4" />,
-  },
-];
-
-const mantItems = [
-  {
-    title: "Mantenimiento Películas",
-    href: "movie/table",
-    icon: <Wrench className="h-4 w-4" />,
-  },
+  { title: "Tickets", href: "/tickets", icon: <Ticket className="h-4 w-4" /> },
+  { title: "Catálogo", href: "/catalog", icon: <Layers className="h-4 w-4" /> },
 ];
 
 const userItems = [
-  { title: "Login", href: "/user/login", icon: <LogIn className="h-4 w-4" /> },
-  {
-    title: "Registrarse",
-    href: "/user/create",
-    icon: <UserPlus className="h-4 w-4" />,
-  },
-  {
-    title: "Logout",
-    href: "/user/logout",
-    icon: <LogOut className="h-4 w-4" />,
-  },
+  { title: "Iniciar Sesión", href: "/user/login", icon: <LogIn className="h-4 w-4" /> },
+  { title: "Registrarse", href: "/user/create", icon: <UserPlus className="h-4 w-4" /> },
+  { title: "Cerrar Sesión", href: "/user/logout", icon: <LogOut className="h-4 w-4" /> },
 ];
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Ajusta esta clase para mover la navegación más/menos a la derecha.
+  // Ejemplos: "translate-x-16" (más a la derecha), "translate-x-8" (ligeramente) o "translate-x-0" (centrado exacto)
+  const SHIFT_CLASS = "translate-x-16";
+
   return (
-    <header className="w-full fixed top-0 left-0 z-50 backdrop-blur-xl bg-gradient-to-r from-primary/80 via-primary/60 to-primary/80 border-b border-white/10 shadow-lg">
-      <div className="flex items-center justify-between px-6 py-3 max-w-[1280px] mx-auto text-white">
-
-        {/* -------- Logo -------- */}
-        <Link
-          to="/"
-          className="flex items-center gap-2 text-xl font-semibold tracking-wide hover:opacity-90 transition"
-        >
-          <Clapperboard className="h-6 w-6" />
-          <span className="hidden sm:inline">MoviesApp</span>
-        </Link>
-
-        {/* -------- Menú escritorio -------- */}
-        <div className="hidden md:flex flex-1 justify-center">
-          <Menubar className="w-auto bg-transparent border-none shadow-none space-x-6">
-            {/* Películas */}
-            <MenubarMenu>
-              <MenubarTrigger className="text-white font-medium flex items-center gap-1 hover:text-secondary transition">
-                <Film className="h-4 w-4" /> Películas
-                <ChevronDown className="h-3 w-3" />
-              </MenubarTrigger>
-              <MenubarContent className="bg-primary/0 backdrop-blur-md border-white/10">
-                {navItems.map((item) => (
-                  <MenubarItem key={item.href} asChild>
-                    <Link
-                      to={item.href}
-                      className="flex items-center gap-2 py-2 px-3 rounded-md text-sm hover:bg-accent/10 transition"
-      >
-        
-                      {item.icon} {item.title}
-                    </Link>
-                  </MenubarItem>
-                ))}
-              </MenubarContent>
-            </MenubarMenu>
-
-            {/* Mantenimientos */}
-            <MenubarMenu>
-              <MenubarTrigger className="text-white font-medium flex items-center gap-1 hover:text-secondary transition">
-                <Layers className="h-4 w-4" /> Mantenimientos
-                <ChevronDown className="h-3 w-3" />
-              </MenubarTrigger>
-              <MenubarContent className="bg-primary/0 backdrop-blur-md border-white/10">
-                {mantItems.map((item) => (
-                  <MenubarItem key={item.href} asChild> 
-                    <Link
-                      to={item.href}
-                      className="flex items-center gap-2 py-2 px-3 rounded-md text-sm hover:bg-accent/10 transition"
-                    >
-                    {item.icon} {item.title}
-                    </Link>
-                  </MenubarItem>
-                ))}
-              </MenubarContent>
-            </MenubarMenu>
-
-            {/* Usuario */}
-            <MenubarMenu>
-              <MenubarTrigger className="text-white font-medium flex items-center gap-1 hover:text-secondary transition">
-                <User className="h-4 w-4" /> {userData.email}
-                <ChevronDown className="h-3 w-3" />
-              </MenubarTrigger>
-              <MenubarContent className="bg-primary/0 backdrop-blur-md border-white/10">
-                {userItems.map((item) => (
-                  <MenubarItem key={item.href} asChild>
-                    <Link
-                      to={item.href}
-                      className="flex items-center gap-2 py-2 px-3 rounded-md text-sm hover:bg-accent/10 transition"
-                    >
-                      {item.icon} {item.title}
-                    </Link>
-                  </MenubarItem>
-                ))}
-              </MenubarContent>
-            </MenubarMenu>
-          </Menubar>
+    <header
+      className="w-[95%] mx-auto fixed top-2 left-0 right-0 z-50 bg-gradient-to-r from-primary/80 to-secondary/80 backdrop-blur-lg shadow-lg border border-white/20 rounded-full px-4 transition-all duration-300"
+      role="banner"
+    >
+      <div className="relative flex items-center px-6 py-4 max-w-7xl mx-auto text-white">
+        {/* Logo izquierda */}
+        <div className="flex items-center gap-2">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-xl font-bold tracking-wide hover:opacity-90 transition"
+            aria-label="Inicio"
+          >
+            <div className="bg-white/20 p-2 rounded-full shadow-sm">
+              <Clapperboard className="h-6 w-6 text-white" />
+            </div>
+            <span className="hidden sm:inline">MovieSphere</span>
+          </Link>
         </div>
 
-        {/* -------- Carrito + Menú móvil -------- */}
-        <div className="flex items-center gap-4">
-          <Link to="/cart" className="relative hover:opacity-80">
-            <ShoppingCart className="h-6 w-6" />
-            <Badge
-              className="absolute -top-2 -right-3 rounded-full px-2 py-0 text-xs font-semibold"
-              variant="secondary"
+        {/* Navegación central (posicionada absolutamente en el centro, luego desplazada a la derecha) */}
+        <nav
+          className={`hidden md:flex items-center gap-2 absolute left-1/2 top-1/2 transform -translate-y-1/2 -translate-x-1/2 ${SHIFT_CLASS}`}
+          aria-label="Navegación principal"
+        >
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              to={item.href}
+              className="flex items-center gap-2 py-2 px-4 rounded-full text-sm hover:bg-white/10 transition"
+              aria-label={item.title}
             >
-              3
+              {item.icon}
+              <span className="hidden sm:inline">{item.title}</span>
+            </Link>
+          ))}
+        </nav>
+
+        {/* Bloque derecho: Tickets + usuario */}
+        <div className="ml-auto flex items-center gap-4">
+          {/* Icono Tickets con contador */}
+          <Link to="/tickets" className="relative hover:opacity-90" aria-label="Tickets">
+            <div className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition">
+              <Ticket className="h-5 w-5 text-white" />
+            </div>
+            <Badge
+              className="absolute -top-2 -right-2 rounded-full px-2 py-0 text-xs font-semibold"
+              variant="secondary"
+              aria-hidden="true"
+            >
+              {ticketCount}
             </Badge>
           </Link>
 
-          {/* Menú móvil */}
+          {/* Menú de usuario */}
+          <div className="hidden md:flex">
+            <Menubar className="w-auto bg-transparent border-none shadow-none">
+              <MenubarMenu>
+                <MenubarTrigger className="flex items-center gap-2 font-medium text-white hover:bg-white/15 px-4 py-2 rounded-full transition">
+                  <User className="h-4 w-4" /> {userData.email}
+                  <ChevronDown className="h-3 w-3" />
+                </MenubarTrigger>
+                <MenubarContent className="bg-white/10 backdrop-blur-lg border-none rounded-xl shadow-xl mt-2">
+                  {userItems.map((item) => (
+                    <MenubarItem key={item.href} asChild>
+                      <Link
+                        to={item.href}
+                        className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
+                        aria-label={item.title}
+                      >
+                        {item.icon} {item.title}
+                      </Link>
+                    </MenubarItem>
+                  ))}
+                </MenubarContent>
+              </MenubarMenu>
+            </Menubar>
+          </div>
+
+          {/* Botón menú móvil */}
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
-              <button className="md:hidden inline-flex items-center justify-center p-2 rounded-lg bg-white/10 hover:bg-white/20 transition">
+              <button
+                className="md:hidden inline-flex items-center justify-center p-2 rounded-full bg-white/20 hover:bg-white/30 transition"
+                aria-label={mobileOpen ? "Cerrar menú" : "Abrir menú"}
+              >
                 {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             </SheetTrigger>
-            <SheetContent side="left" className="bg-accent/10 transition text-white backdrop-blur-lg w-72">
-              <nav className="mt-8 px-4 space-y-6">
-                <div>
-                  <Link to="/" className="flex items-center gap-2 text-lg font-semibold">
-                    <Clapperboard /> MoviesApp
-                  </Link>
-                </div>
+            <SheetContent side="left" className="bg-gradient-to-b from-primary/90 to-secondary/90 text-white backdrop-blur-lg border-none">
+              <nav className="mt-10 space-y-6 px-4" aria-label="Navegación móvil">
+                <Link to="/" className="flex items-center gap-2 text-xl font-semibold" onClick={() => setMobileOpen(false)}>
+                  <Clapperboard /> MovieSphere
+                </Link>
 
                 <div>
-                  <h4 className="mb-2 text-lg font-semibold flex items-center gap-2">
-                    <Film /> Películas
+                  <h4 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                    <Ticket /> Tickets
                   </h4>
                   {navItems.map((item) => (
                     <Link
                       key={item.href}
                       to={item.href}
                       onClick={() => setMobileOpen(false)}
-                      className="flex items-center gap-2 py-2 px-3 rounded-md text-white/90 hover:bg-white/10 transition"
+                      className="flex items-center gap-3 py-2 px-4 rounded-full bg-white/10 hover:bg-white/20 transition"
+                      aria-label={item.title}
                     >
                       {item.icon} {item.title}
                     </Link>
@@ -193,23 +159,7 @@ export default function Header() {
                 </div>
 
                 <div>
-                  <h4 className="mb-2 text-lg font-semibold flex items-center gap-2">
-                    <Layers /> Mantenimientos
-                  </h4>
-                  {mantItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      to={item.href}
-                      onClick={() => setMobileOpen(false)}
-                      className="flex items-center gap-2 py-2 px-3 rounded-md text-white/90 hover:bg-white/10 transition"
-                    >
-                      {item.icon} {item.title}
-                    </Link>
-                  ))}
-                </div>
-
-                <div>
-                  <h4 className="mb-2 text-lg font-semibold flex items-center gap-2">
+                  <h4 className="text-lg font-semibold mb-2 flex items-center gap-2">
                     <User /> {userData.email}
                   </h4>
                   {userItems.map((item) => (
@@ -217,7 +167,8 @@ export default function Header() {
                       key={item.href}
                       to={item.href}
                       onClick={() => setMobileOpen(false)}
-                      className="flex items-center gap-2 py-2 px-3 rounded-md text-white/90 hover:bg-white/10 transition"
+                      className="flex items-center gap-3 py-2 px-4 rounded-full bg-white/10 hover:bg-white/20 transition"
+                      aria-label={item.title}
                     >
                       {item.icon} {item.title}
                     </Link>
