@@ -26,6 +26,18 @@ class UsuarioModel
     {
         try {
             // Consulta SQL: usuarios cuyo rol sea Técnico (IDRol = 2)
+            $vSql = "SELECT u.nombre,u.email, r.nombre, AS rol FROM usuario u INNER JOIN rol r ON u.IDRol = r.id where u.IDRol = 2;";
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado;
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    /* public function ListaDetalleTecnicos()
+    {
+        try {
+            // Consulta SQL: usuarios cuyo rol sea Técnico (IDRol = 2)
             $vSql = "SELECT u.id,u.nombre,u.email, r.nombre, r.disponibilidad AS rol FROM usuario u INNER JOIN rol r ON u.IDRol = r.id where u.IDRol = 2;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado;
@@ -33,6 +45,7 @@ class UsuarioModel
             handleException($e);
         }
     }
+    */
 
     /* Obtener por email */
     public function get($email)

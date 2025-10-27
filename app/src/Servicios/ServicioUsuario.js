@@ -1,14 +1,13 @@
 import axios from 'axios';
 const BASE_URL = import.meta.env.VITE_BASE_URL + 'user';
 
-class UsuarioService {
+class ServicioUsuario {
     /*getUsers() {
         return axios.get(BASE_URL);
     }
     getUserById(IDUsuario) {
         return axios.get(BASE_URL + '/' + IDUsuario);
     }*/
-   
     //lo que está entre // es el método que se está llamando a la clase
     getListaTecnicos() {
         return axios.get(BASE_URL + '/ListaTecnicos/');
@@ -24,4 +23,4 @@ class UsuarioService {
     }*/
 }
 
-export default new UsuarioService();
+export default new ServicioUsuario();
