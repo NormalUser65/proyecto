@@ -17,7 +17,7 @@ const rutas=createBrowserRouter([
       //Ruta comodín 404
       {path: '*', element: <PageNotFound/>},
       //Rutas componentes
-      { path: "tecnicos", element: <ListaTecnicos /> },// lista de tecnicos
+      //{ path: "tecnicos", element: <ListaTecnicos /> },// lista de tecnicos
     ]
   }
 ])
