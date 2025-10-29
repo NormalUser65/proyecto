@@ -1,0 +1,39 @@
+<?php
+class TicketController
+{
+    public function index()
+    {
+        $response = new Response();
+        try {
+            $model = new TicketModel();
+            $result = $model->all();
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function cantTrabajoTecnico($id)
+    {
+        $response = new Response();
+        try {
+            $model = new TicketModel();
+            $result = $model->CantTrabajoTecnico($id);
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function getNombre($nombre)
+    {
+        $response = new Response();
+        try {
+            $model = new TicketModel();
+            $result = $model->getNombre($nombre);
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+}

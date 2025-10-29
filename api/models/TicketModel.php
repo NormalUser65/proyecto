@@ -1,4 +1,4 @@
- <?php
+<?php
 class TicketModel
 {
     public $enlace;
