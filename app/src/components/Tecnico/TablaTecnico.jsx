@@ -19,9 +19,9 @@ import { Edit, Plus, Trash2, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import { useEffect } from "react";
 import MovieService from "@/services/MovieService";
-import { LoadingGrid } from "../ui/custom/LoadingGrid";
-import { ErrorAlert } from "../ui/custom/ErrorAlert";
-import { EmptyState } from "../ui/custom/EmptyState";
+import { LoadingGrid } from "../ui/custom/CargandoGrid";
+import { ErrorAlert } from "../ui/custom/AlertaError";
+import { EmptyState } from "../ui/custom/estadoVacio";
 
 // Headers de la tabla
 const movieColumns = [

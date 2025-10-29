@@ -1,5 +1,5 @@
 import axios from 'axios';
-const BASE_URL = import.meta.env.VITE_BASE_URL + 'user';
+const BASE_URL = import.meta.env.VITE_BASE_URL + 'Usuario';
 
 class ServicioUsuario {
     /*getUsers() {
@@ -10,7 +10,7 @@ class ServicioUsuario {
     }*/
     //lo que está entre // es el método que se está llamando a la clase
     ListaDetalleTecnicos() {
-        return axios.get(BASE_URL + '/ListaTecnicos/');
+        return axios.get(BASE_URL + '/ListaTecnico/');
     }
     /*getCustomerbyShopRental(ShopRentalId) {
         return axios.get(BASE_URL + '/customerbyShopRental/'+ ShopRentalId);

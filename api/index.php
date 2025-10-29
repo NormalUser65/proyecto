@@ -24,7 +24,7 @@ require_once "models/EspecialidadModel.php";
 
 /***--- Agregar todos los controladores*/
 require_once "controllers/UsuarioController.php";
-require_once "controllers/EspecialidadController.php";
+//require_once "controllers/EspecialidadController.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";

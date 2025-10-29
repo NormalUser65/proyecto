@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import MovieService from "../../Servicios/MovieService";
 import { ListCardMovies } from "./ListaCartTecnico";
-import { LoadingGrid } from "../ui/custom/LoadingGrid";
-import { EmptyState } from "../ui/custom/EmptyState";
-import { ErrorAlert } from "../ui/custom/ErrorAlert";
+import { LoadingGrid } from "../ui/custom/CargandoGrid";
+import { EmptyState } from "../ui/custom/estadoVacio";
+import { ErrorAlert } from "../ui/custom/AlertaError";
 
 export function ListMovies({ idShopRental = 1 }) {
     const [data, setData] = useState(null);

@@ -1,41 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import TechnicianService from "../../Servicios/ServicioUsuario"; // servicio que debe llamar a tu endpoint de técnicos
-import { ErrorAlert } from "../ui/custom/ErrorAlert";
-import { Card, CardContent } from "@/components/ui/card";
+import ServicioTecnico from "../../Servicios/ServicioUsuario"; // servicio que se encarga de traer a los tecnicos
+import { ErrorAlert } from "../ui/custom/AlertaError";
+import { Card, CardContent } from "@/components/ui/card"; 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { User, Mail, Briefcase, CheckCircle, ArrowLeft } from "lucide-react";
-import { LoadingGrid } from "../ui/custom/LoadingGrid";
-import { EmptyState } from "../ui/custom/EmptyState";
+import { LoadingGrid } from "../ui/custom/CargandoGrid";
+import { EmptyState } from "../ui/custom/estadoVacio";
 
-export function DetailTechnician() {
+
+//Esta es la función que carga el detalle del tecnico seleccionado
+export function DetalleTecnico() {
+    //Estos de aquí son los hooks
     const navigate = useNavigate();
-    const { id } = useParams(); // id del usuario/técnico
-    const [tech, setTech] = useState(null);
+    const { id } = useParams(); //Esto obtiene el id del técnico
+    const [Tecnico, setTecnico] = useState(null);
     const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [loading, setCarga] = useState(true);
 
     useEffect(() => {
     const fetch = async () => {
         try {
-        setLoading(true);
-        const response = await TechnicianService.getById(id); // debe llamar al endpoint que ejecuta tu SELECT
-        // Normaliza la respuesta: soporta { data: {...} } o directamente {...}
+        setCarga(true);
+        const response = await ServicioTecnico.getById(id);
         const payload = response?.data ?? response;
-        // Si tu API envuelve en payload.data, cámbialo por payload.data
         const entity = payload.data ?? payload;
         if (!entity) {
-            setError("No se encontró el técnico.");
-            setTech(null);
+            setError("Técnico no encontrado.");
+            setTecnico(null);
         } else {
-            setTech(entity);
+            setTecnico(entity);
         }
         } catch (err) {
-        setError(err?.message ?? "Error al cargar el técnico.");
-        setTech(null);
+            // Si el error no es por cancelación, se registra 
+        setError(err?.message ?? "Error de carga.");
+        setTecnico(null);
         } finally {
-        setLoading(false);
+        // Independientemente del resultado, se actualiza el loading
+        setCarga(false);
         }
     };
     if (id) fetch();
@@ -43,17 +46,14 @@ export function DetailTechnician() {
 
     if (loading) return <LoadingGrid count={1} type="grid" />;
     if (error) return <ErrorAlert title="Error al cargar técnico" message={error} />;
-    if (!tech) return <EmptyState message="Técnico no encontrado." />;
+    if (!Tecnico) return <EmptyState message="Técnico no encontrado." />;
 
-  // Campos esperados del SELECT:
-  // tech.id, tech.nombre, tech.email, tech.nombreRol (si tu backend aliasó) o tech.role_name, tech.rol (disponibilidad)
-  // Ajusta los nombres si tu API los devuelve distintos
-    const idField = tech.id ?? tech.ID ?? tech.user_id;
-    const nombre = tech.nombre ?? tech.name ?? tech.display_name ?? "—";
-    const email = tech.email ?? tech.mail ?? "—";
+    const idField = Tecnico.id ?? Tecnico.ID ?? Tecnico.user_id;
+    const nombre = Tecnico.nombre ?? Tecnico.name ?? Tecnico.display_name ?? "—";
+    const email = Tecnico.email ?? Tecnico.mail ?? "—";
   // role puede venir duplicado como r.nombre; si tu backend devuelve dos 'nombre' usa alguna clave distinta. Acá intento varias opciones:
-    const roleName = tech.role_name ?? tech.rol_nombre ?? tech.role ?? tech.nombre_rol ?? tech["r.nombre"] ?? "Técnico";
-    const disponibilidad = tech.rol ?? tech.disponibilidad ?? tech.availability ?? "desconocida";
+    const roleName = Tecnico.role_name ?? Tecnico.rol_nombre ?? Tecnico.role ?? Tecnico.nombre_rol ?? Tecnico["r.nombre"] ?? "Técnico";
+    const disponibilidad = Tecnico.rol ?? Tecnico.disponibilidad ?? Tecnico.availability ?? "desconocida";
 
     return (
     <div className="max-w-4xl mx-auto py-12 px-4">
