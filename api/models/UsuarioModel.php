@@ -26,7 +26,7 @@ class UsuarioModel
     {
         try {
             // Consulta SQL: usuarios cuyo rol sea Técnico (IDRol = 2)
-            $vSql = "SELECT u.nombre,u.email, r.nombre, AS rol FROM usuario u INNER JOIN rol r ON u.IDRol = r.id where u.IDRol = 2;";
+            $vSql = "SELECT u.nombre,u.email, r.nombre AS rol FROM usuario u INNER JOIN rol r ON u.IDRol = r.id where u.IDRol = 2;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado;
         } catch (Exception $e) {
@@ -52,7 +52,7 @@ class UsuarioModel
     {
         try {
             // Evitar inyección SQL — se usa comillas
-            $vSql = "SELECT * FROM usuarios WHERE email = '$email'";
+            $vSql = "SELECT * FROM usuario WHERE email = '$email'";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado[0];
 
@@ -65,7 +65,7 @@ class UsuarioModel
     public function getRol($IdRol)
     {
         try {
-            $vSql = "SELECT * FROM usuarios WHERE IDRol = $IdRol";
+            $vSql = "SELECT * FROM usuario WHERE IDRol = $IdRol";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado;
 

@@ -1,11 +1,11 @@
 <?php
-class SlaController
+class EtiquetaController
 {
     public function index()
     {
         $response = new Response();
         try {
-            $model = new slaModel();
+            $model = new EtiquetaModel();
             $result = $model->all();
             $response->toJSON($result);
         } catch (Exception $e) {
@@ -17,7 +17,7 @@ class SlaController
     {
         $response = new Response();
         try {
-            $model = new slaModel();
+            $model = new EtiquetaModel();
             $result = $model->get($id);
             $response->toJSON($result);
         } catch (Exception $e) {
@@ -29,7 +29,7 @@ class SlaController
     {
         $response = new Response();
         try {
-            $model = new slaModel();
+            $model = new EtiquetaModel();
             $result = $model->getNombre($nombre);
             $response->toJSON($result);
         } catch (Exception $e) {

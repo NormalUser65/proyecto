@@ -19,12 +19,34 @@ require_once "controllers/core/Response.php";
 require_once "middleware/AuthMiddleware.php";
 
 /***--- Agregar todos los modelos*/
-require_once "models/UsuarioModel.php";
+require_once "models/AsignacionModel.php";
+require_once "models/AutotriageModel.php";
+require_once "models/CategoriaModel.php";
 require_once "models/EspecialidadModel.php";
+require_once "models/EtiquetaModel.php";
+require_once "models/HistoriaModel.php";
+require_once "models/ImagenModel.php";
+require_once "models/NotificacionModel.php";
+require_once "models/rolModel.php";
+require_once "models/SlaModel.php";
+require_once "models/TicketModel.php";
+require_once "models/UsuarioModel.php";
+
+
 
 /***--- Agregar todos los controladores*/
+require_once "controllers/AsignacionController.php";
+require_once "controllers/AutotriageController.php";
+require_once "controllers/CategoriasController.php";
+require_once "controllers/EtiquetaController.php";
+require_once "controllers/EspecialidadesController.php";
+require_once "controllers/HistoriaController.php";
+require_once "controllers/ImagenesController.php";
+require_once "controllers/NotificacionesController.php";
+require_once "controllers/RolesController.php";
+require_once "controllers/SlaController.php";
+require_once "controllers/TicketsController.php";
 require_once "controllers/UsuarioController.php";
-require_once "controllers/EspecialidadController.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";
