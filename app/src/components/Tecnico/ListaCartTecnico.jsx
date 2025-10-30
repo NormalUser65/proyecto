@@ -40,7 +40,7 @@ export function ListaCartTecnico({ data }) {
                   <Button
                     size="icon" className="size-8"
                   >
-                    <Link to={`tecnicos/detalle/${item.IDTecnico}`}>
+                    <Link to={`detalle/${item.IDTecnico}`}>
                       <Info />
                     </Link>
                   </Button>
