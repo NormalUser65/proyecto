@@ -1,5 +1,5 @@
 <?php
-class TicketController
+class tickets
 {
     public function index()
     {

@@ -10,16 +10,29 @@ class asignacionModel
     public function all()
     {
         try {
-            //Consulta sql
-            $vSql = "SELECT * FROM asignacion;";
-            //Ejecutar la consulta
+            $vSql = "SELECT 
+            a.id,
+            a.IDTicket,
+            a.IDTecnico,
+            a.asignado_por,
+            a.hora_Asig,
+            a.method,
+            a.descripcion,
+            a.activo,
+            t.estado,
+            t.IDCategoria,
+            t.creado_en,
+            t.sla_resol_deadline
+            FROM asignacion a
+            INNER JOIN ticket t ON a.IDTicket = t.id
+            WHERE a.activo = 1;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
-            // Retornar el objeto
             return $vResultado;
         } catch (Exception $e) {
             handleException($e);
         }
     }
+
     /*Obtener por id*/
     public function get($id)
     {

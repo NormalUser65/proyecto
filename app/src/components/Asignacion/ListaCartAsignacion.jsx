@@ -1,32 +1,36 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { Info, Clock } from "lucide-react";
+import { Info, User, Ticket } from "lucide-react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
-ListaCartCategoria.propTypes = {
+ListaCartAsignacion.propTypes = {
   data: PropTypes.array,
 };
 
-export function ListaCartCategoria({ data }) {
+export function ListaCartAsignacion({ data }) {
   return (
     <div className="grid gap-6 p-4 sm:grid-cols-2 lg:grid-cols-3">
       {data.map((item) => (
         <Card key={item.id} className="flex flex-col overflow-hidden">
           <CardHeader className="text-secondary !rounded-2xl shadow-md">
-            <CardTitle className="text-lg font-semibold">{item.nombre}</CardTitle>
+            <CardTitle className="text-lg font-semibold">Asignación #{item.id}</CardTitle>
           </CardHeader>
           <CardContent className="flex-1 space-y-2 pt-4">
-            <p className="text-sm text-muted-foreground flex items-center gap-2">
-              <Clock className="h-4 w-4 text-secondary" />
-              SLA: {item.SLA}
-            </p>
+            <div className="text-sm text-muted-foreground flex items-center gap-2">
+              <User className="h-4 w-4 text-secondary" />
+              <span>Técnico ID: {item.tecnico_id}</span>
+            </div>
+            <div className="text-sm text-muted-foreground flex items-center gap-2">
+              <Ticket className="h-4 w-4 text-secondary" />
+              <span>Ticket ID: {item.ticket_id}</span>
+            </div>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button size="icon" className="size-8">
-                    <Link to={`/categorias/detalle/${item.id}`}>
+                    <Link to={`/asignaciones/detalle/${item.id}`}>
                       <Info />
                     </Link>
                   </Button>

@@ -1,7 +1,7 @@
 // AsignacionService.js
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL + 'asignacion';
+const BASE_URL = import.meta.env.VITE_BASE_URL + 'asignaciones';
 
 class AsignacionService {
     getAll() {

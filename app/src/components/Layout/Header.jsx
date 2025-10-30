@@ -30,8 +30,8 @@ const userData = { email: "demo@correo.com" };
 const ticketCount = 0;
 
 const navItems = [
-  { title: "Tickets", href: "/ticket" },
-  { title: "Asignaciones", href: "/asignacion"},
+  { title: "Tickets", href: "/tickets" },
+  { title: "Asignaciones", href: "/asignaciones"},
   { title: "Categorias", href: "/categorias"},
   { title: "Tecnicos", href: "/tecnicos"},
 ];
