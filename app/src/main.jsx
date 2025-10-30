@@ -7,6 +7,8 @@ import { RouterProvider } from 'react-router'
 import { Home } from './components/Home/Home'
 import { PageNotFound } from './components/Home/PageNotFound'
 
+import { ListaTecnico } from './components/Tecnico/ListaTecnico'
+
 //Crear las rutas
 const rutas=createBrowserRouter([
   {
@@ -17,7 +19,7 @@ const rutas=createBrowserRouter([
       //Ruta comodín 404
       {path: '*', element: <PageNotFound/>},
       //Rutas componentes
-      //{ path: "tecnicos", element: <ListaTecnico /> },// lista de tecnicos
+      { path: "tecnicos", element: <ListaTecnico /> },// lista de tecnicos
     ]
   }
 ])

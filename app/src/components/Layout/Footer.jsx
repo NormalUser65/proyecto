@@ -12,12 +12,10 @@ export function Footer() {
 
         <div className="text-center text-sm md:text-base leading-tight">
             <p className="font-medium">Desarrollado por:</p>
-            <p>
-            <span className="font-semibold">Ana Paula Fernández Alfaro</span> — Colegio Técnico Profesional de Heredia
-            </p>
-            <p>
-            <span className="font-semibold">Fabricio Arias Zamora</span> — Universidad Nacional, Sede Central
-            </p>
+            <div className="p-1">
+                <p><span>Ana Paula Fernández Alfaro y Fabricio Arias Zamora</span></p>
+                <p>Universidad Tecnica Nacional</p> 
+            </div>
         </div>
         <div className="text-right text-sm md:text-base mt-3 md:mt-0 opacity-90">
             <p className="font-medium">ISW-613</p>

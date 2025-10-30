@@ -27,11 +27,13 @@ import {
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 
 const userData = { email: "demo@correo.com" };
-const ticketCount = 0; // reemplaza con el contador real desde tu estado/prop
+const ticketCount = 0;
 
 const navItems = [
-  { title: "Tickets", href: "/movie", icon: <Ticket className="h-4 w-4" /> },
-  { title: "Catálogo", href: "/catalog", icon: <Layers className="h-4 w-4" /> },
+  { title: "Tickets", href: "/ticket" },
+  { title: "Asignaciones", href: "/asignacion"},
+  { title: "Categorias", href: "/categorias"},
+  { title: "Tecnicos", href: "/tecnicos"},
 ];
 
 const userItems = [
@@ -42,46 +44,37 @@ const userItems = [
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const SHIFT_CLASS = "translate-x-16";
 
   return (
     <header
-      className="w-[95%] mx-auto fixed top-2 left-0 right-0 z-50 bg-gradient-to-r from-primary/80 to-secondary/80 backdrop-blur-lg shadow-lg border border-white/20 rounded-full px-4 transition-all duration-300"
+      className="w-[98%] mx-auto fixed top-2 left-0 right-0 z-50 bg-gradient-to-r from-primary/80 to-secondary/80 backdrop-blur-lg shadow-lg border border-white/20 rounded-full px-4 transition-all duration-300"
       role="banner"
     >
-      <div className="relative flex items-center px-6 py-4 max-w-7xl mx-auto text-white">
+      <div className="relative flex px-4 mx-auto text-white">
         <div className="flex items-center gap-2">
           <Link
             to="/"
             className="flex items-center gap-2 text-xl font-bold tracking-wide hover:opacity-90 transition"
             aria-label="Inicio"
           >
-            <div className="bg-white/20 p-2 rounded-full shadow-sm">
-              <img src={EduhelpLogo} alt="Logo EduHelp" className="h-12"/>
+            <div className=" p-1 rounded-full shadow-sm">
+              <img src={EduhelpLogo} alt="Logo EduHelp" className="h-15"/>{/*Este es el lugar donde va el logo*/}
             </div>
-            <span className="hidden sm:inline">Eduhelp</span>
+            <span className="hidden sm:inline">Eduhelp</span>{/*Nombre de la pagina*/}
           </Link>
         </div>
         <nav
-          className={`hidden md:flex items-center gap-2 absolute left-1/2 top-1/2 transform -translate-y-1/2 -translate-x-1/2 ${SHIFT_CLASS}`}
+          className={`hidden md:flex items-center gap-2 absolute left-1/2 top-1/2 transform -translate-y-1/2 -translate-x-1/2`}
           aria-label="Navegación principal"
         >
           {navItems.map((item) => (
-            <Link
-              key={item.href}
-              to={item.href}
-              className="flex items-center gap-2 py-2 px-4 rounded-full text-sm hover:bg-white/10 transition"
-              aria-label={item.title}
-            >
+            <Link key={item.href} to={item.href} className="flex items-center gap-2 py-2 px-4 rounded-full text-sm hover:bg-white/10 transition" aria-label={item.title}>
               {item.icon}
               <span className="hidden sm:inline">{item.title}</span>
             </Link>
           ))}
         </nav>
-
-        {/* Bloque derecho: Tickets + usuario */}
-        <div className="ml-auto flex items-center gap-4">
-          {/* Icono Tickets con contador */}
+        <div className="ml-auto flex items-center gap-2">
           <Link to="/tickets" className="relative hover:opacity-90" aria-label="Tickets">
             <div className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition">
               <Ticket className="h-5 w-5 text-white" />
@@ -95,7 +88,6 @@ export default function Header() {
             </Badge>
           </Link>
 
-          {/* Menú de usuario */}
           <div className="hidden md:flex">
             <Menubar className="w-auto bg-transparent border-none shadow-none">
               <MenubarMenu>
@@ -138,7 +130,7 @@ export default function Header() {
 
                 <div>
                   <h4 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                    <Ticket /> Tickets
+                   Opciones
                   </h4>
                   {navItems.map((item) => (
                     <Link

@@ -1,124 +1,103 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import ServicioTecnico from "../../Servicios/ServicioUsuario"; // servicio que se encarga de traer a los tecnicos
-import { ErrorAlert } from "../ui/custom/AlertaError";
-import { Card, CardContent } from "@/components/ui/card"; 
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import UsuariosService from '../../Servicios/UsuarioService';
+import { ErrorAlert } from "../ui/custom/ErrorAlert";
+// Shadcn UI Components
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { User, Mail, Briefcase, CheckCircle, ArrowLeft } from "lucide-react";
-import { LoadingGrid } from "../ui/custom/CargandoGrid";
-import { EmptyState } from "../ui/custom/estadoVacio";
 
+import { ArrowLeft, Tag, User, Clock } from "lucide-react";
+import { LoadingGrid } from '../ui/custom/CargandoGrid';
+import { EmptyState } from '../ui/custom/estadoVacio';
 
-//Esta es la función que carga el detalle del tecnico seleccionado
-export function DetalleTecnico() {
-    //Estos de aquí son los hooks
+export function DetailCategory() {
     const navigate = useNavigate();
-    const { id } = useParams(); //Esto obtiene el id del técnico
-    const [Tecnico, setTecnico] = useState(null);
+    const { id } = useParams(); 
+    const BASE_URL = import.meta.env.VITE_BASE_URL + 'uploads';
+    const [category, setCategory] = useState(null);
     const [error, setError] = useState(null);
     const [loading, setCarga] = useState(true);
 
     useEffect(() => {
-    const fetch = async () => {
-        try {
-        setCarga(true);
-        const response = await ServicioTecnico.getById(id);
-        const payload = response?.data ?? response;
-        const entity = payload.data ?? payload;
-        if (!entity) {
-            setError("Técnico no encontrado.");
-            setTecnico(null);
-        } else {
-            setTecnico(entity);
-        }
-        } catch (err) {
-            // Si el error no es por cancelación, se registra 
-        setError(err?.message ?? "Error de carga.");
-        setTecnico(null);
-        } finally {
-        // Independientemente del resultado, se actualiza el loading
-        setCarga(false);
-        }
-    };
-    if (id) fetch();
-    }, [id]);
+        const fetchData = async () => {
+            try {
+                const response = await UsuariosService.obtenerUsuarioPorId(id)
+                // Si la petición es exitosa, se guardan los datos 
+                console.log(response.data);
+                setCategory(response.data);
+                if(!response.data.success){ 
+                            setError(response.data.message) 
+                        } 
+                    } catch (err) { 
+                        // Si el error no es por cancelación, se registra 
+                        if (err.name !== "AbortError") setError(err.message); 
+                    } finally { 
+                        // Independientemente del resultado, se actualiza el loading 
+                        setCarga(false); 
+                    } 
+                }; 
+                fetchData() 
+            }, [id]);
 
     if (loading) return <LoadingGrid count={1} type="grid" />;
-    if (error) return <ErrorAlert title="Error al cargar técnico" message={error} />;
-    if (!Tecnico) return <EmptyState message="Técnico no encontrado." />;
+    if (error) return <ErrorAlert title="Error al cargar la categoría" message={error} />;
+    if (!category || category.data.length === 0)
+        return <EmptyState message="No se encontraron datos de esta categoría." />;
 
-    const idField = Tecnico.id ?? Tecnico.ID ?? Tecnico.user_id;
-    const nombre = Tecnico.nombre ?? Tecnico.name ?? Tecnico.display_name ?? "—";
-    const email = Tecnico.email ?? Tecnico.mail ?? "—";
-  // role puede venir duplicado como r.nombre; si tu backend devuelve dos 'nombre' usa alguna clave distinta. Acá intento varias opciones:
-    const roleName = Tecnico.role_name ?? Tecnico.rol_nombre ?? Tecnico.role ?? Tecnico.nombre_rol ?? Tecnico["r.nombre"] ?? "Técnico";
-    const disponibilidad = Tecnico.rol ?? Tecnico.disponibilidad ?? Tecnico.availability ?? "desconocida";
+    const data = category.data[0]; // <-- CAMBIAR: según la estructura que devuelve tu API
 
     return (
-    <div className="max-w-4xl mx-auto py-12 px-4">
-        <div className="flex flex-col md:flex-row gap-8 items-start">
-        {/* Avatar / imagen placeholder */}
-        <div className="flex-shrink-0 w-full md:w-1/4 lg:w-1/5 rounded-lg overflow-hidden shadow-xl">
-            <div className="aspect-square w-full bg-muted flex items-center justify-center">
-            <User className="h-20 w-20 text-muted-foreground" />
-            </div>
-            <Badge variant="secondary" className="absolute bottom-4 right-4 text-sm m-4">
-            ID {idField}
-            </Badge>
-        </div>
-
-        {/* Detalles */}
-        <div className="flex-1 space-y-6">
-            <div>
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
-                {nombre}
-            </h1>
-            <p className="text-sm text-muted-foreground mt-1">Perfil: <strong>{roleName}</strong></p>
-            </div>
-
+        <div className="max-w-4xl mx-auto py-12 px-4">
+            <h1 className="text-4xl font-extrabold mb-6">{data.Categoria}</h1> {/* <-- CAMBIAR: nombre de columna */}
             <Card>
-            <CardContent className="p-6 space-y-6">
-                <div className="flex flex-col gap-6">
-                <div className="flex items-center gap-4">
-                    <Mail className="h-5 w-5 text-primary" />
+                <CardContent className="p-6 space-y-4">
+                    {/* Descripción */}
                     <div>
-                    <div className="font-semibold">Correo electrónico</div>
-                    <div className="text-muted-foreground">{email}</div>
+                        <span className="font-semibold">Descripción:</span>
+                        <p className="text-muted-foreground">{data.Descripcion}</p> {/* <-- CAMBIAR */}
                     </div>
-                </div>
 
-                <div className="flex items-center gap-4">
-                    <Briefcase className="h-5 w-5 text-primary" />
-                    <div>
-                    <div className="font-semibold">Rol registrado</div>
-                    <div className="text-muted-foreground">{roleName}</div>
+                    {/* SLA */}
+                    <div className="flex items-center gap-4">
+                        <Clock className="h-5 w-5 text-primary" />
+                        <span className="font-semibold">SLA:</span>
+                        <p className="text-muted-foreground">
+                            {data.SLA} ({data.Tiempo_Max_Respuesta} min resp., {data.Tiempo_Max_Resolucion} min resolución) {/* <-- CAMBIAR */}
+                        </p>
                     </div>
-                </div>
 
-                <div className="flex items-center gap-4">
-                    <CheckCircle className="h-5 w-5 text-primary" />
-                    <div>
-                    <div className="font-semibold">Disponibilidad</div>
-                    <div className="text-muted-foreground">{disponibilidad}</div>
-                    </div>
-                </div>
-                </div>
+                    {/* Etiquetas */}
+                    {data.Etiquetas && (
+                        <div>
+                            <span className="font-semibold flex items-center gap-2">
+                                <Tag className="h-5 w-5 text-primary" /> Etiquetas:
+                            </span>
+                            <p className="text-muted-foreground">{data.Etiquetas}</p> {/* <-- CAMBIAR */}
+                        </div>
+                    )}
 
-              {/* Si querés agregar más secciones (especialidades, tickets asignados, carga) las podés insertar aquí */}
-            </CardContent>
+                    {/* Especialidades */}
+                    {data.Especialidades && (
+                        <div>
+                            <span className="font-semibold flex items-center gap-2">
+                                <User className="h-5 w-5 text-primary" /> Especialidades del Tecnico:
+                            </span>
+                            <p className="text-muted-foreground">{data.Especialidades}</p> {/* <-- CAMBIAR */}
+                        </div>
+                    )}
+                </CardContent>
             </Card>
-        </div>
-        </div>
 
-        <Button
-        type="button"
-        onClick={() => navigate(-1)}
-        className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6"
-        >
-        <ArrowLeft className="w-4 h-4" />
-        Regresar
-        </Button>
-    </div>
+            <Button
+                type="button"
+                onClick={() => navigate(-1)}
+                className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6"
+            >
+                <ArrowLeft className="w-4 h-4" />
+                Regresar
+            </Button>
+        </div>
     );
 }
+

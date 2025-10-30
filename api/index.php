@@ -47,10 +47,6 @@ require_once "controllers/RolesController.php";
 require_once "controllers/SlaController.php";
 require_once "controllers/TicketsController.php";
 require_once "controllers/UsuarioController.php";
-<<<<<<< HEAD
-//require_once "controllers/EspecialidadController.php";
-=======
->>>>>>> ef3a9ab56ab4f626f061802468ce5465c0423b69
 
 //Enrutador
 require_once "routes/RoutesController.php";

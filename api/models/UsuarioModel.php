@@ -21,23 +21,27 @@ class UsuarioModel
         }
     }
 
-    /* Listar únicamente los técnicos */
-    public function ListaTecnicos()
-    {
-        try {
-<<<<<<< HEAD
-            $vSql = "SELECT u.nombre,u.email, r.nombre, AS rol FROM usuario u INNER JOIN rol r ON u.IDRol = r.id where u.IDRol = 2;";
-=======
-            // Consulta SQL: usuarios cuyo rol sea Técnico (IDRol = 2)
-            $vSql = "SELECT u.nombre,u.email, r.nombre AS rol FROM usuario u INNER JOIN rol r ON u.IDRol = r.id where u.IDRol = 2;";
->>>>>>> ef3a9ab56ab4f626f061802468ce5465c0423b69
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
-            return $vResultado;
-        } catch (Exception $e) {
-            handleException($e);
-        }
-    }
+    /*Lista con los datos de los t[ecnicos] esto es lo que se va a usar para generar las cartas*/
+    public function ListaTecnicos(){
+    try {
+        $vSql = $vSql = 'SELECT u.id AS IDTecnico, u.nombre AS NombreTecnico, u.email, u.disponibilidad,
+        GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ", ") AS Especialidades,
+        COUNT(DISTINCT t.id) AS TicketsActivos
+        FROM usuario u
+        LEFT JOIN Tecnico_especialidad te ON te.IDTecnico = u.id
+        LEFT JOIN especialidad e ON e.id = te.IDEspecialidad
+        LEFT JOIN ticket t ON t.IDTecnico = u.id AND t.activo = 1
+        WHERE u.IDRol = 2
+        GROUP BY u.id, u.nombre, u.email, u.disponibilidad;';
 
+        $vResultado = $this->enlace->ExecuteSQL($vSql);
+        return $vResultado;
+    } catch (Exception $e) {
+        handleException($e);
+    }
+}
+
+    //Esta funcion es la que se va a usar para generar el detalle de los tecnicos
     public function ListaDetalleTecnicos($id)
     {
         try {
@@ -78,4 +82,4 @@ class UsuarioModel
         }
     }
 }
-?>
+
