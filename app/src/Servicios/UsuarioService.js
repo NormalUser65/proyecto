@@ -9,7 +9,7 @@ class UsuarioService {
   }
 
   ObtenerTecnicos() {
-    return axios.get(BASE_URL);
+    return axios.get(`${BASE_URL}/ListaTecnicos`);
   }
 
   obtenerUsuarioPorId(id) {
