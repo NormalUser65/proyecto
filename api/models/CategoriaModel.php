@@ -11,7 +11,7 @@ class CategoriaModel
     {
         try {
             //Consulta sql
-            $vSql = "SELECT c.id,c.nombre, s.nombre AS SLA FROM categoria cat LEFT JOIN sla s ON cat.sla_id = s.id;";
+            $vSql = "SELECT cat.id,cat.nombre, s.nombre AS SLA FROM categoria cat LEFT JOIN sla s ON cat.sla_id = s.id;";
             //Ejecutar la consulta
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             // Retornar el objeto

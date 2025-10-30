@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import CategoriaService from "../../Servicios/CategoriaService";
-import { ListaCartCategoria } from "./ListaCartCategoria";
+import TicketService from "../../Servicios/TicketService";
+import { ListaCartTicket } from "./ListaCartTicket";
 import { LoadingGrid } from "../ui/custom/CargandoGrid";
 import { EmptyState } from "../ui/custom/estadoVacio";
 import { ErrorAlert } from "../ui/custom/AlertaError";
 
-export function ListaCategoria() {
+export function ListaTicket() {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -13,7 +13,7 @@ export function ListaCategoria() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await CategoriaService.getAll();
+        const response = await TicketService.getTickets();
         console.log(JSON.stringify(response.data, null, 2));
         setData(response.data);
         if (!response.data.success) {
@@ -29,13 +29,13 @@ export function ListaCategoria() {
   }, []);
 
   if (loading) return <LoadingGrid type="grid" />;
-  if (error) return <ErrorAlert title="Error al cargar categorías" message={error} />;
+  if (error) return <ErrorAlert title="Error al cargar tickets" message={error} />;
   if (!data?.data || data.data.length === 0)
-    return <EmptyState message="No se encontraron categorías." />;
+    return <EmptyState message="No se encontraron tickets." />;
 
   return (
     <div className="mx-auto max-w-7xl p-6">
-      <ListaCartCategoria data={data.data} />
+      <ListaCartTicket data={data.data} />
     </div>
   );
 }

@@ -1,5 +1,5 @@
 <?php
-class AsignacionController
+class asignaciones
 {
     public function index()
     {

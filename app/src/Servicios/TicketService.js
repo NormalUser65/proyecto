@@ -1,7 +1,7 @@
 // TicketService.js
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL + 'ticket';
+const BASE_URL = import.meta.env.VITE_BASE_URL + 'tickets';
 
 class TicketService {
   // Listar todos los tickets
