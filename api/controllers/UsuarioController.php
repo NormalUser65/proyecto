@@ -36,6 +36,22 @@ class Usuario
         }
     }
 
+    public function ListaDetalleTecnicos($id)
+    {
+        try {
+            $response = new Response();
+            //Instancia del modelo
+            $Usuario = new UsuarioModel();
+            //Acción del modelo a ejecutar
+            $result = $Usuario->ListaDetalleTecnicos($id);
+            //Dar respuesta
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            $response->toJSON($result);
+            handleException($e);
+        }
+    }
+
     public function get($id)
     {
         try {

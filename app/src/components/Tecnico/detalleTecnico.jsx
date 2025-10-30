@@ -41,9 +41,9 @@ export function DetalleTecnico() {
             }, [id]);
 
     if (loading) return <LoadingGrid count={1} type="grid" />;
-    if (error) return <ErrorAlert title="Error al cargar la categoría" message={error} />;
+    if (error) return <ErrorAlert title="Error al cargar el Tecnico" message={error} />;
     if (!category || category.data.length === 0)
-        return <EmptyState message="No se encontraron datos de esta categoría." />;
+        return <EmptyState message="No se encontraron datos para este tecnico." />;
 
     const data = category.data[0]; // <-- CAMBIAR: según la estructura que devuelve tu API
 

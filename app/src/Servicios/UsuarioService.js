@@ -13,7 +13,7 @@ class UsuarioService {
   }
 
   obtenerUsuarioPorId(id) {
-    return axios.get(`${BASE_URL}/${id}`);
+    return axios.get(`${BASE_URL}/ListaDetalleTecnicos/${id}`);
   }
 }
 

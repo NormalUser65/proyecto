@@ -24,7 +24,7 @@ class UsuarioModel
     /*Lista con los datos de los t[ecnicos] esto es lo que se va a usar para generar las cartas*/
     public function ListaTecnicos(){
     try {
-        $vSql = $vSql = 'SELECT u.id AS IDTecnico, u.nombre AS NombreTecnico, u.email, u.disponibilidad,
+        $vSql ='SELECT u.id AS IDTecnico, u.nombre AS NombreTecnico, u.email, u.disponibilidad,
         GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ", ") AS Especialidades,
         COUNT(DISTINCT t.id) AS TicketsActivos
         FROM usuario u
@@ -45,8 +45,15 @@ class UsuarioModel
     public function ListaDetalleTecnicos($id)
     {
         try {
-            $vSql = "SELECT u.id,u.nombre,u.email, r.nombre, r.disponibilidad AS rol 
-            FROM usuario u INNER JOIN rol r ON u.IDRol = r.id where u.IDRol = 2 AND u.id=$id ;";
+            $vSql = "SELECT u.id AS IDTecnico, u.nombre AS NombreTecnico, u.email, u.disponibilidad,
+        GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ', ') AS Especialidades,
+        COUNT(DISTINCT t.id) AS TicketsActivos
+        FROM usuario u
+        LEFT JOIN Tecnico_especialidad te ON te.IDTecnico = u.id
+        LEFT JOIN especialidad e ON e.id = te.IDEspecialidad
+        LEFT JOIN ticket t ON t.IDTecnico = u.id AND t.activo = 1
+        WHERE u.IDRol = 2 AND u.id = '$id'
+        GROUP BY u.id, u.nombre, u.email, u.disponibilidad;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado;
         } catch (Exception $e) {
