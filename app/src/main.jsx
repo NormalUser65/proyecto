@@ -10,6 +10,9 @@ import { PageNotFound } from './components/Home/PageNotFound'
 import { ListaTecnico } from './components/Tecnico/ListaTecnico'
 import { ListaCategoria } from './components/Categoria/ListaCategoria'
 
+import { ListaTicket } from './components/Ticket/ListaTicket';
+import { VistaSemanalAsignaciones } from "./components/Asignacion/VistaSemanalAsignaciones";
+
 
 
 //Crear las rutas
@@ -24,6 +27,9 @@ const rutas=createBrowserRouter([
       //Rutas componentes
       { path: "tecnicos", element: <ListaTecnico /> }, // lista de tecnicos
       { path: "categorias", element: <ListaCategoria /> },
+
+      { path: "tickets", element: <ListaTicket /> },
+      { path: "asignaciones", element: <VistaSemanalAsignaciones /> },
     ]
   }
 ])
