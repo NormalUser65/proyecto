@@ -18,30 +18,29 @@ export function ListaCartTecnico({ data }) {
       {data && data.map((item) => (
 
         //Aquí comienza a crear la Card
-        <Card key={item.id} className="flex flex-col overflow-hidden">
+        <Card key={item.IDTecnico} className="flex flex-col overflow-hidden !rounded-2xl shadow-md">
 
           {/* Header */}
           <CardHeader className="text-secondary !rounded-2xl shadow-md"> {/*Quitarle el centrado*/}
-            <CardTitle className="text-lg font-semibold">{item.nombre}</CardTitle>
+            <CardTitle className="text-lg font-semibold">{item.NombreTecnico}</CardTitle>
           </CardHeader>
 
           {/* Contenido */}
           <CardContent className="flex-1 space-y-2 pt-4">
             <p className="flex items-center gap-2 text-sm text-muted-foreground">
-              <p>Correo asociado: {item.email}</p>
+              Correo asociado: {item.email}
             </p>
             <p className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Globe className="h-4 w-4 text-secondary" />
-              {item.lang}
+              {item.disponibilidad}
             </p>
 
             <TooltipProvider>
               <Tooltip>
-                <TooltipTrigger asChild>
+                <TooltipTrigger asChild className="!rounded-2xl">
                   <Button
                     size="icon" className="size-8"
                   >
-                    <Link to={`/movie/detail/${item.id}`}>
+                    <Link to={`detalle/${item.IDTecnico}`}>
                       <Info />
                     </Link>
                   </Button>

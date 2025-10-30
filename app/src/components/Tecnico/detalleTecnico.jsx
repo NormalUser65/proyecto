@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import UsuariosService from '../../Servicios/UsuarioService';
-import { ErrorAlert } from "../ui/custom/ErrorAlert";
+import { ErrorAlert } from "../ui/custom/AlertaError";
 // Shadcn UI Components
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -11,7 +11,7 @@ import { ArrowLeft, Tag, User, Clock } from "lucide-react";
 import { LoadingGrid } from '../ui/custom/CargandoGrid';
 import { EmptyState } from '../ui/custom/estadoVacio';
 
-export function DetailCategory() {
+export function DetalleTecnico() {
     const navigate = useNavigate();
     const { id } = useParams(); 
     const BASE_URL = import.meta.env.VITE_BASE_URL + 'uploads';
