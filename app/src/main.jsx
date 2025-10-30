@@ -8,6 +8,7 @@ import { Home } from './components/Home/Home'
 import { PageNotFound } from './components/Home/PageNotFound'
 
 import { ListaTecnico } from './components/Tecnico/ListaTecnico'
+import { DetalleTecnico } from './components/Tecnico/detalleTecnico'
 
 //Crear las rutas
 const rutas=createBrowserRouter([
@@ -20,6 +21,7 @@ const rutas=createBrowserRouter([
       {path: '*', element: <PageNotFound/>},
       //Rutas componentes
       { path: "tecnicos", element: <ListaTecnico /> },// lista de tecnicos
+      { path: "tecnicos/detalle/:id", element: <DetalleTecnico /> },
     ]
   }
 ])

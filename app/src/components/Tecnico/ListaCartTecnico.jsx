@@ -18,7 +18,7 @@ export function ListaCartTecnico({ data }) {
       {data && data.map((item) => (
 
         //Aquí comienza a crear la Card
-        <Card key={item.id} className="flex flex-col overflow-hidden !rounded-2xl shadow-md">
+        <Card key={item.IDTecnico} className="flex flex-col overflow-hidden !rounded-2xl shadow-md">
 
           {/* Header */}
           <CardHeader className="text-secondary !rounded-2xl shadow-md"> {/*Quitarle el centrado*/}
@@ -28,7 +28,7 @@ export function ListaCartTecnico({ data }) {
           {/* Contenido */}
           <CardContent className="flex-1 space-y-2 pt-4">
             <p className="flex items-center gap-2 text-sm text-muted-foreground">
-              <p>Correo asociado: {item.email}</p>
+              Correo asociado: {item.email}
             </p>
             <p className="flex items-center gap-2 text-sm text-muted-foreground">
               {item.disponibilidad}
@@ -40,7 +40,7 @@ export function ListaCartTecnico({ data }) {
                   <Button
                     size="icon" className="size-8"
                   >
-                    <Link to={`../../Tecnico/detalleTecnico/${item.IDTecnico}`}>
+                    <Link to={`tecnicos/detalle/${item.IDTecnico}`}>
                       <Info />
                     </Link>
                   </Button>
