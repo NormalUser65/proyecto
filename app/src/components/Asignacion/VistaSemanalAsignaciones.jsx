@@ -73,10 +73,10 @@ export function VistaSemanalAsignaciones() {
     return <EmptyState message="No hay asignaciones esta semana." />;
 
   const agrupadasPorDia = {};
-  asignaciones.forEach((asg) => {
-    const dia = obtenerDiaSemana(asg.creado_en);
+  asignaciones.forEach((objeto) => {
+    const dia = obtenerDiaSemana(objeto.creado_en);
     if (!agrupadasPorDia[dia]) agrupadasPorDia[dia] = [];
-    agrupadasPorDia[dia].push(asg);
+    agrupadasPorDia[dia].push(objeto);
   });
 
   const ordenDias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
@@ -92,30 +92,30 @@ export function VistaSemanalAsignaciones() {
         return (
           <div key={dia}>
             <h2 className="text-xl font-semibold mb-4">{dia}</h2>
-            {lista.map((asg) => (
-              <Card key={asg.id} className="mb-4 border-l-4 border-primary shadow-sm !rounded-2xl">
+            {lista.map((objeto) => (
+              <Card key={objeto.id} className="mb-4 border-l-4 border-primary shadow-sm !rounded-2xl">
                 <CardHeader>
                   <CardTitle className="text-base font-semibold">
-                    Ticket #{asg.IDTicket}
+                    Ticket #{objeto.IDTicket}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
-                  <div className="text-sm text-muted-foreground">{asg.descripcion}</div>
+                  <div className="text-sm text-muted-foreground">{objeto.descripcion}</div>
                   <div className="flex items-center gap-2 text-sm">
                     <AlertCircle className="h-4 w-4 text-secondary" />
-                    <Badge className={estadoColor[asg.estado?.toLowerCase()] ?? "bg-muted"}>
-                      <p className="!rounded-2xl">{asg.estado ?? "Sin estado"}</p>
+                    <Badge className={estadoColor[objeto.estado?.toLowerCase()] ?? "bg-muted"}>
+                      <p className="!rounded-2xl">{objeto.estado ?? "Sin estado"}</p>
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Tag className="h-4 w-4 text-secondary" />
-                    <span>Categoría: {asg.IDCategoria ?? "No definida"}</span>
+                    <span>Categoría: {objeto.IDCategoria ?? "No definida"}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <CalendarDays className="h-4 w-4 text-secondary" />
-                    <span>SLA restante: {calcularSLA(asg)}</span>
+                    <span>SLA restante: {calcularSLA(objeto)}</span>
                   </div>
-                  <Progress value={calcularPorcentajeSLA(asg)} />
+                  <Progress value={calcularPorcentajeSLA(objeto)} />
                   <div className="flex gap-2 mt-2">
                     <Button size="sm" variant="ghost" disabled>
                       Cambiar estado
