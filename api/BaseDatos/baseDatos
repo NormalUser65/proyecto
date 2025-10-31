@@ -30,9 +30,9 @@ CREATE TABLE usuario (
 -- specialities
 CREATE TABLE especialidad (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  code VARCHAR(60) NOT NULL UNIQUE,
-  name VARCHAR(120) NOT NULL,
-  description TEXT
+  codigo VARCHAR(60) NOT NULL UNIQUE,
+  nombre VARCHAR(120) NOT NULL,
+  descripcion TEXT
 ) ENGINE=InnoDB;
 
 -- technician_specialities (N:N)
@@ -215,6 +215,11 @@ VALUES
 ('estudiante1@eduhelp.com', 'user123', 'María López', 3, 'es', 1, 'disponible'),
 ('docente1@eduhelp.com', 'user456', 'Luis Herrera', 3, 'es', 1, 'disponible');
 
+INSERT INTO usuario (email, contrasenna, nombre, IDRol, language, activo, disponibilidad)
+VALUES
+('tecnico_redes@eduhelp.com', 'net123', 'Ricardo Solís', 2, 'es', 1, 'disponible'),
+('tecnico_lab@eduhelp.com', 'lab123', 'Daniela Arce', 2, 'es', 1, 'disponible');
+
 -- SLA
 INSERT INTO sla (nombre, max_resp_minutos, max_resol_minutos, activo)
 VALUES
@@ -252,7 +257,7 @@ VALUES
 (4, 5);
 
 -- ESPECIALIDADES
-INSERT INTO especialidad (code, name, description)
+INSERT INTO especialidad (codigo, nombre, descripcion)
 VALUES
 ('ESP001', 'Soporte técnico de Aulas', 'Encargado del mantenimiento y soporte de equipos en aulas'),
 ('ESP002', 'Finanzas', 'Área de control de pagos y matrículas'),
@@ -349,3 +354,17 @@ VALUES
 (3, 4, 5, 'Excelente soporte'),
 (4, 5, 4, 'El mantenimiento fue correcto'),
 (5, 4, 5, 'Buena atención del soporte técnico');
+
+INSERT INTO ticket (Titulo, descripcion, IDUsuario, IDCategoria, prioridad, estado, IDTecnico, creado_en)
+VALUES
+('Proyector sin señal', 'El proyector del aula 302 no muestra imagen.', 4, 1, 2, 'pendiente', 2, '2025-10-27 09:00:00'),
+('Pago de matrícula no procesado', 'El sistema indica error al pagar la matrícula.', 5, 2, 3, 'en progreso', 3, '2025-10-27 14:00:00'),
+('Recuperar contraseña', 'No puedo ingresar a mi cuenta institucional.', 4, 3, 2, 'pendiente', 3, '2025-10-28 10:00:00'),
+('Problemas eléctricos en aula 102', 'Tomacorrientes dañados en varios puestos.', 5, 4, 1, 'pendiente', 3, '2025-10-29 11:00:00'),
+('Consulta general sobre correo institucional', 'Solicitud de acceso a correo de docente.', 4, 5, 3, 'pendiente', 2, '2025-10-30 13:00:00');
+
+UPDATE ticket SET creado_en = '2025-10-27 09:00:00' WHERE id = 1;
+UPDATE ticket SET creado_en = '2025-10-27 14:00:00' WHERE id = 2;
+UPDATE ticket SET creado_en = '2025-10-28 10:00:00' WHERE id = 3;
+UPDATE ticket SET creado_en = '2025-10-29 11:00:00' WHERE id = 4;
+UPDATE ticket SET creado_en = '2025-10-30 13:00:00' WHERE id = 5;

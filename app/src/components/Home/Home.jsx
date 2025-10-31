@@ -30,13 +30,13 @@ export function Home() {
           <div className="flex justify-center md:justify-start gap-4 pt-2">
             <a
               href="/movies"
-              className="px-6 py-3 bg-primary text-white rounded-lg font-semibold shadow-lg hover:bg-primary/90 transition"
+              className="px-6 py-3 bg-primary text-white rounded-lg font-semibold shadow-lg hover:bg-primary/90 transition !rounded-2xl"
             >
               Realiza un reporte
             </a>
             <a
               href="/user/login"
-              className="px-6 py-3 bg-secondary text-white rounded-lg font-semibold shadow-lg hover:bg-secondary/90 transition"
+              className="px-6 py-3 bg-secondary text-white rounded-lg font-semibold shadow-lg hover:bg-secondary/90 transition !rounded-2xl"
             >
               Iniciar Sesión
             </a>

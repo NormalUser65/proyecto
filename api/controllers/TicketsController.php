@@ -12,6 +12,18 @@ class tickets
             handleException($e);
         }
     }
+    
+    public function ObtenerPorID($id)
+    {
+        $response = new Response();
+        try {
+            $model = new TicketModel();
+            $result = $model->ObtenerPorID($id);
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
 
     public function cantTrabajoTecnico($id)
     {

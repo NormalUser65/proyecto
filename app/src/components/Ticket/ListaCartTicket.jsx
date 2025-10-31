@@ -13,14 +13,11 @@ export function ListaCartTicket({ data }) {
   return (
     <div className="grid gap-6 p-4 sm:grid-cols-2 lg:grid-cols-3">
       {data.map((item) => (
-        <Card key={item.id} className="flex flex-col overflow-hidden">
-          <CardHeader className="text-secondary !rounded-2xl shadow-md">
-            <CardTitle className="text-lg font-semibold">Ticket #{item.id}</CardTitle>
-          </CardHeader>
+        <Card key={item.id} className="flex flex-col overflow-hidden !rounded-2xl">
           <CardContent className="flex-1 space-y-2 pt-4">
+            <div className="">Ticket #{item.id}</div>
             <div className="text-sm text-muted-foreground flex items-center gap-2">
-              <Tag className="h-4 w-4 text-secondary" />
-              <span>Categoría: {item.IDCategoria ?? "Sin categoría"}</span>
+              <div className="">"{item.Titulo}"</div>
             </div>
             <div className="text-sm text-muted-foreground flex items-center gap-2">
               <AlertCircle className="h-4 w-4 text-secondary" />
@@ -30,15 +27,11 @@ export function ListaCartTicket({ data }) {
               <CalendarDays className="h-4 w-4 text-secondary" />
               <span>Creado: {new Date(item.creado_en).toLocaleDateString()}</span>
             </div>
-            <div className="text-sm text-muted-foreground flex items-center gap-2">
-              <User className="h-4 w-4 text-secondary" />
-              <span>Solicitante: {item.IDUsuario}</span>
-            </div>
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button size="icon" className="size-8">
-                    <Link to={`/tickets/detalle/${item.id}`}>
+                  <Button size="icon" className="size-8 !rounded-2xl">
+                    <Link to={`detalleTicket/${item.id}`}>
                       <Info />
                     </Link>
                   </Button>

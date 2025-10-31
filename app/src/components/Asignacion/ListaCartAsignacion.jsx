@@ -11,13 +11,13 @@ ListaCartAsignacion.propTypes = {
 
 export function ListaCartAsignacion({ data }) {
   return (
-    <div className="grid gap-6 p-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-6 p-4 sm:grid-cols-2 lg:grid-cols-3 !rounded-2xl">
       {data.map((item) => (
-        <Card key={item.id} className="flex flex-col overflow-hidden">
+        <Card key={item.id} className="flex flex-col overflow-hidden !rounded-2xl">
           <CardHeader className="text-secondary !rounded-2xl shadow-md">
             <CardTitle className="text-lg font-semibold">Asignación #{item.id}</CardTitle>
           </CardHeader>
-          <CardContent className="flex-1 space-y-2 pt-4">
+          <CardContent className="flex-1 space-y-2 pt-4 !rounded-2xl">
             <div className="text-sm text-muted-foreground flex items-center gap-2">
               <User className="h-4 w-4 text-secondary" />
               <span>Técnico ID: {item.tecnico_id}</span>
@@ -26,18 +26,6 @@ export function ListaCartAsignacion({ data }) {
               <Ticket className="h-4 w-4 text-secondary" />
               <span>Ticket ID: {item.ticket_id}</span>
             </div>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size="icon" className="size-8">
-                    <Link to={`/asignaciones/detalle/${item.id}`}>
-                      <Info />
-                    </Link>
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Ver detalle</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
           </CardContent>
         </Card>
       ))}

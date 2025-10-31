@@ -20,7 +20,22 @@ class TicketModel
             handleException($e);
         }
     }
-    /*Obtiene una cantidad de tickets asignados a un tecnico por medio de su id*/
+
+    public function ObtenerPorID($ID)
+    {
+        try {
+            //Consulta sql
+            $vSql = "SELECT * FROM ticket WHERE id = $ID;";
+            //Ejecutar la consulta
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            // Retornar el objeto
+            return $vResultado[0];
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+
     public function CantTrabajoTecnico($id)
     {
         try {

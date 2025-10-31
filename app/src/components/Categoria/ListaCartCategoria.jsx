@@ -11,11 +11,11 @@ ListaCartCategoria.propTypes = {
 
 export function ListaCartCategoria({ data }) {
   return (
-    <div className="grid gap-6 p-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid gap-6 p-4 sm:grid-cols-2 lg:grid-cols-3 ">
       {data.map((item) => (
-        <Card key={item.id} className="flex flex-col overflow-hidden">
+        <Card key={item.id} className="flex flex-col overflow-hidden !rounded-2xl">
           <CardHeader className="text-secondary !rounded-2xl shadow-md">
-            <CardTitle className="text-lg font-semibold">{item.nombre}</CardTitle>
+            <CardTitle className="text-lg font-semibold">{item.id} | {item.nombre}</CardTitle>
           </CardHeader>
           <CardContent className="flex-1 space-y-2 pt-4">
             <p className="text-sm text-muted-foreground flex items-center gap-2">
@@ -25,7 +25,7 @@ export function ListaCartCategoria({ data }) {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Button size="icon" className="size-8">
+                  <Button size="icon" className="size-8 !rounded-2xl">
                     <Link to={`/categorias/detalle/${item.id}`}>
                       <Info />
                     </Link>

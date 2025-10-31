@@ -20,18 +20,16 @@ export function ListaCartTecnico({ data }) {
         //Aquí comienza a crear la Card
         <Card key={item.IDTecnico} className="flex flex-col overflow-hidden !rounded-2xl shadow-md">
 
-          {/* Header */}
-          <CardHeader className="text-secondary !rounded-2xl shadow-md"> {/*Quitarle el centrado*/}
+          <CardHeader className="text-secondary !rounded-2xl shadow-md">
             <CardTitle className="text-lg font-semibold">{item.NombreTecnico}</CardTitle>
           </CardHeader>
 
-          {/* Contenido */}
           <CardContent className="flex-1 space-y-2 pt-4">
             <p className="flex items-center gap-2 text-sm text-muted-foreground">
               Correo asociado: {item.email}
             </p>
             <p className="flex items-center gap-2 text-sm text-muted-foreground">
-              {item.disponibilidad}
+              Disponibilidad: ({item.disponibilidad})
             </p>
 
             <TooltipProvider>

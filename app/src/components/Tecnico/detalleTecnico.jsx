@@ -45,58 +45,76 @@ export function DetalleTecnico() {
     if (!category || category.data.length === 0)
         return <EmptyState message="No se encontraron datos para este tecnico." />;
 
-    const data = category.data[0]; // <-- CAMBIAR: según la estructura que devuelve tu API
+    const data = category.data[0];
 
     return (
-        <div className="max-w-4xl mx-auto py-12 px-4">
-            <h1 className="text-4xl font-extrabold mb-6">{data.Categoria}</h1> {/* <-- CAMBIAR: nombre de columna */}
-            <Card>
-                <CardContent className="p-6 space-y-4">
-                    {/* Descripción */}
-                    <div>
-                        <span className="font-semibold">Descripción:</span>
-                        <p className="text-muted-foreground">{data.Descripcion}</p> {/* <-- CAMBIAR */}
-                    </div>
+    <div className="max-w-4xl mx-auto py-12 px-4">
+    <h1 className="text-4xl font-extrabold mb-6 text-primary">
+        {data.NombreTecnico}
+    </h1>
 
-                    {/* SLA */}
-                    <div className="flex items-center gap-4">
-                        <Clock className="h-5 w-5 text-primary" />
-                        <span className="font-semibold">SLA:</span>
-                        <p className="text-muted-foreground">
-                            {data.SLA} ({data.Tiempo_Max_Respuesta} min resp., {data.Tiempo_Max_Resolucion} min resolución) {/* <-- CAMBIAR */}
-                        </p>
-                    </div>
-
-                    {/* Etiquetas */}
-                    {data.Etiquetas && (
-                        <div>
-                            <span className="font-semibold flex items-center gap-2">
-                                <Tag className="h-5 w-5 text-primary" /> Etiquetas:
-                            </span>
-                            <p className="text-muted-foreground">{data.Etiquetas}</p> {/* <-- CAMBIAR */}
-                        </div>
-                    )}
-
-                    {/* Especialidades */}
-                    {data.Especialidades && (
-                        <div>
-                            <span className="font-semibold flex items-center gap-2">
-                                <User className="h-5 w-5 text-primary" /> Especialidades del Tecnico:
-                            </span>
-                            <p className="text-muted-foreground">{data.Especialidades}</p> {/* <-- CAMBIAR */}
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
-
-            <Button
-                type="button"
-                onClick={() => navigate(-1)}
-                className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6"
-            >
-                <ArrowLeft className="w-4 h-4" />
-                Regresar
-            </Button>
+    <Card className="!rounded-2xl shadow-lg border-border/50">
+        <CardContent className="p-6 space-y-5">
+        <div className="flex flex-col gap-1">
+            <span className="font-semibold text-gray-800">
+            Identificador:
+            <span className="font-normal text-muted-foreground ml-2">
+                {data.IDTecnico}
+            </span>
+            </span>
+            <span className="font-semibold text-gray-800">
+            Nombre registrado:
+            <span className="font-normal text-muted-foreground ml-2">
+                {data.NombreTecnico}
+            </span>
+            </span>
         </div>
-    );
+
+        <div className="flex items-center gap-2">
+            <span className="font-semibold text-gray-800">Correo de contacto:</span>
+            <p className="text-muted-foreground">{data.email}</p>
+        </div>
+
+        <div className="flex items-center gap-2">
+            <span className="font-semibold text-gray-800">
+            Carga de trabajo actual:
+            </span>
+            <p className="text-muted-foreground">
+            {data.TicketsActivos} tickets activos
+            </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+            <span className="font-semibold text-gray-800">Disponibilidad:</span>
+            <p className="text-muted-foreground">{data.disponibilidad}</p>
+        </div>
+
+        {data.Especialidades && (
+            <div>
+            <span className="font-semibold text-gray-800">
+                Especialidades del técnico:
+            </span>
+            <div className="flex flex-wrap gap-2 mt-2 ">
+                {data.Especialidades.split(",").map((esp, idx) => (
+                <span key={idx} className="bg-accent/35 text-accent px-3 py-1 rounded-full text-sm font-medium">
+                    <p className="text-muted-foreground">{esp.trim()}</p>
+                </span>
+                ))}
+            </div>
+            </div>
+        )}
+        </CardContent>
+    </Card>
+
+    <Button
+        type="button"
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6 !rounded-2xl px-5 py-2 shadow-sm"
+    >
+        <ArrowLeft className="w-4 h-4" />
+        Regresar
+    </Button>
+    </div>
+);
+
 }

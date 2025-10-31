@@ -93,7 +93,7 @@ export function VistaSemanalAsignaciones() {
           <div key={dia}>
             <h2 className="text-xl font-semibold mb-4">{dia}</h2>
             {lista.map((asg) => (
-              <Card key={asg.id} className="mb-4 border-l-4 border-primary shadow-sm">
+              <Card key={asg.id} className="mb-4 border-l-4 border-primary shadow-sm !rounded-2xl">
                 <CardHeader>
                   <CardTitle className="text-base font-semibold">
                     Ticket #{asg.IDTicket}
@@ -102,27 +102,21 @@ export function VistaSemanalAsignaciones() {
                 <CardContent className="space-y-2">
                   <div className="text-sm text-muted-foreground">{asg.descripcion}</div>
                   <div className="flex items-center gap-2 text-sm">
-                    <AlertCircle className="h-4 w-4 text-primary" />
+                    <AlertCircle className="h-4 w-4 text-secondary" />
                     <Badge className={estadoColor[asg.estado?.toLowerCase()] ?? "bg-muted"}>
-                      {asg.estado ?? "Sin estado"}
+                      <p className="!rounded-2xl">{asg.estado ?? "Sin estado"}</p>
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Tag className="h-4 w-4 text-primary" />
+                    <Tag className="h-4 w-4 text-secondary" />
                     <span>Categoría: {asg.IDCategoria ?? "No definida"}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <CalendarDays className="h-4 w-4 text-primary" />
+                    <CalendarDays className="h-4 w-4 text-secondary" />
                     <span>SLA restante: {calcularSLA(asg)}</span>
                   </div>
                   <Progress value={calcularPorcentajeSLA(asg)} />
                   <div className="flex gap-2 mt-2">
-                    <Button size="sm" variant="outline" asChild>
-                      <Link to={`/asignaciones/detalle/${asg.id}`}>
-                        <Info className="h-4 w-4 mr-1" />
-                        Ver detalle
-                      </Link>
-                    </Button>
                     <Button size="sm" variant="ghost" disabled>
                       Cambiar estado
                     </Button>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import CategoriaService from "../../Servicios/CategoriaService";
-import { ErrorAlert } from "../ui/custom/ErrorAlert";
+import { ErrorAlert } from "../ui/custom/AlertaError";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -39,19 +39,19 @@ export function DetalleCategoria() {
   if (!categoria || categoria.data.length === 0)
     return <EmptyState message="No se encontraron datos de esta categoría." />;
 
-  const data = categoria.data[0];
+  const data = categoria.data;
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-4">
-      <h1 className="text-4xl font-extrabold mb-6">{data.Categoria}</h1>
-      <Card>
+      <h1 className="text-4xl font-extrabold mb-6">{data.id} | {data.Categoria}</h1>
+      <Card className={" rounded-2xl !shadow-[var(--box-shadow)]"} >
         <CardContent className="p-6 space-y-4">
           <div>
             <span className="font-semibold">Descripción:</span>
             <p className="text-muted-foreground">{data.Descripcion}</p>
           </div>
           <div className="flex items-center gap-4">
-            <Clock className="h-5 w-5 text-primary" />
+            <Clock className="h-5 w-5 text-secondary" />
             <span className="font-semibold">SLA:</span>
             <p className="text-muted-foreground">
               {data.SLA} ({data.Tiempo_Max_Respuesta} min resp., {data.Tiempo_Max_Resolucion} min resolución)
@@ -60,7 +60,7 @@ export function DetalleCategoria() {
           {data.Etiquetas && (
             <div>
               <span className="font-semibold flex items-center gap-2">
-                <Tag className="h-5 w-5 text-primary" /> Etiquetas:
+                <Tag className="h-5 w-5 text-secondary" /> Etiquetas:
               </span>
               <p className="text-muted-foreground">{data.Etiquetas}</p>
             </div>
@@ -68,7 +68,7 @@ export function DetalleCategoria() {
           {data.Especialidades && (
             <div>
               <span className="font-semibold flex items-center gap-2">
-                <User className="h-5 w-5 text-primary" /> Especialidades:
+                <User className="h-5 w-5 text-secondary" /> Especialidades:
               </span>
               <p className="text-muted-foreground">{data.Especialidades}</p>
             </div>
@@ -78,7 +78,7 @@ export function DetalleCategoria() {
       <Button
         type="button"
         onClick={() => navigate(-1)}
-        className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6"
+        className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6 !rounded-2xl"
       >
         <ArrowLeft className="w-4 h-4" />
         Regresar

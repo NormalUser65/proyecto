@@ -11,8 +11,9 @@ class TicketService {
 
   // Obtener ticket por ID
   getTicketById(id) {
-    return axios.get(`${BASE_URL}/${id}`);
+    return axios.get(`${BASE_URL}/ObtenerPorID/${id}`);
   }
+
 
   // Obtener tickets por nombre
   getTicketByNombre(nombre) {

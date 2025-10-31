@@ -12,6 +12,8 @@ import { DetalleTecnico } from './components/Tecnico/detalleTecnico'
 import { ListaCategoria } from './components/Categoria/ListaCategoria'
 import { ListaTicket } from './components/Ticket/ListaTicket'
 import { VistaSemanalAsignaciones } from "./components/Asignacion/VistaSemanalAsignaciones"
+import { DetalleCategoria } from './components/Categoria/DetalleCategoria'
+import { DetalleTicket } from './components/Ticket/DetalleTicket'
 
 const rutas = createBrowserRouter([
   {
@@ -23,7 +25,9 @@ const rutas = createBrowserRouter([
       { path: 'tecnicos/detalle/:id', element: <DetalleTecnico /> },
       { path: 'categorias', element: <ListaCategoria /> },
       { path: 'tickets', element: <ListaTicket /> },
+      { path: 'tickets/detalleTicket/:id', element: <DetalleTicket/>},
       { path: 'asignaciones', element: <VistaSemanalAsignaciones /> },
+      { path: 'categorias/detalle/:id', element: <DetalleCategoria /> },
     ],
   },
 ])
