@@ -19,7 +19,6 @@ export function ListaCartTecnico({ data }) {
     <div className="grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">
       {data &&
         data.map((item) => {
-          // 🔹 Declaramos el badge según disponibilidad
           const miBadge =
             item.disponibilidad === "disponible" ? (
               <Badge
@@ -35,20 +34,16 @@ export function ListaCartTecnico({ data }) {
               </Badge>
             );
 
-          // 🔹 Retornamos la tarjeta
           return (
             <Card
               key={item.IDTecnico}
               className="relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-1"
             >
-              {/* Header que toca el borde superior */}
               <div className="absolute top-0 left-0 right-0 h-28 bg-gradient-to-br from-primary to-secondary" />
 
               <CardContent className="relative flex-1 space-y-3 p-4 pt-32">
-                {/* Encabezado con imagen + nombre + botón de mantenimiento */}
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
-                    {/* Imagen de usuario */}
                     <div className="flex-shrink-0 w-10 h-10 rounded-full bg-muted flex items-center justify-center text-primary-foreground shadow-inner">
                       <User className="w-5 h-5 text-primary-foreground/90" />
                     </div>
@@ -57,7 +52,6 @@ export function ListaCartTecnico({ data }) {
                     </CardTitle>
                   </div>
 
-                  {/* Botón tipo Label con lápiz */}
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -74,7 +68,6 @@ export function ListaCartTecnico({ data }) {
                   </TooltipProvider>
                 </div>
 
-                {/* Información del técnico */}
                 <div className="space-y-1">
                   <p className="text-sm text-muted-foreground">
                     Correo asociado:
@@ -89,7 +82,6 @@ export function ListaCartTecnico({ data }) {
                   </div>
                 </div>
 
-                {/* Botón de acción */}
                 <div className="pt-2">
                   <TooltipProvider>
                     <Tooltip>
