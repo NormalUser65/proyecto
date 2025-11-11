@@ -199,19 +199,9 @@ export function UpdateMovie() {
 
   return (
     <Card className="p-6 max-w-5xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Actualizar Película</h2>
+      <h2 className="text-2xl font-bold mb-6">Actualizar Técnico</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-        {/* Título */}
-        <div>
-          <Label className="block mb-1 text-sm font-medium" htmlFor="title">Título</Label>
-          {/* Controller entrada título */}
-          <Controller name="title" control={control} render={({field})=>
-            <Input {...field} id="title" placeholder="Ingrese el título" />
-          } />
-          {/* Error entrada título */}
-          {errors.title && <p className="text-sm text-red-500">{errors.title.message}</p>}
-        </div>
 
         {/* Año*/}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

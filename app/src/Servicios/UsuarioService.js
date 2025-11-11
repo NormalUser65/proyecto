@@ -15,6 +15,15 @@ class UsuarioService {
   obtenerUsuarioPorId(id) {
     return axios.get(`${BASE_URL}/ListaDetalleTecnicos/${id}`);
   }
+
+  ActualizarTecnico(Tecnico) {
+    return axios({
+      method: 'put',
+      url: BASE_URL,
+      data: JSON.stringify(Tecnico)
+
+    })
+  }
 }
 
 export default new UsuarioService();

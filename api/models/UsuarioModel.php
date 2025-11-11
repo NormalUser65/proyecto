@@ -60,6 +60,19 @@ class UsuarioModel
             handleException($e);
         }
     }
+
+    public function ActualizarTecnico($item)
+    {
+        try {
+            $vSql = "";
+
+
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado;
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
     
 
     /* Obtener por email */
