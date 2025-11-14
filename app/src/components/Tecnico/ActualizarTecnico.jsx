@@ -5,6 +5,9 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
+//Validator
+import validator from 'validator';
+
 // shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,61 +19,52 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Plus, Save, ArrowLeft } from "lucide-react";
 
 // servicios
-import GenreService from "../../services/GenreService";
-import ActorService from "../../services/ActorService";
-import DirectorService from "../../services/DirectorService";
-import MovieService from "../../services/MovieService";
-import ImageService from "../../services/ImageService";
+import EspecialidadService from "@/Servicios/EspecialidadService";
+import UsuarioService from "@/Servicios/UsuarioService";
 
 // componentes reutilizables
 import { CustomMultiSelect } from "../ui/custom/custom-multiple-select"; // select multi con chips
-import { ActorsForm } from "./Form/ActorsForm";
 import { CustomSelect } from "../ui/custom/custom-select";
 import { CustomInputField } from "../ui/custom/custom-input-field";
 
-export function UpdateMovie() {
+export function ActualizarTecnico() {
+
+
   const navigate = useNavigate();
   //Obtener parámetro del id de la película
   const { id }=useParams();
   const BASE_URL_image= import.meta.env.VITE_BASE_URL+"uploads"
 
   /*** Estados para selects y preview de imagen ***/
-  const [dataDirector, setDataDirector] = useState([]);
-  const [dataGenres, setDataGenres] = useState([]);
-  const [dataActors, setDataActors] = useState([]);
-  const [dataMovie, setDataMovie] = useState([]);
-  const [file, setFile] = useState(null);
-  const [fileURL, setFileURL] = useState(null);
+  const [datosTecnico, SetearDataTecnico] = useState([]);
+  const [datosEspecialidades, SetearEspecialidades] = useState([]);
+
   const [error, setError] = useState("");
 
   /*** Esquema de validación Yup ***/
-  const movieSchema= yup.object({
-    title: yup.string()
-            .required('El título es requerido')
-            .min(2, "El título debe tener al menos 2 caracteres"),
-    year: yup 
-      .number() 
-      .typeError('Solo acepta números') 
-      .required('El año es requerido') 
-      .positive('Solo acepta números positivos'), 
-    time: yup.string()
+  const TecnicoEsquema= yup.object({
+    NombreTecnico: yup.string()
+            .required('El nombre es requerido')
+            .min(2, "El nombre debe tener al menos 2 caracteres"),
+
+    email: yup.string()
+      .required('El correo es requerido')
+      .test('is-email-valid', 'Por favor, introduce un correo electrónico válido',
+          value => {
+          //usa el validator
+          if (!value) return true; 
+            return validator.isEmail(value);
+          }), 
+
+    Contrasenna: yup.string()
           .required("La duración es requerido")
-          .min(3, 'Deber tener al menos 3 dígitos')
-          .matches(/^\d+$/,"Solo acepta números"),
-    director_id: yup 
-      .number() 
-      .typeError('Seleccione un director') 
-      .required('El director es requerido'), 
-    genres: yup.array().min(1, 'El género es requerido'), 
-    actors: yup.array().of( 
-      yup.object().shape({ 
-        actor_id: yup 
-          .number() 
-          .typeError('El actor es requerido') 
-          .required('El actor es requerido'), 
-        role: yup.string().required('El rol es requerido'), 
-      }), 
-    ), 
+          .min(8, 'Deber tener al menos 8 dígitos')
+          .matches(/[a-z]/, 'La contraseña debe tener al menos una minúscula')
+          .matches(/[A-Z]/, 'La contraseña debe tener al menos una mayúscula')
+          .matches(/[0-9]/, 'La contraseña debe tener al menos un número')
+          .matches(/[!@#$%&*()?":{}|<>]/, 'La contraseña debe tener al menos un carácter especial'),
+
+    Especialidades: yup.array().min(1, 'El Técnico debe tener mínimo una especialidad'), 
   })
 
   /*** React Hook Form ***/
@@ -81,71 +75,50 @@ export function UpdateMovie() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      id:"",
-      title: "",
-      year: "",
-      time: "",
-      lang: "",
-      director_id: "",
-      genres: [],
-      actors: [{ actor_id: "", role: "" }], 
+      NombreTecnico:"",
+      email: "",
+      Contrasenna: "",
+      Especialidades: [],
     },
-    values: dataMovie,
-    resolver:yupResolver(movieSchema)
+    values: datosTecnico,
+    resolver:yupResolver(TecnicoEsquema)
   });
-  //Array de controles para actores
-  const { fields, append, remove } = useFieldArray({ 
-    control, 
-    name: "actors", 
-  });
-  //Acciones para la gestión del array de actores
-  const addNewActor = () => append({ actor_id: "", role: "" }); 
-  const removeActor = (index) => { 
-      if (fields.length > 1) remove(index); 
-  }; 
-
-
-  /*** Manejo de imagen ***/
-  const handleChangeImage = (e) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-      setFileURL(URL.createObjectURL(selectedFile));
-    }
-  };
+  
   /***Listados de carga en el formulario ***/
   useEffect(()=>{
     const fechData=async()=>{
       try {
-        //Lista de directores
-        const directorsRes= await DirectorService.getDirectores()
-        //Lista de generos
-        const genresRes= await GenreService.getGenres()
-        //Lista de actores
-        const actorsRes= await ActorService.getActors()
-        //Obtener pelicula a actualizar
-        const movieRes=await MovieService.getMovieById(id)
+        //Obtener El tecnico a actualizar
+        const tecnicoRes=await UsuarioService.obtenerUsuarioPorId(id);
+        const especialidadesRes=await EspecialidadService.getAll();
         // Si la petición es exitosa, se guardan los datos 
-        setDataDirector(directorsRes.data.data || []); 
-        setDataGenres(genresRes.data.data || []); 
-        setDataActors(actorsRes.data.data || []); 
+        SetearEspecialidades(especialidadesRes.data.data || []);
         //Obtener pelicula y asignarla formulario
-        if(movieRes.data){
-          const movie=movieRes.data.data
-          console.log(movie)
+
+
+        if(tecnicoRes.data){
+          const tecnicoArray=tecnicoRes.data.data;
+          const tecnico = Array.isArray(tecnicoArray) ? tecnicoArray[0] : tecnicoArray;
+          console.log(tecnico)
           
+          let especialidadesArray = [];
+          if(Array.isArray(tecnico.Especialidades)){
+            especialidadesArray = tecnico.Especialidades?.map(e => e.IDEspecialidad);
+
+          } else if (typeof tecnico.Especialidades === "string"){
+            especialidadesArray = tecnico.Especialidades.split(",").map(e => e.trim);
+
+          } else{
+            especialidadesArray = [];
+
+          }
+
           reset({
-            id: movie.id,
-            title: movie.title,
-            year: movie.year,
-            time: movie.time,
-            lang: movie.lang,
-            director_id: movie.director_id,
-            genres: movie.genres.map(g=>g.id),
-            actors: movie.actors.map(a=>({actor_id: a.id, role: a.role})),
+            NombreTecnico: tecnico.NombreTecnico,
+            email: tecnico.email,
+            Contrasenna: tecnico.contrasenna,
+            Especialidades: especialidadesArray,
           }) 
-          if(movie.imagen) setFileURL(BASE_URL_image+'/'+movie.imagen.image)
-          setDataMovie(movie)
         }
       } catch (error) {
         console.log(error)
@@ -156,188 +129,97 @@ export function UpdateMovie() {
   },[id])
 
   /*** Submit ***/
-  const onSubmit = async (dataForm) => {
-    /* if (!file) {
-      toast.error("Debes seleccionar una imagen para la película");
-      return;
-    }
- */
+  const onSubmit = async (datos) => {
+
     try {
-      console.log(dataForm)
-      if (movieSchema.isValid()) { 
-        //Verificar datos del formulario 
-        console.log(dataForm) 
-        //Crear pelicula en el API 
-        const response = await MovieService.updateMovie(dataForm); 
+      console.log(datos)
+      if (TecnicoEsquema.isValid()) { 
+        console.log(datos) 
+
+        const response = await UsuarioService.ActualizarTecnico(datos); 
         if (response.data) { 
-          if(file ){
-            //FormData para guardar imagen 
-            const formData = new FormData(); 
-            formData.append("file", file); 
-            formData.append("movie_id", response.data.data.id); 
-            //Guardar imagen en el API 
-            await ImageService.createImage(formData); 
-          }
-          //Notificación de creación 
-          toast.success(`Película actualizada #${response.data.data.id} - ${response.data.data.title}`, { 
-            duration: 4000, 
-            position: "top-center", 
+          toast.success(`El tecnico actualizado #${response.data.data.id} - ${response.data.data.title}`, { 
+            duration: 3000, 
+            position: "bottom-center", 
           }); 
-          //Redireccionar al listado del mantenimiento 
-          navigate("/movie/table"); 
+
+          navigate("/tecnicos"); 
         } else if (response.error) { 
           setError(response.error); 
         } 
       } 
     } catch (err) {
       console.error(err);
-      setError("Error al crear película");
+      setError("Ha ocurrido un error al editar al Técnico");
     }
   };
 
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
-    <Card className="p-6 max-w-5xl mx-auto">
+    <Card className="rounded-2xl border-primary/60 p-6 max-w-5xl mx-auto">
       <h2 className="text-2xl font-bold mb-6">Actualizar Técnico</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
-        {/* Año*/}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        {/*Nombre Completo*/}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 ">
           <div>
             {/* Controller entrada year */}
-            <Controller name="year" control={control} render={({field})=>
+            <Controller name="NombreTecnico" control={control} render={({field})=>
               <CustomInputField 
                 {...field} 
-                label="Año" 
-                placeholder="2025"
-                error={errors.year?.message}
+                label="Nombre Completo" 
+                placeholder="Ingrese el nombre completo"
+                error={errors.NombreTecnico?.message}
               />
             } />
           </div>
-          {/*Duración*/}
+
+
+          {/*Email*/}
           <div>
             <Controller
-              name="time"
+              name="email"
               control={control}
               render={({ field }) =>
                 <CustomInputField
                   {...field}
-                  label="Duración (min)"
-                  placeholder="160"
-                  error={errors.time?.message} />
+                  label="Correo Electrónico"
+                  placeholder="correo_de_ejemplo@correo.com"
+                  error={errors.email?.message} />
               }
             />
           </div>
-          {/*Idioma*/}
+
+          {/*contraseña*/}
           <div>
             <Controller
-              name="lang"
+              name="Contrasenna"
               control={control}
               render={({ field }) =>
                 <CustomInputField
                   {...field}
-                  label="Idioma"
-                  placeholder="Español"
-                  error={errors.lang?.message} />}
+                  label="Contraseña"
+                  error={errors.Contrasenna?.message} />}
             />
           </div>
         </div>
 
-        {/* Director */}
+        {/* Especialidades */}
         <div>
-          <Label className="block mb-1 text-sm font-medium">Director</Label>
-          {/* Controller entrada director */}
-          <Controller name="director_id" control={control} render={({field})=> 
-            <CustomSelect
-              field={field}
-              data={dataDirector}
-              label="Director"
-              getOptionLabel={(director)=>`${director.fname} ${director.lname}`}
-              getOptionValue={(director)=> director.id} 
-              error={errors.director_id?.message}
-            />
-          } />
-        </div>
-        {/* Géneros */}
-        <div>
-          {/* Controller entrada generos */}
-          <Controller name="genres" control={control} render={({field})=> 
+          {/* Controller entrada Especialidades */}
+          <Controller name="Especialidades" control={control} render={({field})=> 
             <CustomMultiSelect
               field={field}
-              data={dataGenres}
-              label="Géneros"
-              getOptionLabel={(item)=>item.title}
-              getOptionValue={(item)=> item.id} 
-              error={errors.genres?.message}
-              placeholder="Seleccione géneros"
+              data={datosEspecialidades}
+              label="Especialidades"
+              getOptionLabel={(item)=>item.nombre}
+              getOptionValue={(item)=> item.codigo} 
+              error={errors.Especialidades?.message}
+              placeholder="Seleccione la(s) especialidad(es)"
             />
           } />
-        </div>
-        {/* Actores */}
-        <div>
-          <div className="flex items-center justify-between">
-            <Label className="block mb-1 text-sm font-medium">Actores</Label>
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button type="button" size="icon" onClick={addNewActor}
-                  className="bg-accent text-accent-foreground hover:bg-accent/90" >
-                    <Plus className="h-4 w-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Agregar actor</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          </div>
-
-          <div className="space-y-4 mt-3">
-            {/* Listar los actores con sus respectivos controles */}
-            {fields.map((field,index)=>
-              <ActorsForm 
-                key={field.id}
-                index={index}
-                control={control}
-                data={dataActors}
-                onRemove={removeActor}
-                disableRemoveButton={fields.length===1}
-                error={errors}
-              />
-            )}
-          </div>
-        </div>
-        {/* Imagen */}
-        <div className="mb-6">
-          <Label htmlFor="image" className="block mb-1 text-sm font-medium">
-            Imagen
-          </Label>
-          <div
-            className="relative w-56 h-56 border-2 border-dashed border-muted/50 rounded-lg flex items-center justify-center cursor-pointer overflow-hidden hover:border-primary transition-colors"
-            onClick={() => document.getElementById("image").click()}
-          >
-            {!fileURL && (
-              <div className="text-center px-4">
-                <p className="text-sm text-muted-foreground">Haz clic o arrastra una imagen</p>
-                <p className="text-xs text-muted-foreground">(jpg, png, máximo 5MB)</p>
-              </div>
-            )}
-            {fileURL && (
-              <img
-                src={fileURL}
-                alt="preview"
-                className="w-full h-full object-contain rounded-lg shadow-sm"
-              />
-            )}
-          </div>
-            
-          <input
-            type="file"
-            id="image"
-            className="hidden"
-            accept="image/*"
-            onChange={handleChangeImage}
-          />
         </div>
 
         <div className="flex justify-between gap-4 mt-6">

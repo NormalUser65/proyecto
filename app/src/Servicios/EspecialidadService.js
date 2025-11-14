@@ -1,7 +1,7 @@
 // EspecialidadesService.js
 import axios from 'axios';
 
-const BASE_URL = import.meta.env.VITE_BASE_URL + 'especialidad';
+const BASE_URL = import.meta.env.VITE_BASE_URL + 'EspecialidadesController';
 
 class EspecialidadesService {
   // GET /especialidad

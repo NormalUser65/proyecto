@@ -39,7 +39,6 @@ require_once "controllers/AsignacionController.php";
 require_once "controllers/AutotriageController.php";
 require_once "controllers/CategoriasController.php";
 require_once "controllers/EtiquetaController.php";
-require_once "controllers/EspecialidadesController.php";
 require_once "controllers/HistoriaController.php";
 require_once "controllers/ImagenesController.php";
 require_once "controllers/NotificacionesController.php";
@@ -47,6 +46,7 @@ require_once "controllers/RolesController.php";
 require_once "controllers/SlaController.php";
 require_once "controllers/TicketsController.php";
 require_once "controllers/UsuarioController.php";
+require_once "controllers/EspecialidadesController.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";

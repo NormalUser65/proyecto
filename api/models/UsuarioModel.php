@@ -45,7 +45,7 @@ class UsuarioModel
     public function ListaDetalleTecnicos($id)
     {
         try {
-            $vSql = "SELECT u.id AS IDTecnico, u.nombre AS NombreTecnico, u.email, u.disponibilidad,
+            $vSql = "SELECT u.contrasenna, u.id AS IDTecnico, u.nombre AS NombreTecnico, u.email, u.disponibilidad,
         GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ', ') AS Especialidades,
         COUNT(DISTINCT t.id) AS TicketsActivos
         FROM usuario u
@@ -81,6 +81,19 @@ class UsuarioModel
         try {
             // Evitar inyección SQL — se usa comillas
             $vSql = "SELECT * FROM usuario WHERE email = '$email'";
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado[0];
+
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function obtenerusuarioPorId($id)
+    {
+        try {
+            // Evitar inyección SQL — se usa comillas
+            $vSql = "SELECT * FROM usuario WHERE id = '$id'";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado[0];
 

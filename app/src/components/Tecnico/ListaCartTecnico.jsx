@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 import { Info, Pencil, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { AlertCircleIcon, BadgeCheckIcon, CheckIcon } from "lucide-react";
 
@@ -14,6 +14,7 @@ ListaCartTecnico.propTypes = {
 
 export function ListaCartTecnico({ data }) {
   const BASE_URL = import.meta.env.VITE_BASE_URL + "uploads";
+  const navigate = useNavigate();
 
   return (
     <div className="grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -33,7 +34,8 @@ export function ListaCartTecnico({ data }) {
                 <span>{item.disponibilidad}</span>
               </Badge>
             );
-
+              const handleUpdate = (id) => {
+        navigate(`editar/${id}`);};
           return (
             <Card
               key={item.IDTecnico}
@@ -55,13 +57,13 @@ export function ListaCartTecnico({ data }) {
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="icon"
+                        <Button variant="outline" size="icon"
                           className="rounded-full border-primary/60 bg-primary/15 text-primary hover:bg-primary/30 transition-all"
+                          onClick={() => handleUpdate(item.IDTecnico)}
                         >
                           <Pencil className="w-4 h-4 text-foreground" />
                         </Button>
+                        
                       </TooltipTrigger>
                       <TooltipContent>Editar</TooltipContent>
                     </Tooltip>

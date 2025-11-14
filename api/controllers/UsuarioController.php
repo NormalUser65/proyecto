@@ -68,4 +68,20 @@ class Usuario
         }
     }
 
+    public function obtenerusuarioPorId($id)
+    {
+        try {
+            $response = new Response();
+            //Instancia del modelo
+            $Usuario = new UsuarioModel();
+            //Acción del modelo a ejecutar
+            $result = $Usuario->obtenerusuarioPorId($id);
+            //Dar respuesta
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            $response->toJSON($result);
+            handleException($e);
+        }
+    }
+
 }
