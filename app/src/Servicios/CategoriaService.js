@@ -23,6 +23,22 @@ class CategoriaService {
   getByNombre(nombre) {
     return axios.get(`${BASE_URL}/nombre/${nombre}`);
   }
+   // POST /categorias → Crear categoría
+  crearCategoria(categoria) {
+    return axios.post(BASE_URL, JSON.stringify(categoria), {
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
+
+  // PUT /categorias → Actualizar categoría
+  actualizarCategoria(categoria) {
+    return axios({
+      method: 'put',
+      url: BASE_URL,
+      data: JSON.stringify(categoria),
+      headers: { 'Content-Type': 'application/json' }
+    });
+  }
 }
 
 export default new CategoriaService();

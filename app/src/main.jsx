@@ -13,6 +13,7 @@ import { ListaCategoria } from './components/Categoria/ListaCategoria'
 import { ListaTicket } from './components/Ticket/ListaTicket'
 import { VistaSemanalAsignaciones } from "./components/Asignacion/VistaSemanalAsignaciones"
 import { DetalleCategoria } from './components/Categoria/DetalleCategoria'
+import { CrearCategoria } from './components/Categoria/CrearCategoria'
 import { DetalleTicket } from './components/Ticket/DetalleTicket'
 import { ActualizarTecnico } from './components/Tecnico/ActualizarTecnico'
 
@@ -34,6 +35,10 @@ const rutas = createBrowserRouter([
       {
         path:"tecnicos/editar/:id",element:<ActualizarTecnico />
       },
+
+      // Mantenimientos categorias
+      {path: 'categorias/crear', element: <CrearCategoria/>},
+      
     ],
   },
 ])

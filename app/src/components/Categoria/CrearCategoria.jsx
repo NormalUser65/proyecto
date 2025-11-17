@@ -1,0 +1,170 @@
+import { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { ArrowLeft, Save } from "lucide-react";
+
+// UI
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+
+// Servicios
+import CategoriaService from "../../Servicios/CategoriaService";
+import SLAService from "../../Servicios/SlaService";
+import EtiquetaService from "../../Servicios/EtiquetaService";
+import EspecialidadService from "../../Servicios/EspecialidadService";
+
+// Componentes reutilizables
+import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
+import { CustomSelect } from "../ui/custom/custom-select";
+
+export function CrearCategoria() {
+  const navigate = useNavigate();
+
+  // Estados para selects
+  const [dataSLA, setDataSLA] = useState([]);
+  const [dataEtiquetas, setDataEtiquetas] = useState([]);
+  const [dataEspecialidades, setDataEspecialidades] = useState([]);
+  const [error, setError] = useState("");
+
+  /*** Validación Yup ***/
+  const categoriaSchema = yup.object({
+    nombre: yup.string().required("El nombre es requerido").min(2, "Debe tener al menos 2 caracteres"),
+    description: yup.string().required("La descripción es requerida"),
+    sla_id: yup.number().typeError("Seleccione un SLA").required("El SLA es requerido"),
+    etiquetas: yup.array().min(1, "Debe seleccionar al menos una etiqueta"),
+    especialidades: yup.array().min(1, "Debe seleccionar al menos una especialidad"),
+  });
+
+  /*** React Hook Form ***/
+  const { control, handleSubmit, formState: { errors } } = useForm({
+    defaultValues: {
+      nombre: "",
+      description: "",
+      sla_id: "",
+      etiquetas: [],
+      especialidades: []
+    },
+    resolver: yupResolver(categoriaSchema)
+  });
+
+  /*** Cargar datos iniciales ***/
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const slaRes = await SLAService.getAll();
+        const etiquetasRes = await EtiquetaService.getAll();
+        const especialidadesRes = await EspecialidadService.getAll();
+
+        setDataSLA(slaRes.data.data || []);
+        setDataEtiquetas(etiquetasRes.data.data || []);
+        setDataEspecialidades(especialidadesRes.data.data || []);
+      } catch (err) {
+        if (err.name !== "AbortError") setError(err.message);
+      }
+    };
+    fetchData();
+  }, []);
+
+  /*** Submit ***/
+  const onSubmit = async (dataForm) => {
+    try {
+      const response = await CategoriaService.crearCategoria(dataForm);
+      if (response.data.success) {
+        toast.success(`Categoría creada: ${response.data.data.nombre}`, {
+          duration: 4000,
+          position: "top-center",
+        });
+        navigate("/categorias");
+      } else {
+        setError(response.data.message);
+      }
+    } catch {
+      setError("Error al crear categoría");
+    }
+  };
+
+  if (error) return <p className="text-red-600">{error}</p>;
+
+  return (
+    <div className="py-12 px-4">
+      <Card className="p-8 max-w-3xl mx-auto shadow-lg">
+        <h2 className="text-2xl font-bold mb-8 text-center">Crear Categoría</h2>
+
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+          {/* Nombre */}
+          <div>
+            <Label htmlFor="nombre" className="block mb-2 font-semibold">Nombre</Label>
+            <Controller name="nombre" control={control} render={({ field }) =>
+              <Input {...field} id="nombre" placeholder="Ingrese el nombre de la categoría" />
+            } />
+            {errors.nombre && <p className="text-sm text-red-500">{errors.nombre.message}</p>}
+          </div>
+
+          {/* Descripción */}
+          <div>
+            <Label htmlFor="description" className="block mb-2 font-semibold">Descripción</Label>
+            <Controller name="description" control={control} render={({ field }) =>
+              <Input {...field} id="description" placeholder="Descripción de la categoría" />
+            } />
+            {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
+          </div>
+
+          {/* SLA */}
+          <div>
+            <Controller name="sla_id" control={control} render={({ field }) =>
+              <CustomSelect
+                field={field}
+                data={dataSLA}
+                label="SLA"
+                getOptionLabel={(sla) => `${sla.nombre} (${sla.max_resp_minutos} min resp., ${sla.max_resol_minutos} min resolución)`}
+                getOptionValue={(sla) => sla.id}
+                error={errors.sla_id?.message}
+              />
+            } />
+          </div>
+
+          {/* Etiquetas */}
+          <Controller name="etiquetas" control={control} render={({ field }) =>
+            <CustomMultiSelect
+              field={field}
+              data={dataEtiquetas}
+              label="Etiquetas"
+              getOptionLabel={(item) => item.nombre}
+              getOptionValue={(item) => item.id}
+              error={errors.etiquetas?.message}
+              placeholder="Seleccione etiquetas"
+            />
+          } />
+
+          {/* Especialidades */}
+          <Controller name="especialidades" control={control} render={({ field }) =>
+            <CustomMultiSelect
+              field={field}
+              data={dataEspecialidades}
+              label="Especialidades"
+              getOptionLabel={(item) => item.nombre}
+              getOptionValue={(item) => item.id}
+              error={errors.especialidades?.message}
+              placeholder="Seleccione especialidades"
+            />
+          } />
+
+          {/* Botones */}
+          <div className="flex justify-between gap-4 mt-8">
+            <Button type="button" onClick={() => navigate(-1)} variant="outline" className="flex items-center gap-2">
+              <ArrowLeft className="w-4 h-4" /> Regresar
+            </Button>
+            <Button type="submit" className="flex items-center gap-2">
+              <Save className="w-4 h-4" /> Guardar
+            </Button>
+          </div>
+        </form>
+      </Card>
+    </div>
+  );
+}

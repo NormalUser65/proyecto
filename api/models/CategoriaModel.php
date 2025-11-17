@@ -73,4 +73,75 @@ class CategoriaModel
             handleException($e);
         }
     }
+
+    /**
+     * Crear categoría
+     * @param $objeto categoría a insertar
+     * @return $this->get($idCategoria) - Objeto categoría
+     */
+    public function crearCategoria($objeto)
+    {
+        // Insertar categoría
+        $sql = "INSERT INTO categoria (nombre, description, sla_id) 
+                VALUES ('$objeto->nombre', '$objeto->description', $objeto->sla_id)";
+        $idCategoria = $this->enlace->executeSQL_DML_last($sql);
+
+        // --- Etiquetas ---
+if (!empty($objeto->etiquetas)) {
+    foreach ($objeto->etiquetas as $idEtiqueta) {
+        $sql = "INSERT INTO Categoria_Etiqueta (IDCategoria, IDEtiqueta) 
+                VALUES ($idCategoria, $idEtiqueta)";
+        $this->enlace->executeSQL_DML($sql);
+    }
+}
+
+// --- Especialidades ---
+if (!empty($objeto->especialidades)) {
+    foreach ($objeto->especialidades as $idEspecialidad) {
+        $sql = "INSERT INTO especialidad_categoria (IDCategoria, IDEspecialidad) 
+                VALUES ($idCategoria, $idEspecialidad)";
+        $this->enlace->executeSQL_DML($sql);
+    }
+}
+
+        // Retornar categoría creada
+        return $this->get($idCategoria);
+    }
+
+    /**
+     * Actualizar categoría
+     * @param $objeto categoría a actualizar
+     * @return $this->get($idCategoria) - Objeto categoría
+     */
+    public function actualizarCategoria($objeto)
+    {
+        // Actualizar categoría
+        $sql = "UPDATE categoria 
+                SET nombre = '$objeto->nombre',
+                    description = '$objeto->description',
+                    sla_id = $objeto->sla_id
+                WHERE id = $objeto->id";
+        $this->enlace->executeSQL_DML($sql);
+
+        // --- Etiquetas ---
+        $sql = "DELETE FROM Categoria_Etiqueta WHERE IDCategoria = $objeto->id";
+        $this->enlace->executeSQL_DML($sql);
+        foreach ($objeto->etiquetas as $idEtiqueta) {
+            $sql = "INSERT INTO Categoria_Etiqueta (IDCategoria, IDEtiqueta) 
+                    VALUES ($objeto->id, $idEtiqueta)";
+            $this->enlace->executeSQL_DML($sql);
+        }
+
+        // --- Especialidades ---
+        $sql = "DELETE FROM especialidad_categoria WHERE IDCategoria = $objeto->id";
+        $this->enlace->executeSQL_DML($sql);
+        foreach ($objeto->especialidades as $idEspecialidad) {
+            $sql = "INSERT INTO especialidad_categoria (IDCategoria, IDEspecialidad) 
+                    VALUES ($objeto->id, $idEspecialidad)";
+            $this->enlace->executeSQL_DML($sql);
+        }
+
+        // Retornar categoría actualizada
+        return $this->get($objeto->id);
+    }
 }

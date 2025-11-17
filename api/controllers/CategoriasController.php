@@ -54,5 +54,47 @@ class categorias
             handleException($e);
         }
     }
+
+    // POST Crear
+    public function create()
+    {
+        try {
+            $request = new Request();
+            $response = new Response();
+            $inputJSON = $request->getJSON();
+
+            $model = new CategoriaModel();
+            $result = $model->crearCategoria($inputJSON);
+
+            $response->toJSON([
+                "success" => true,
+                "message" => "Categoría creada exitosamente",
+                "data" => $result
+            ]);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    // PUT Actualizar
+    public function update()
+    {
+        try {
+            $request = new Request();
+            $response = new Response();
+            $inputJSON = $request->getJSON();
+
+            $model = new CategoriaModel();
+            $result = $model->actualizarCategoria($inputJSON);
+
+            $response->toJSON([
+                "success" => true,
+                "message" => "Categoría actualizada exitosamente",
+                "data" => $result
+            ]);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
 }
 

@@ -1,5 +1,5 @@
 <?php
-class slaModel
+class SlaModel
 {
     public $enlace;
     public function __construct()
@@ -40,7 +40,7 @@ class slaModel
     {
         try {
             //Consulta sql
-            $vSql = "SELECT * FROM sla where nombre=$nombre";
+            $vSql = "SELECT * FROM sla WHERE nombre='$nombre'";
             //Ejecutar la consulta
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             // Retornar el objeto
