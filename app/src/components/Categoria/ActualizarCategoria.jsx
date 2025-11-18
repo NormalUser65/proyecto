@@ -60,26 +60,14 @@ export function ActualizarCategoria() {
 
   /*** Precargar datos de la categoría y opciones ***/
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // 1. Obtener detalle de la categoría
-        const response = await CategoriaService.getDetalle(id);
-        if (response.data.success) {
-          const cat = response.data.data;
+  const fetchData = async () => {
+    try {
+      // 1. Obtener detalle de la categoría
+      const response = await CategoriaService.getDetalle(id);
+      if (response.data.success) {
+        const cat = response.data.data;
 
-          // 2. Precargar valores en el formulario
-          reset({
-            nombre: cat.nombre || "",
-            description: cat.description || "",
-            sla_id: cat.sla_id || "",
-            etiquetas: cat.etiquetas?.map(e => e.id) || [], // array de ids
-            especialidades: cat.especialidades?.map(e => e.id) || [] // array de ids
-          });
-        } else {
-          setError(response.data.message);
-        }
-
-        // 3. Cargar opciones para selects
+        // 2. Cargar opciones para selects
         const slaRes = await SLAService.getAll();
         const etiquetasRes = await EtiquetaService.getAll();
         const especialidadesRes = await EspecialidadService.getAll();
@@ -87,12 +75,41 @@ export function ActualizarCategoria() {
         setDataSLA(slaRes.data.data || []);
         setDataEtiquetas(etiquetasRes.data.data || []);
         setDataEspecialidades(especialidadesRes.data.data || []);
-      } catch (err) {
-        if (err.name !== "AbortError") setError(err.message);
+
+        // 3. Transformar strings en arrays de IDs
+        const etiquetasSeleccionadas = cat.Etiquetas
+          ? cat.Etiquetas.split(",").map(e => e.trim())
+          : [];
+        const especialidadesSeleccionadas = cat.Especialidades
+          ? cat.Especialidades.split(",").map(e => e.trim())
+          : [];
+
+        const etiquetasIds = (etiquetasRes.data.data || [])
+          .filter(e => etiquetasSeleccionadas.includes(e.nombre))
+          .map(e => e.id);
+
+        const especialidadesIds = (especialidadesRes.data.data || [])
+          .filter(esp => especialidadesSeleccionadas.includes(esp.nombre))
+          .map(esp => esp.id);
+
+        // 4. Precargar valores en el formulario
+        const slaEncontrado = (slaRes.data.data || []).find(sla => sla.nombre === cat.SLA);
+        reset({
+          nombre: cat.Categoria || "",
+          description: cat.Descripcion || "",
+          sla_id: slaEncontrado ? slaEncontrado.id : "",
+          etiquetas: etiquetasIds,
+          especialidades: especialidadesIds
+        });
+      } else {
+        setError(response.data.message);
       }
-    };
-    fetchData();
-  }, [id, reset]);
+    } catch (err) {
+      if (err.name !== "AbortError") setError(err.message);
+    }
+  };
+  fetchData();
+}, [id, reset]);
 
   /*** Submit actualización ***/
   const onSubmit = async (dataForm) => {
