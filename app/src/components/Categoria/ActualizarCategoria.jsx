@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { ArrowLeft, Save } from "lucide-react";
 
@@ -22,10 +22,10 @@ import EspecialidadService from "../../Servicios/EspecialidadService";
 import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
 import { CustomSelect } from "../ui/custom/custom-select";
 
-export function CrearCategoria() {
+export function ActualizarCategoria() {
+  const { id } = useParams();
   const navigate = useNavigate();
 
-  // Estados para selects
   const [dataSLA, setDataSLA] = useState([]);
   const [dataEtiquetas, setDataEtiquetas] = useState([]);
   const [dataEspecialidades, setDataEspecialidades] = useState([]);
@@ -33,36 +33,21 @@ export function CrearCategoria() {
 
   /*** Validación Yup ***/
   const categoriaSchema = yup.object({
-  nombre: yup
-    .string()
-    .required("El nombre es requerido")
-    .min(10, "Debe tener al menos 10 caracteres")
-    .max(50, "No puede superar los 50 caracteres")
-    .matches(/^[a-zA-ZÀ-ÿ0-9\s\-()]+$/, "No se permiten caracteres especiales"),
-  
-  description: yup
-    .string()
-    .required("La descripción es requerida")
-    .min(20, "Debe tener al menos 20 caracteres")
-    .max(250, "No puede superar los 250 caracteres"),
-  
-  sla_id: yup
-    .number()
-    .typeError("Seleccione un SLA válido")
-    .positive("El SLA debe ser un número positivo")
-    .required("El SLA es requerido"),
-  
-  etiquetas: yup
-    .array()
-    .min(1, "Debe seleccionar al menos una etiqueta"),
-  
-  especialidades: yup
-    .array()
-    .min(1, "Debe seleccionar al menos una especialidad"),
-});
+    nombre: yup.string().required("El nombre es requerido")
+      .min(10, "Debe tener al menos 10 caracteres")
+      .max(50, "No puede superar los 50 caracteres")
+      .matches(/^[a-zA-ZÀ-ÿ0-9\s\-()]+$/, "No se permiten caracteres especiales"),
+    description: yup.string().required("La descripción es requerida")
+      .min(20, "Debe tener al menos 20 caracteres")
+      .max(250, "No puede superar los 250 caracteres"),
+    sla_id: yup.number().typeError("Seleccione un SLA válido")
+      .positive("El SLA debe ser un número positivo")
+      .required("El SLA es requerido"),
+    etiquetas: yup.array().min(1, "Debe seleccionar al menos una etiqueta"),
+    especialidades: yup.array().min(1, "Debe seleccionar al menos una especialidad"),
+  });
 
-  /*** React Hook Form ***/
-  const { control, handleSubmit, formState: { errors } } = useForm({
+  const { control, handleSubmit, reset, formState: { errors } } = useForm({
     defaultValues: {
       nombre: "",
       description: "",
@@ -73,10 +58,28 @@ export function CrearCategoria() {
     resolver: yupResolver(categoriaSchema)
   });
 
-  /*** Cargar datos iniciales ***/
+  /*** Precargar datos de la categoría y opciones ***/
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // 1. Obtener detalle de la categoría
+        const response = await CategoriaService.getDetalle(id);
+        if (response.data.success) {
+          const cat = response.data.data;
+
+          // 2. Precargar valores en el formulario
+          reset({
+            nombre: cat.nombre || "",
+            description: cat.description || "",
+            sla_id: cat.sla_id || "",
+            etiquetas: cat.etiquetas?.map(e => e.id) || [], // array de ids
+            especialidades: cat.especialidades?.map(e => e.id) || [] // array de ids
+          });
+        } else {
+          setError(response.data.message);
+        }
+
+        // 3. Cargar opciones para selects
         const slaRes = await SLAService.getAll();
         const etiquetasRes = await EtiquetaService.getAll();
         const especialidadesRes = await EspecialidadService.getAll();
@@ -89,18 +92,17 @@ export function CrearCategoria() {
       }
     };
     fetchData();
-  }, []);
+  }, [id, reset]);
 
-  /*** Submit ***/
+  /*** Submit actualización ***/
   const onSubmit = async (dataForm) => {
     try {
-      const response = await CategoriaService.crearCategoria(dataForm);
+      const response = await CategoriaService.actualizarCategoria({ id, ...dataForm });
       if (response.data.success) {
-        toast.success(`Categoría creada: ${response.data.data.nombre}`, {
+        toast.success("Categoría actualizada exitosamente", {
           duration: 4000,
           position: "top-center",
         });
-        // Espera de 2 segundos para el mensaje de creación exitosa
         setTimeout(() => {
           navigate("/categorias");
         }, 2000);
@@ -108,7 +110,7 @@ export function CrearCategoria() {
         setError(response.data.message);
       }
     } catch {
-      setError("Error al crear categoría");
+      setError("Error al actualizar categoría");
     }
   };
 
@@ -117,31 +119,25 @@ export function CrearCategoria() {
   return (
     <div className="py-12 px-4">
       <Card className="p-8 max-w-3xl mx-auto shadow-lg">
-        <h2 className="text-2xl font-bold mb-8 text-center">Crear Categoría</h2>
+        <h2 className="text-2xl font-bold mb-8 text-center">Actualizar Categoría</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Nombre */}
           <div>
             <Label htmlFor="nombre" className="block mb-2 font-semibold">Nombre</Label>
             <Controller name="nombre" control={control} render={({ field }) =>
-              <Input {...field} id="nombre" placeholder="Ingrese el nombre de la categoría" />
+              <Input {...field} id="nombre" />
             } />
-            {errors.nombre && (
-            <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-            {errors.nombre.message}</p>
-          )}
+            {errors.nombre && <p className="text-sm text-red-500">{errors.nombre.message}</p>}
           </div>
 
           {/* Descripción */}
           <div>
             <Label htmlFor="description" className="block mb-2 font-semibold">Descripción</Label>
             <Controller name="description" control={control} render={({ field }) =>
-              <Input {...field} id="description" placeholder="Descripción de la categoría" />
+              <Input {...field} id="description" />
             } />
-            {errors.description && (
-            <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-              {errors.description.message}</p>
-            )}
+            {errors.description && <p className="text-sm text-red-500">{errors.description.message}</p>}
           </div>
 
           {/* SLA */}
@@ -155,48 +151,36 @@ export function CrearCategoria() {
                 getOptionValue={(sla) => sla.id}
               />
             } />
-            {errors.sla_id && (
-              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-                {errors.sla_id.message}</p>
-              )}
+            {errors.sla_id && <p className="text-sm text-red-500">{errors.sla_id.message}</p>}
           </div>
 
+          {/* Etiquetas */}
           <div>
-            {/* Etiquetas */}
             <Controller name="etiquetas" control={control} render={({ field }) =>
               <CustomMultiSelect
-              field={field}
-              data={dataEtiquetas}
-              label="Etiquetas"
-              getOptionLabel={(item) => item.nombre}
-              getOptionValue={(item) => item.id}
-              placeholder="Seleccione etiquetas"
-            />
-          } />
-          {errors.etiquetas && (
-            <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-              {errors.etiquetas.message}</p>
-            )}
+                field={field}
+                data={dataEtiquetas}
+                label="Etiquetas"
+                getOptionLabel={(item) => item.nombre}
+                getOptionValue={(item) => item.id}
+              />
+            } />
+            {errors.etiquetas && <p className="text-sm text-red-500">{errors.etiquetas.message}</p>}
           </div>
 
-          <div>
           {/* Especialidades */}
-          <Controller name="especialidades" control={control} render={({ field }) =>
-            <CustomMultiSelect
-              field={field}
-              data={dataEspecialidades}
-              label="Especialidades"
-              getOptionLabel={(item) => item.nombre}
-              getOptionValue={(item) => item.id}
-              placeholder="Seleccione especialidades"
-            />
-          } />
-          {errors.especialidades && (
-            <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-              {errors.especialidades.message}
-              </p>
-            )}
-            </div>
+          <div>
+            <Controller name="especialidades" control={control} render={({ field }) =>
+              <CustomMultiSelect
+                field={field}
+                data={dataEspecialidades}
+                label="Especialidades"
+                getOptionLabel={(item) => item.nombre}
+                getOptionValue={(item) => item.id}
+              />
+            } />
+            {errors.especialidades && <p className="text-sm text-red-500">{errors.especialidades.message}</p>}
+          </div>
 
           {/* Botones */}
           <div className="flex justify-between gap-4 mt-8">
@@ -204,7 +188,7 @@ export function CrearCategoria() {
               <ArrowLeft className="w-4 h-4" /> Regresar
             </Button>
             <Button type="submit" className="flex items-center gap-2">
-              <Save className="w-4 h-4" /> Guardar
+              <Save className="w-4 h-4" /> Guardar cambios
             </Button>
           </div>
         </form>

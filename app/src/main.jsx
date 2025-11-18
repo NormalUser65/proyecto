@@ -16,6 +16,7 @@ import { DetalleCategoria } from './components/Categoria/DetalleCategoria'
 import { CrearCategoria } from './components/Categoria/CrearCategoria'
 import { DetalleTicket } from './components/Ticket/DetalleTicket'
 import { ActualizarTecnico } from './components/Tecnico/ActualizarTecnico'
+import { ActualizarCategoria } from './components/Categoria/ActualizarCategoria'
 
 const rutas = createBrowserRouter([
   {
@@ -36,9 +37,9 @@ const rutas = createBrowserRouter([
         path:"tecnicos/editar/:id",element:<ActualizarTecnico />
       },
 
-      // Mantenimientos categorias
+      // Mantenimiento categorias
       {path: 'categorias/crear', element: <CrearCategoria/>},
-      
+      { path: 'categorias/editar/:id', element: <ActualizarCategoria/> }
     ],
   },
 ])
