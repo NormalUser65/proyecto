@@ -31,9 +31,7 @@ const rutas = createBrowserRouter([
       { path: 'asignaciones', element: <VistaSemanalAsignaciones /> },
       { path: 'categorias/detalle/:id', element: <DetalleCategoria /> },
       // editar tecnicos
-      {
-        path:"tecnicos/editar/:id",element:<ActualizarTecnico />
-      },
+      { path:"tecnicos/editar/:id",element:<ActualizarTecnico /> },
     ],
   },
 ])

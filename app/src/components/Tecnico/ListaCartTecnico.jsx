@@ -36,6 +36,8 @@ export function ListaCartTecnico({ data }) {
             );
               const handleUpdate = (id) => {
         navigate(`editar/${id}`);};
+
+        
           return (
             <Card
               key={item.IDTecnico}
