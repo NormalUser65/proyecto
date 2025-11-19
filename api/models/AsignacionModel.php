@@ -21,17 +21,21 @@ class asignacionModel
             a.activo,
             t.estado,
             t.IDCategoria,
+            c.nombre AS nombreCategoria,
             t.creado_en,
             t.sla_resol_deadline
-            FROM asignacion a
-            INNER JOIN ticket t ON a.IDTicket = t.id
-            WHERE a.activo = 1;";
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
-            return $vResultado;
+        FROM asignacion a
+        INNER JOIN ticket t ON a.IDTicket = t.id
+        LEFT JOIN categoria c ON t.IDCategoria = c.id
+        WHERE a.activo = 1;";
+        
+        $vResultado = $this->enlace->ExecuteSQL($vSql);
+        return $vResultado;
         } catch (Exception $e) {
             handleException($e);
         }
     }
+
 
     /*Obtener por id*/
     public function get($id)

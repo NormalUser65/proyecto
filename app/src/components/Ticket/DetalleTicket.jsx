@@ -73,7 +73,7 @@ export function DetalleTicket() {
           <div className="flex items-center gap-4">
             <Timer className="h-5 w-5 text-secondary" />
             <span className="font-semibold">Prioridad:</span>
-            <Badge variant="secondary">Nivel {data.prioridad}</Badge>
+            <Badge variant="secondary">{data.prioridad_nombre}</Badge>
           </div>
           <div>
             <span className="font-semibold">SLA de Respuesta:</span>

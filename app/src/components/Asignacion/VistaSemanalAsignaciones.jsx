@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { LoadingGrid } from "../ui/custom/CargandoGrid";
 import { ErrorAlert } from "../ui/custom/AlertaError";
 import { EmptyState } from "../ui/custom/estadoVacio";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
 
 function obtenerDiaSemana(fecha) {
   const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -82,51 +83,92 @@ export function VistaSemanalAsignaciones() {
   const ordenDias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
 
   return (
-  <div className="max-w-7xl mx-auto p-6">
-    <h1 className="text-3xl font-bold mb-6">Asignaciones Semanales</h1>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {ordenDias.map((dia) => {
-        const lista = agrupadasPorDia[dia];
-        if (!lista) return null;
+    <div className="max-w-7xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-2">Asignaciones Semanales</h1>
+      <p className="text-muted-foreground mb-6">
+        Visualiza el estado de los tickets agrupados por día.
+      </p>
 
-        return (
-          <div key={dia}>
-            <h2 className="text-xl font-semibold mb-4">{dia}</h2>
-            {lista.map((objeto) => (
-              <Card key={objeto.id} className="mb-4 border-l-4 border-primary shadow-sm !rounded-2xl">
-                <CardHeader>
-                  <CardTitle className="text-base font-semibold">
-                    Ticket #{objeto.IDTicket}
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2">
-                  <div className="text-sm text-muted-foreground">{objeto.descripcion}</div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <AlertCircle className="h-4 w-4 text-secondary" />
-                    <Badge className={estadoColor[objeto.estado?.toLowerCase()] ?? "bg-muted"}>
-                      <p className="!rounded-2xl">{objeto.estado ?? "Sin estado"}</p>
-                    </Badge>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Tag className="h-4 w-4 text-secondary" />
-                    <span>Categoría: {objeto.IDCategoria ?? "No definida"}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <CalendarDays className="h-4 w-4 text-secondary" />
-                    <span>SLA restante: {calcularSLA(objeto)}</span>
-                  </div>
-                  <Progress value={calcularPorcentajeSLA(objeto)} />
-                  <div className="flex gap-2 mt-2">
-                    <Button size="sm" variant="ghost" disabled>
-                      Cambiar estado
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        );
-      })}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {ordenDias.map((dia) => {
+          const lista = agrupadasPorDia[dia];
+          if (!lista) return null;
+
+          return (
+            <div key={dia} className="bg-muted/30 rounded-lg p-4">
+              <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
+                {dia}
+                <Badge variant="outline">{lista.length}</Badge>
+              </h2>
+
+              {lista.map((objeto) => (
+                <Card className="mb-4 border border-border shadow-sm rounded-2xl transition-all hover:shadow-md hover:-translate-y-1">
+  <CardHeader className="flex justify-between items-center">
+    <CardTitle className="text-base font-semibold flex items-center gap-2">
+      <Info className="h-4 w-4 text-primary-foreground" />
+
+      Ticket #{objeto.IDTicket}
+    </CardTitle>
+    <Badge
+      className={
+        estadoColor[objeto.estado?.toLowerCase()] ?? "bg-gray-500 text-white"
+      }
+    >
+      {objeto.estado ?? "Sin estado"}
+    </Badge>
+  </CardHeader>
+
+  <CardContent className="space-y-3 p-5">
+    <p className="line-clamp-2 text-sm text-muted-foreground">
+      {objeto.descripcion}
+    </p>
+
+    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <Tag className="h-4 w-4 text-secondary" />
+      <span>Categoría: {objeto.nombreCategoria ?? "No definida"}</span>
     </div>
-  </div>
-);}
+
+    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <CalendarDays className="h-4 w-4 text-secondary" />
+      <span>SLA restante: {calcularSLA(objeto)}</span>
+    </div>
+
+    <div className="pt-2 border-t">
+      <Progress value={calcularPorcentajeSLA(objeto)} />
+      <p className="text-xs text-muted-foreground mt-1">
+        {calcularPorcentajeSLA(objeto)}% completado
+      </p>
+    </div>
+
+    <div className="flex gap-2 mt-3">
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button size="sm" variant="outline" disabled>
+              Cambiar estado
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>
+            Solo disponible para usuarios con permisos de edición
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+
+      <Button
+        size="sm"
+        className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm px-4"
+      >
+        <Link to={`/tickets/detalle/${objeto.IDTicket}`}>Ver detalle</Link>
+      </Button>
+    </div>
+  </CardContent>
+</Card>
+
+              ))}
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}

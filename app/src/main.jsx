@@ -17,6 +17,7 @@ import { CrearCategoria } from './components/Categoria/CrearCategoria'
 import { DetalleTicket } from './components/Ticket/DetalleTicket'
 import { ActualizarTecnico } from './components/Tecnico/ActualizarTecnico'
 import { ActualizarCategoria } from './components/Categoria/ActualizarCategoria'
+import { CrearTicket } from './components/Ticket/CrearTicket'
 
 const rutas = createBrowserRouter([
   {
@@ -37,6 +38,9 @@ const rutas = createBrowserRouter([
       {
         path:"tecnicos/editar/:id",element:<ActualizarTecnico />
       },
+
+      // Mantenimiento de tickets
+      {path: 'tickets/crear', element: <CrearTicket/>},
 
       // Mantenimiento categorias
       {path: 'categorias/crear', element: <CrearCategoria/>},

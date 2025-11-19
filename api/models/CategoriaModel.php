@@ -74,6 +74,24 @@ class CategoriaModel
         }
     }
 
+    /* Obtener categorías por etiqueta */
+public function getByEtiqueta($idEtiqueta)
+{
+    try {
+        $vSql = "SELECT c.* 
+                 FROM categoria c
+                 INNER JOIN Categoria_Etiqueta ce ON c.id = ce.IDCategoria
+                 WHERE ce.IDEtiqueta = $idEtiqueta";
+
+        $vResultado = $this->enlace->ExecuteSQL($vSql);
+        return $vResultado; // devuelve todas las categorías asociadas
+    } catch (Exception $e) {
+        handleException($e);
+    }
+}
+
+
+
     /**
      * Crear categoría
      * @param $objeto categoría a insertar

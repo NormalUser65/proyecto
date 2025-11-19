@@ -26,22 +26,12 @@ class TicketService {
   }
 
   // Crear nuevo ticket
-  createTicket(ticketData) {
-    return axios.post(BASE_URL, JSON.stringify(ticketData), {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-  }
+createTicket(ticketData) {
+  return axios.post(`${BASE_URL}/create`, ticketData, {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
 
-  // Actualizar ticket
-  updateTicket(ticketData) {
-    return axios.put(BASE_URL, JSON.stringify(ticketData), {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    });
-  }
 }
 
 export default new TicketService();

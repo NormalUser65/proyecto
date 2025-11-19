@@ -88,9 +88,18 @@ export default function Header() {
                   Crear Categoría
                   </Link>
                   </MenubarItem>
-                  </MenubarContent>
-                  </MenubarMenu>
-                  </Menubar>
+
+                  <MenubarItem asChild>
+                    <Link
+                    to="/tickets/crear"
+                    className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
+                    >
+                      Crear Ticket
+                      </Link>
+                  </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>
           </nav>
         <div className="ml-auto flex items-center gap-2">
           <Link to="/tickets" className="relative hover:opacity-90" aria-label="Tickets">
