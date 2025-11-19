@@ -73,7 +73,25 @@ export default function Header() {
               <span className="hidden sm:inline">{item.title}</span>
             </Link>
           ))}
-        </nav>
+          <Menubar className="w-auto bg-transparent border-none shadow-none">
+            <MenubarMenu>
+              <MenubarTrigger className="flex items-center gap-2 py-2 px-4 rounded-full text-sm hover:bg-white/10 transition">
+              <Layers className="h-4 w-4" /> Mantenimientos
+              <ChevronDown className="h-3 w-3" />
+              </MenubarTrigger>
+              <MenubarContent className="bg-white/10 backdrop-blur-lg border-none rounded-xl shadow-xl mt-2">
+              <MenubarItem asChild>
+                <Link
+                to="/categorias/crear"
+                className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
+                >
+                  Crear Categoría
+                  </Link>
+                  </MenubarItem>
+                  </MenubarContent>
+                  </MenubarMenu>
+                  </Menubar>
+          </nav>
         <div className="ml-auto flex items-center gap-2">
           <Link to="/tickets" className="relative hover:opacity-90" aria-label="Tickets">
             <div className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition">

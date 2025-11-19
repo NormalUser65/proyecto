@@ -1,5 +1,5 @@
 <?php
-class EtiquetaController
+class etiqueta
 {
     public function index()
     {

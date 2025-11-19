@@ -13,8 +13,10 @@ import { ListaCategoria } from './components/Categoria/ListaCategoria'
 import { ListaTicket } from './components/Ticket/ListaTicket'
 import { VistaSemanalAsignaciones } from "./components/Asignacion/VistaSemanalAsignaciones"
 import { DetalleCategoria } from './components/Categoria/DetalleCategoria'
+import { CrearCategoria } from './components/Categoria/CrearCategoria'
 import { DetalleTicket } from './components/Ticket/DetalleTicket'
 import { ActualizarTecnico } from './components/Tecnico/ActualizarTecnico'
+import { ActualizarCategoria } from './components/Categoria/ActualizarCategoria'
 
 const rutas = createBrowserRouter([
   {
@@ -32,6 +34,13 @@ const rutas = createBrowserRouter([
       { path: 'categorias/detalle/:id', element: <DetalleCategoria /> },
       // editar tecnicos
       { path:"tecnicos/editar/:id",element:<ActualizarTecnico /> },
+      {
+        path:"tecnicos/editar/:id",element:<ActualizarTecnico />
+      },
+
+      // Mantenimiento categorias
+      {path: 'categorias/crear', element: <CrearCategoria/>},
+      { path: 'categorias/editar/:id', element: <ActualizarCategoria/> }
     ],
   },
 ])
