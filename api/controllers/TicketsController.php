@@ -49,17 +49,16 @@ class tickets
         }
     }
     
-    public function create() {
-    $response = new Response();
+    public function create()
+{
     try {
-        $data = json_decode(file_get_contents("php://input"));
-        if (!$data) {
-            throw new Exception("No se recibió JSON válido");
-        }
+        $request = new Request();
+        $inputJSON = $request->getJSON();
 
         $model = new TicketModel();
-        $result = $model->crearTicket($data);
+        $result = $model->crearTicket($inputJSON);
 
+        $response = new Response();
         $response->toJSON([
             "success" => true,
             "status" => 201,
@@ -69,5 +68,6 @@ class tickets
         handleException($e);
     }
 }
+
 
 }

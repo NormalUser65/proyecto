@@ -1,7 +1,7 @@
 // UsuarioService.js
-import axios from 'axios';
+import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL + 'Usuario';
+const BASE_URL = import.meta.env.VITE_BASE_URL + "Usuario";
 
 class UsuarioService {
   getAllUsuarios() {
@@ -16,13 +16,16 @@ class UsuarioService {
     return axios.get(`${BASE_URL}/ListaDetalleTecnicos/${id}`);
   }
 
+  obtenerUsuarioPorIdGeneral(id) {
+    return axios.get(`${BASE_URL}/obtenerusuarioPorId/${id}`);
+  }
+
   ActualizarTecnico(Tecnico) {
     return axios({
-      method: 'put',
+      method: "put",
       url: BASE_URL,
-      data: JSON.stringify(Tecnico)
-
-    })
+      data: JSON.stringify(Tecnico),
+    });
   }
 }
 

@@ -6,7 +6,8 @@ class CategoriaModel
     {
         $this->enlace = new MySqlConnect();
     }
-    /*Listar */
+
+    // Lista
     public function listadoCategoria()
     {
         try {
@@ -20,7 +21,7 @@ class CategoriaModel
             handleException($e);
         }
     }
-    /*Obtener por id*/
+    // Obtener por id
     public function get($id)
     {
         try {
@@ -35,7 +36,7 @@ class CategoriaModel
         }
     }
 
-    /*Detalle categoria*/
+    // Detalle categoría
     public function DetalleCategoria($id)
     {
         try {
@@ -74,35 +75,31 @@ class CategoriaModel
         }
     }
 
-    /* Obtener categorías por etiqueta */
+    // Obtener categoría por etiquetas
     public function getByEtiqueta($idEtiqueta)
     {
         try {
             $vSql = "SELECT c.* 
-                 FROM categoria c
-                 INNER JOIN Categoria_Etiqueta ce ON c.id = ce.IDCategoria
-                 WHERE ce.IDEtiqueta = $idEtiqueta";
+            FROM categoria c
+            INNER JOIN Categoria_Etiqueta ce ON c.id = ce.IDCategoria
+            WHERE ce.IDEtiqueta = $idEtiqueta";
 
             $vResultado = $this->enlace->ExecuteSQL($vSql);
-            return $vResultado; // devuelve todas las categorías asociadas
+            return $vResultado;
         } catch (Exception $e) {
             handleException($e);
         }
     }
 
-    /**
-     * Crear categoría
-     * @param $objeto categoría a insertar
-     * @return $this->get($idCategoria) - Objeto categoría
-     */
+    //  Crear Categoría
     public function crearCategoria($objeto)
     {
         // Insertar categoría
         $sql = "INSERT INTO categoria (nombre, description, sla_id) 
-                VALUES ('$objeto->nombre', '$objeto->description', $objeto->sla_id)";
+        VALUES ('$objeto->nombre', '$objeto->description', $objeto->sla_id)";
         $idCategoria = $this->enlace->executeSQL_DML_last($sql);
 
-        // --- Etiquetas ---
+        // Etiquetas 
         if (!empty($objeto->etiquetas)) {
             foreach ($objeto->etiquetas as $idEtiqueta) {
                 $sql = "INSERT INTO Categoria_Etiqueta (IDCategoria, IDEtiqueta) 
@@ -111,7 +108,7 @@ class CategoriaModel
             }
         }
 
-        // --- Especialidades ---
+        // Especialidades 
         if (!empty($objeto->especialidades)) {
             foreach ($objeto->especialidades as $idEspecialidad) {
                 $sql = "INSERT INTO especialidad_categoria (IDCategoria, IDEspecialidad) 
@@ -119,16 +116,9 @@ class CategoriaModel
                 $this->enlace->executeSQL_DML($sql);
             }
         }
-
-        // Retornar categoría creada
         return $this->get($idCategoria);
     }
 
-    /**
-     * Actualizar categoría
-     * @param $objeto categoría a actualizar
-     * @return $this->get($idCategoria) - Objeto categoría
-     */
     public function actualizarCategoria($objeto)
     {
         // Actualizar categoría
@@ -139,7 +129,7 @@ class CategoriaModel
                 WHERE id = $objeto->id";
         $this->enlace->executeSQL_DML($sql);
 
-        // --- Etiquetas ---
+        // Etiquetas 
         $sql = "DELETE FROM Categoria_Etiqueta WHERE IDCategoria = $objeto->id";
         $this->enlace->executeSQL_DML($sql);
         foreach ($objeto->etiquetas as $idEtiqueta) {
@@ -148,7 +138,7 @@ class CategoriaModel
             $this->enlace->executeSQL_DML($sql);
         }
 
-        // --- Especialidades ---
+        // Especialidades 
         $sql = "DELETE FROM especialidad_categoria WHERE IDCategoria = $objeto->id";
         $this->enlace->executeSQL_DML($sql);
         foreach ($objeto->especialidades as $idEspecialidad) {
@@ -157,7 +147,6 @@ class CategoriaModel
             $this->enlace->executeSQL_DML($sql);
         }
 
-        // Retornar categoría actualizada
         return $this->get($objeto->id);
     }
 }

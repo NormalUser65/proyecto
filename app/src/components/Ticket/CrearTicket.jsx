@@ -22,7 +22,8 @@ import { Card } from "@/components/ui/card";
 import TicketService from "../../Servicios/TicketService";
 import CategoriaService from "../../Servicios/CategoriaService";
 import EtiquetaService from "../../Servicios/EtiquetaService";
-import PrioridadService from "../../Servicios/PrioridadService"; // listado predefinido
+import PrioridadService from "../../Servicios/PrioridadService";
+import UsuarioService from "../../Servicios/UsuarioService";
 
 // Componentes reutilizables
 import { CustomSelect } from "../ui/custom/custom-select";
@@ -42,8 +43,9 @@ export function CrearTicket() {
   const [, setSlaRespDeadline] = useState("");
   const [, setSlaResolDeadline] = useState("");
 
-  // Simulación de usuario solicitante (hasta que exista autenticación)
+  // Simulación de usuario solicitante.
   const usuarioSolicitanteId = 5; // variable fija en la lógica
+  const [usuarioSolicitante, setUsuarioSolicitante] = useState(null);
 
   /*** Validación Yup ***/
   const ticketSchema = yup.object({
@@ -100,6 +102,12 @@ export function CrearTicket() {
         const etiquetasRes = await EtiquetaService.getAll();
         const etiquetasData = etiquetasRes?.data?.data ?? [];
         setDataEtiquetas(Array.isArray(etiquetasData) ? etiquetasData : []);
+        const usuarioRes = await UsuarioService.obtenerUsuarioPorIdGeneral(
+          usuarioSolicitanteId
+        );
+        if (usuarioRes.data.success) {
+          setUsuarioSolicitante(usuarioRes.data.data);
+        }
       } catch (err) {
         if (err.name !== "AbortError") setError(err.message);
       }
@@ -124,15 +132,20 @@ export function CrearTicket() {
   };
 
   /*** Submit ***/
-  /*** Submit ***/
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const onSubmit = async (dataForm) => {
+    if (isSubmitting) return; // evita doble clic
+    setIsSubmitting(true);
+
     try {
       const payload = {
         ...dataForm,
         IDUsuario: usuarioSolicitanteId,
-        IDPrioridad: dataForm.prioridad, // aseguramos que se envíe como IDPrioridad
+        IDPrioridad: dataForm.prioridad,
       };
       const response = await TicketService.createTicket(payload);
+
       if (response.data.success) {
         const ticket = response.data.data;
         setCreatedName(ticket.Titulo);
@@ -140,15 +153,19 @@ export function CrearTicket() {
         setSlaResolDeadline(ticket.sla_resol_deadline);
         setOpenSuccess(true);
 
+        // Mantener bloqueado hasta que termine la redirección
         setTimeout(() => {
           setOpenSuccess(false);
           navigate("/tickets");
+          setIsSubmitting(false); // recién aquí se habilita
         }, 2000);
       } else {
         setError(response.data.message);
+        setIsSubmitting(false); // habilitar si hubo error
       }
     } catch {
       setError("Error al crear ticket");
+      setIsSubmitting(false); // habilitar si hubo error
     }
   };
 
@@ -177,7 +194,9 @@ export function CrearTicket() {
               )}
             />
             {errors.Titulo && (
-              <p className="text-sm text-red-500">{errors.Titulo.message}</p>
+              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
+                {errors.Titulo.message}
+                </p>
             )}
           </div>
 
@@ -198,7 +217,7 @@ export function CrearTicket() {
               )}
             />
             {errors.descripcion && (
-              <p className="text-sm text-red-500">
+              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
                 {errors.descripcion.message}
               </p>
             )}
@@ -220,7 +239,9 @@ export function CrearTicket() {
               )}
             />
             {errors.prioridad && (
-              <p className="text-sm text-red-500">{errors.prioridad.message}</p>
+              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
+                {errors.prioridad.message}
+              </p>
             )}
           </div>
 
@@ -235,13 +256,13 @@ export function CrearTicket() {
               getOptionValue={(item) => item.id}
             />
             {errors.IDEtiqueta && (
-              <p className="text-sm text-red-500">
+              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
                 {errors.IDEtiqueta.message}
               </p>
             )}
           </div>
 
-          {/* Categoría asociada (informativa, no editable) */}
+          {/* Categoría asociada (No editable) */}
           {categoriaSeleccionada && (
             <div>
               <Label className="block mb-2 font-semibold">
@@ -251,15 +272,33 @@ export function CrearTicket() {
             </div>
           )}
 
-          {/* Usuario solicitante (informativo, no editable) */}
+          {/* Usuario solicitante (No editable) */}
           <div>
-            <Label className="block mb-2 font-semibold">
-              Usuario solicitante
-            </Label>
+            <Label className="block mb-2 font-semibold">Id usuario</Label>
             <Input value={usuarioSolicitanteId} disabled />
           </div>
 
-          {/* Estado inicial (informativo, no editable) */}
+          {/* Nombre del solicitante (No editable) */}
+          {usuarioSolicitante && (
+            <div>
+              <Label className="block mb-2 font-semibold">
+                Nombre del usuario
+              </Label>
+              <Input value={usuarioSolicitante.nombre} disabled />
+            </div>
+          )}
+
+          {/* Correo del solicitante (No editable) */}
+          {usuarioSolicitante && (
+            <div>
+              <Label className="block mb-2 font-semibold">
+                Correo electrónico
+              </Label>
+              <Input value={usuarioSolicitante.email} disabled />
+            </div>
+          )}
+
+          {/* Estado inicial (No ditable) */}
           <div>
             <Label className="block mb-2 font-semibold">Estado inicial</Label>
             <Input value="pendiente" disabled />
@@ -275,8 +314,13 @@ export function CrearTicket() {
             >
               <ArrowLeft className="w-4 h-4" /> Regresar
             </Button>
-            <Button type="submit" className="flex items-center gap-2">
-              <Save className="w-4 h-4" /> Guardar
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex items-center gap-2"
+            >
+              <Save className="w-4 h-4" />{" "}
+              {isSubmitting ? "Guardando..." : "Guardar"}
             </Button>
           </div>
         </form>

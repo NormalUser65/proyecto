@@ -4,7 +4,13 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Save } from "lucide-react";
-import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,} from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 // UI
 import { Button } from "@/components/ui/button";
@@ -55,7 +61,7 @@ export function ActualizarCategoria() {
       .typeError("Seleccione un SLA válido")
       .positive("El SLA debe ser un número positivo")
       .required("El SLA es requerido"),
-      
+
     etiquetas: yup.array().min(1, "Debe seleccionar al menos una etiqueta"),
     especialidades: yup
       .array()
@@ -134,27 +140,35 @@ export function ActualizarCategoria() {
   }, [id, reset]);
 
   /*** Submit actualización ***/
-  /*** Submit actualización ***/
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const onSubmit = async (dataForm) => {
+    if (isSubmitting) return; // evita doble clic
+    setIsSubmitting(true);
+
     try {
       const response = await CategoriaService.actualizarCategoria({
         id,
         ...dataForm,
       });
       if (response.data.success) {
-        setCreatedName(dataForm.nombre); // Guardamos el nombre actualizado
+        setCreatedName(dataForm.nombre);
         setOpenSuccess(true);
 
-        // Espera de 2 segundos para mostrar modal y luego navegar
+        // Mantener bloqueado hasta que termine la redirección
         setTimeout(() => {
           setOpenSuccess(false);
           navigate("/categorias");
+          setIsSubmitting(false); // recién aquí se habilita
         }, 2000);
       } else {
         setError(response.data.message);
+        setIsSubmitting(false); // habilitar si hubo error
       }
     } catch {
       setError("Error al actualizar categoría");
+      setIsSubmitting(false); // habilitar si hubo error
     }
   };
 
@@ -179,7 +193,9 @@ export function ActualizarCategoria() {
               render={({ field }) => <Input {...field} id="nombre" />}
             />
             {errors.nombre && (
-              <p className="text-sm text-red-500">{errors.nombre.message}</p>
+              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
+                {errors.nombre.message}
+                </p>
             )}
           </div>
 
@@ -194,7 +210,7 @@ export function ActualizarCategoria() {
               render={({ field }) => <Input {...field} id="description" />}
             />
             {errors.description && (
-              <p className="text-sm text-red-500">
+              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
                 {errors.description.message}
               </p>
             )}
@@ -218,7 +234,9 @@ export function ActualizarCategoria() {
               )}
             />
             {errors.sla_id && (
-              <p className="text-sm text-red-500">{errors.sla_id.message}</p>
+              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
+                {errors.sla_id.message}
+                </p>
             )}
           </div>
 
@@ -238,7 +256,9 @@ export function ActualizarCategoria() {
               )}
             />
             {errors.etiquetas && (
-              <p className="text-sm text-red-500">{errors.etiquetas.message}</p>
+              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
+                {errors.etiquetas.message}
+                </p>
             )}
           </div>
 
@@ -258,7 +278,7 @@ export function ActualizarCategoria() {
               )}
             />
             {errors.especialidades && (
-              <p className="text-sm text-red-500">
+              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
                 {errors.especialidades.message}
               </p>
             )}
@@ -270,12 +290,15 @@ export function ActualizarCategoria() {
               type="button"
               onClick={() => navigate(-1)}
               variant="outline"
-              className="flex items-center gap-2"
-            >
+              className="flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" /> Regresar
             </Button>
-            <Button type="submit" className="flex items-center gap-2">
-              <Save className="w-4 h-4" /> Guardar cambios
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex items-center gap-2">
+              <Save className="w-4 h-4" />{" "}
+              {isSubmitting ? "Guardando..." : "Guardar cambios"}
             </Button>
           </div>
         </form>

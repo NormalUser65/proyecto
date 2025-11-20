@@ -6,7 +6,7 @@ class TicketModel
     {
         $this->enlace = new MySqlConnect();
     }
-    /*Listar */
+    // Lista
     public function all()
     {
         try {
@@ -68,14 +68,14 @@ class TicketModel
     public function crearTicket($objeto)
     {
         try {
-            // 1. Forzar zona horaria correcta
+            // Zona horaria
             date_default_timezone_set('America/Costa_Rica');
 
-            // 2. Obtener tiempos de SLA desde la categoría
+            // Tiempos por categoría
             $sqlSla = "SELECT s.max_resp_minutos, s.max_resol_minutos
-                   FROM categoria c
-                   INNER JOIN sla s ON c.sla_id = s.id
-                   WHERE c.id = " . intval($objeto->IDCategoria);
+            FROM categoria c
+            INNER JOIN sla s ON c.sla_id = s.id
+            WHERE c.id = " . intval($objeto->IDCategoria);
 
             $slaData = $this->enlace->executeSQL($sqlSla, "obj");
 
@@ -86,21 +86,17 @@ class TicketModel
             $respMin = intval($slaData[0]->max_resp_minutos);
             $resolMin = intval($slaData[0]->max_resol_minutos);
 
-            // Log para depuración
-            error_log("Categoria: {$objeto->IDCategoria}");
-            error_log("RespMin DB: $respMin, ResolMin DB: $resolMin");
-
-            // 3. Calcular deadlines
+            // Cálculo de slas
             $fechaCreacion = date("Y-m-d H:i:s");
             $timestamp = strtotime($fechaCreacion);
 
             $slaRespDeadline  = date("Y-m-d H:i:s", $timestamp + ($respMin * 60));
             $slaResolDeadline = date("Y-m-d H:i:s", $timestamp + ($resolMin * 60));
 
-            // 4. Insertar ticket
+            // Insert
             $sql = "INSERT INTO ticket 
             (Titulo, descripcion, IDUsuario, IDCategoria, IDPrioridad, estado, 
-             sla_resp_deadline, sla_resol_deadline, activo) 
+            sla_resp_deadline, sla_resol_deadline, activo) 
             VALUES (
                 '" . $objeto->Titulo . "',
                 '" . $objeto->descripcion . "',

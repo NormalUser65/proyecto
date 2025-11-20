@@ -4,28 +4,30 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Save } from "lucide-react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle,DialogDescription} from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
-// UI
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 
-// Servicios
 import CategoriaService from "../../Servicios/CategoriaService";
 import SLAService from "../../Servicios/SlaService";
 import EtiquetaService from "../../Servicios/EtiquetaService";
 import EspecialidadService from "../../Servicios/EspecialidadService";
 
-// Componentes reutilizables
 import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
 import { CustomSelect } from "../ui/custom/custom-select";
 
 export function CrearCategoria() {
   const navigate = useNavigate();
 
-  // Estados para selects
   const [dataSLA, setDataSLA] = useState([]);
   const [dataEtiquetas, setDataEtiquetas] = useState([]);
   const [dataEspecialidades, setDataEspecialidades] = useState([]);
@@ -99,24 +101,31 @@ export function CrearCategoria() {
     fetchData();
   }, []);
 
-  /*** Submit ***/
+  // Submit
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const onSubmit = async (dataForm) => {
+    if (isSubmitting) return; // protección extra
+    setIsSubmitting(true);
+
     try {
       const response = await CategoriaService.crearCategoria(dataForm);
       if (response.data.success) {
         setCreatedName(response.data.data.nombre);
         setOpenSuccess(true);
 
-        // después de 2 segundos, cerrar modal y navegar
         setTimeout(() => {
           setOpenSuccess(false);
           navigate("/categorias");
+          setIsSubmitting(false); 
         }, 2000);
       } else {
         setError(response.data.message);
+        setIsSubmitting(false); 
       }
     } catch {
       setError("Error al crear categoría");
+      setIsSubmitting(false); 
     }
   };
 
@@ -250,12 +259,15 @@ export function CrearCategoria() {
               type="button"
               onClick={() => navigate(-1)}
               variant="outline"
-              className="flex items-center gap-2"
-            >
+              className="flex items-center gap-2">
               <ArrowLeft className="w-4 h-4" /> Regresar
             </Button>
-            <Button type="submit" className="flex items-center gap-2">
-              <Save className="w-4 h-4" /> Guardar
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="flex items-center gap-2">
+                <Save className="w-4 h-4" />{" "}
+              {isSubmitting ? "Guardando..." : "Guardar"}
             </Button>
           </div>
         </form>
