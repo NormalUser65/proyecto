@@ -37,9 +37,9 @@ class CategoriaModel
 
     /*Detalle categoria*/
     public function DetalleCategoria($id)
-{
-    try {
-        $vSql = "SELECT c.id, c.nombre AS Categoria, c.description AS Descripcion, s.nombre AS SLA,
+    {
+        try {
+            $vSql = "SELECT c.id, c.nombre AS Categoria, c.description AS Descripcion, s.nombre AS SLA,
             s.max_resp_minutos AS Tiempo_Max_Respuesta, s.max_resol_minutos AS Tiempo_Max_Resolucion,
             GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ', ') AS Etiquetas,
             GROUP_CONCAT(DISTINCT esp.nombre SEPARATOR ', ') AS Especialidades
@@ -52,12 +52,12 @@ class CategoriaModel
             WHERE c.id = $id
             GROUP BY c.id, c.nombre, c.description, s.nombre, s.max_resp_minutos, s.max_resol_minutos;";
 
-        $vResultado = $this->enlace->ExecuteSQL($vSql);
-        return $vResultado[0];
-    } catch (Exception $e) {
-        handleException($e);
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado[0];
+        } catch (Exception $e) {
+            handleException($e);
+        }
     }
-}
 
     /*Obtener por el nombre de la categoria*/
     public function getNombre($nombre)
@@ -75,22 +75,20 @@ class CategoriaModel
     }
 
     /* Obtener categorías por etiqueta */
-public function getByEtiqueta($idEtiqueta)
-{
-    try {
-        $vSql = "SELECT c.* 
+    public function getByEtiqueta($idEtiqueta)
+    {
+        try {
+            $vSql = "SELECT c.* 
                  FROM categoria c
                  INNER JOIN Categoria_Etiqueta ce ON c.id = ce.IDCategoria
                  WHERE ce.IDEtiqueta = $idEtiqueta";
 
-        $vResultado = $this->enlace->ExecuteSQL($vSql);
-        return $vResultado; // devuelve todas las categorías asociadas
-    } catch (Exception $e) {
-        handleException($e);
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado; // devuelve todas las categorías asociadas
+        } catch (Exception $e) {
+            handleException($e);
+        }
     }
-}
-
-
 
     /**
      * Crear categoría
@@ -105,22 +103,22 @@ public function getByEtiqueta($idEtiqueta)
         $idCategoria = $this->enlace->executeSQL_DML_last($sql);
 
         // --- Etiquetas ---
-if (!empty($objeto->etiquetas)) {
-    foreach ($objeto->etiquetas as $idEtiqueta) {
-        $sql = "INSERT INTO Categoria_Etiqueta (IDCategoria, IDEtiqueta) 
+        if (!empty($objeto->etiquetas)) {
+            foreach ($objeto->etiquetas as $idEtiqueta) {
+                $sql = "INSERT INTO Categoria_Etiqueta (IDCategoria, IDEtiqueta) 
                 VALUES ($idCategoria, $idEtiqueta)";
-        $this->enlace->executeSQL_DML($sql);
-    }
-}
+                $this->enlace->executeSQL_DML($sql);
+            }
+        }
 
-// --- Especialidades ---
-if (!empty($objeto->especialidades)) {
-    foreach ($objeto->especialidades as $idEspecialidad) {
-        $sql = "INSERT INTO especialidad_categoria (IDCategoria, IDEspecialidad) 
+        // --- Especialidades ---
+        if (!empty($objeto->especialidades)) {
+            foreach ($objeto->especialidades as $idEspecialidad) {
+                $sql = "INSERT INTO especialidad_categoria (IDCategoria, IDEspecialidad) 
                 VALUES ($idCategoria, $idEspecialidad)";
-        $this->enlace->executeSQL_DML($sql);
-    }
-}
+                $this->enlace->executeSQL_DML($sql);
+            }
+        }
 
         // Retornar categoría creada
         return $this->get($idCategoria);

@@ -1,11 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import TicketService from "../../Servicios/TicketService"
+import TicketService from "../../Servicios/TicketService";
 import { ErrorAlert } from "../ui/custom/AlertaError";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CalendarDays, Tag, User, AlertCircle, Timer } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  Tag,
+  User,
+  AlertCircle,
+  Timer,
+} from "lucide-react";
 import { LoadingGrid } from "../ui/custom/CargandoGrid";
 import { EmptyState } from "../ui/custom/estadoVacio";
 
@@ -35,7 +42,8 @@ export function DetalleTicket() {
   }, [id]);
 
   if (loading) return <LoadingGrid count={1} type="grid" />;
-  if (error) return <ErrorAlert title="Error al cargar el ticket" message={error} />;
+  if (error)
+    return <ErrorAlert title="Error al cargar el ticket" message={error} />;
   if (!ticket || !ticket.data)
     return <EmptyState message="No se encontraron datos de este ticket." />;
 
@@ -53,7 +61,14 @@ export function DetalleTicket() {
           <div className="flex items-center gap-4">
             <CalendarDays className="h-5 w-5 text-secondary" />
             <span className="font-semibold">Fecha de creación:</span>
-            <p className="text-muted-foreground">{new Date(data.creado_en).toLocaleString()}</p>
+            <p className="text-muted-foreground">
+              {data.creado_en
+                ? new Intl.DateTimeFormat("es-CR", {
+                    dateStyle: "long",
+                    timeStyle: "short",
+                  }).format(new Date(data.creado_en))
+                : "No definido"}
+            </p>
           </div>
           <div className="flex items-center gap-4">
             <AlertCircle className="h-5 w-5 text-secondary" />
@@ -63,7 +78,9 @@ export function DetalleTicket() {
           <div className="flex items-center gap-4">
             <Tag className="h-5 w-5 text-secondary" />
             <span className="font-semibold">Categoría:</span>
-            <p className="text-muted-foreground">{data.IDCategoria ?? "Sin categoría"}</p>
+            <p className="text-muted-foreground">
+              {data.IDCategoria ?? "Sin categoría"}
+            </p>
           </div>
           <div className="flex items-center gap-4">
             <User className="h-5 w-5 text-secondary" />
@@ -77,16 +94,32 @@ export function DetalleTicket() {
           </div>
           <div>
             <span className="font-semibold">SLA de Respuesta:</span>
-            <p className="text-muted-foreground">{data.sla_resp_deadline ?? "No definido"}</p>
             <p className="text-muted-foreground">
-              Cumplimiento: {data.sla_resp_met === 1 ? "Cumplido" : "No cumplido"}
+              {data.sla_resp_deadline
+                ? new Intl.DateTimeFormat("es-CR", {
+                    dateStyle: "long",
+                    timeStyle: "short",
+                  }).format(new Date(data.sla_resp_deadline))
+                : "No definido"}
+            </p>
+            <p className="text-muted-foreground">
+              Cumplimiento:{" "}
+              {data.sla_resp_met === 1 ? "Cumplido" : "No cumplido"}
             </p>
           </div>
           <div>
             <span className="font-semibold">SLA de Resolución:</span>
-            <p className="text-muted-foreground">{data.sla_resol_deadline ?? "No definido"}</p>
             <p className="text-muted-foreground">
-              Cumplimiento: {data.sla_resol_met === 1 ? "Cumplido" : "No cumplido"}
+              {data.sla_resol_deadline // ✅ ahora sí el campo correcto
+                ? new Intl.DateTimeFormat("es-CR", {
+                    dateStyle: "long",
+                    timeStyle: "short",
+                  }).format(new Date(data.sla_resol_deadline))
+                : "No definido"}
+            </p>
+            <p className="text-muted-foreground">
+              Cumplimiento:{" "}
+              {data.sla_resol_met === 1 ? "Cumplido" : "No cumplido"}
             </p>
           </div>
           {data.resumen_res && (
@@ -97,7 +130,11 @@ export function DetalleTicket() {
           )}
         </CardContent>
       </Card>
-      <Button type="button" onClick={() => navigate(-1)} className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6 !rounded-2xl">
+      <Button
+        type="button"
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6 !rounded-2xl"
+      >
         <ArrowLeft className="w-4 h-4" />
         Regresar
       </Button>

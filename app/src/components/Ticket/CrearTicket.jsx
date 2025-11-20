@@ -3,8 +3,14 @@ import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 import { ArrowLeft, Save } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 // UI
 import { Button } from "@/components/ui/button";
@@ -29,6 +35,12 @@ export function CrearTicket() {
   const [dataEtiquetas, setDataEtiquetas] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
   const [error, setError] = useState("");
+
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [createdName, setCreatedName] = useState("");
+
+  const [, setSlaRespDeadline] = useState("");
+  const [, setSlaResolDeadline] = useState("");
 
   // Simulación de usuario solicitante (hasta que exista autenticación)
   const usuarioSolicitanteId = 5; // variable fija en la lógica
@@ -59,69 +71,77 @@ export function CrearTicket() {
   });
 
   /*** React Hook Form ***/
-  const { control, handleSubmit, setValue, formState: { errors } } = useForm({
+  const {
+    control,
+    handleSubmit,
+    setValue,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       Titulo: "",
       descripcion: "",
       prioridad: "",
       IDCategoria: "",
-      IDEtiqueta: ""
+      IDEtiqueta: "",
     },
-    resolver: yupResolver(ticketSchema)
+    resolver: yupResolver(ticketSchema),
   });
 
   /*** Cargar datos iniciales ***/
   useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const prioridadesRes = await PrioridadService.getAll();
-      const prioridadesData = prioridadesRes?.data?.data?.data ?? [];
-      setDataPrioridades(Array.isArray(prioridadesData) ? prioridadesData : []);
+    const fetchData = async () => {
+      try {
+        const prioridadesRes = await PrioridadService.getAll();
+        const prioridadesData = prioridadesRes?.data?.data?.data ?? [];
+        setDataPrioridades(
+          Array.isArray(prioridadesData) ? prioridadesData : []
+        );
 
-      const etiquetasRes = await EtiquetaService.getAll();
-      const etiquetasData = etiquetasRes?.data?.data ?? [];
-      setDataEtiquetas(Array.isArray(etiquetasData) ? etiquetasData : []);
-    } catch (err) {
-      if (err.name !== "AbortError") setError(err.message);
-    }
-  };
-  fetchData();
-}, []);
-
-
+        const etiquetasRes = await EtiquetaService.getAll();
+        const etiquetasData = etiquetasRes?.data?.data ?? [];
+        setDataEtiquetas(Array.isArray(etiquetasData) ? etiquetasData : []);
+      } catch (err) {
+        if (err.name !== "AbortError") setError(err.message);
+      }
+    };
+    fetchData();
+  }, []);
 
   /*** Manejo de selección de etiqueta → categoría asociada ***/
   const handleEtiquetaChange = async (etiquetaId) => {
     setValue("IDEtiqueta", etiquetaId);
-      const categoriaRes = await CategoriaService.getByEtiqueta(etiquetaId);
-if (categoriaRes.data.success) {
-  const categorias = categoriaRes.data.data?.data ?? [];
-  if (Array.isArray(categorias) && categorias.length > 0) {
-    const categoria = categorias[0]; // por ahora tomamos la primera
-    setCategoriaSeleccionada(categoria);
-    setValue("IDCategoria", categoria.id);
-  } else {
-    setError("No se encontraron categorías asociadas");
-  }
-}
-
+    const categoriaRes = await CategoriaService.getByEtiqueta(etiquetaId);
+    if (categoriaRes.data.success) {
+      const categorias = categoriaRes.data.data?.data ?? [];
+      if (Array.isArray(categorias) && categorias.length > 0) {
+        const categoria = categorias[0]; // por ahora tomamos la primera
+        setCategoriaSeleccionada(categoria);
+        setValue("IDCategoria", categoria.id);
+      } else {
+        setError("No se encontraron categorías asociadas");
+      }
+    }
   };
 
+  /*** Submit ***/
   /*** Submit ***/
   const onSubmit = async (dataForm) => {
     try {
       const payload = {
         ...dataForm,
         IDUsuario: usuarioSolicitanteId,
-        IDPrioridad: dataForm.prioridad // aseguramos que se envíe como IDPrioridad
+        IDPrioridad: dataForm.prioridad, // aseguramos que se envíe como IDPrioridad
       };
       const response = await TicketService.createTicket(payload);
       if (response.data.success) {
-        toast.success(`Ticket creado: ${response.data.data.Titulo}`, {
-          duration: 4000,
-          position: "top-center",
-        });
+        const ticket = response.data.data;
+        setCreatedName(ticket.Titulo);
+        setSlaRespDeadline(ticket.sla_resp_deadline);
+        setSlaResolDeadline(ticket.sla_resol_deadline);
+        setOpenSuccess(true);
+
         setTimeout(() => {
+          setOpenSuccess(false);
           navigate("/tickets");
         }, 2000);
       } else {
@@ -142,34 +162,66 @@ if (categoriaRes.data.success) {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Título */}
           <div>
-            <Label htmlFor="Titulo" className="block mb-2 font-semibold">Título</Label>
-            <Controller name="Titulo" control={control} render={({ field }) =>
-              <Input {...field} id="Titulo" placeholder="Ingrese el título del ticket" />
-            } />
-            {errors.Titulo && <p className="text-sm text-red-500">{errors.Titulo.message}</p>}
+            <Label htmlFor="Titulo" className="block mb-2 font-semibold">
+              Título
+            </Label>
+            <Controller
+              name="Titulo"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  id="Titulo"
+                  placeholder="Ingrese el título del ticket"
+                />
+              )}
+            />
+            {errors.Titulo && (
+              <p className="text-sm text-red-500">{errors.Titulo.message}</p>
+            )}
           </div>
 
           {/* Descripción */}
           <div>
-            <Label htmlFor="descripcion" className="block mb-2 font-semibold">Descripción</Label>
-            <Controller name="descripcion" control={control} render={({ field }) =>
-              <Input {...field} id="descripcion" placeholder="Descripción del ticket" />
-            } />
-            {errors.descripcion && <p className="text-sm text-red-500">{errors.descripcion.message}</p>}
+            <Label htmlFor="descripcion" className="block mb-2 font-semibold">
+              Descripción
+            </Label>
+            <Controller
+              name="descripcion"
+              control={control}
+              render={({ field }) => (
+                <Input
+                  {...field}
+                  id="descripcion"
+                  placeholder="Descripción del ticket"
+                />
+              )}
+            />
+            {errors.descripcion && (
+              <p className="text-sm text-red-500">
+                {errors.descripcion.message}
+              </p>
+            )}
           </div>
 
           {/* Prioridad */}
           <div>
-            <Controller name="prioridad" control={control} render={({ field }) =>
-              <CustomSelect
-                field={field}
-                data={dataPrioridades || []}
-                label="Prioridad"
-                getOptionLabel={(item) => item.nombre}
-                getOptionValue={(item) => item.id}
-              />
-            } />
-            {errors.prioridad && <p className="text-sm text-red-500">{errors.prioridad.message}</p>}
+            <Controller
+              name="prioridad"
+              control={control}
+              render={({ field }) => (
+                <CustomSelect
+                  field={field}
+                  data={dataPrioridades || []}
+                  label="Prioridad"
+                  getOptionLabel={(item) => item.nombre}
+                  getOptionValue={(item) => item.id}
+                />
+              )}
+            />
+            {errors.prioridad && (
+              <p className="text-sm text-red-500">{errors.prioridad.message}</p>
+            )}
           </div>
 
           {/* Etiqueta → Categoría asociada */}
@@ -182,20 +234,28 @@ if (categoriaRes.data.success) {
               getOptionLabel={(item) => item.nombre}
               getOptionValue={(item) => item.id}
             />
-            {errors.IDEtiqueta && <p className="text-sm text-red-500">{errors.IDEtiqueta.message}</p>}
+            {errors.IDEtiqueta && (
+              <p className="text-sm text-red-500">
+                {errors.IDEtiqueta.message}
+              </p>
+            )}
           </div>
 
           {/* Categoría asociada (informativa, no editable) */}
           {categoriaSeleccionada && (
             <div>
-              <Label className="block mb-2 font-semibold">Categoría asociada</Label>
+              <Label className="block mb-2 font-semibold">
+                Categoría asociada
+              </Label>
               <Input value={categoriaSeleccionada.nombre} disabled />
             </div>
           )}
 
           {/* Usuario solicitante (informativo, no editable) */}
           <div>
-            <Label className="block mb-2 font-semibold">Usuario solicitante</Label>
+            <Label className="block mb-2 font-semibold">
+              Usuario solicitante
+            </Label>
             <Input value={usuarioSolicitanteId} disabled />
           </div>
 
@@ -207,7 +267,12 @@ if (categoriaRes.data.success) {
 
           {/* Botones */}
           <div className="flex justify-between gap-4 mt-8">
-            <Button type="button" onClick={() => navigate(-1)} variant="outline" className="flex items-center gap-2">
+            <Button
+              type="button"
+              onClick={() => navigate(-1)}
+              variant="outline"
+              className="flex items-center gap-2"
+            >
               <ArrowLeft className="w-4 h-4" /> Regresar
             </Button>
             <Button type="submit" className="flex items-center gap-2">
@@ -216,6 +281,19 @@ if (categoriaRes.data.success) {
           </div>
         </form>
       </Card>
+
+      {/* Modal de éxito */}
+      <Dialog open={openSuccess} onOpenChange={setOpenSuccess}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>¡Ticket creado con éxito!</DialogTitle>
+            <DialogDescription>
+              Se creó el ticket <strong>{createdName}</strong>. <br />
+              Serás redirigido al listado en unos segundos.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
