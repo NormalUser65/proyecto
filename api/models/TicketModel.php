@@ -11,8 +11,8 @@ class TicketModel
     {
         try {
             $vSql = "SELECT t.*, p.nombre AS prioridad_nombre
-                 FROM ticket t
-                 INNER JOIN prioridad p ON t.IDPrioridad = p.id;";
+            FROM ticket t
+            INNER JOIN prioridad p ON t.IDPrioridad = p.id;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado;
         } catch (Exception $e) {
@@ -24,9 +24,9 @@ class TicketModel
     {
         try {
             $vSql = "SELECT t.*, p.nombre AS prioridad_nombre
-                 FROM ticket t
-                 INNER JOIN prioridad p ON t.IDPrioridad = p.id
-                 WHERE t.id = $ID;";
+            FROM ticket t
+            INNER JOIN prioridad p ON t.IDPrioridad = p.id
+            WHERE t.id = $ID;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado[0];
         } catch (Exception $e) {
@@ -95,19 +95,18 @@ class TicketModel
 
             // Insert
             $sql = "INSERT INTO ticket 
-            (Titulo, descripcion, IDUsuario, IDCategoria, IDPrioridad, estado, 
-            sla_resp_deadline, sla_resol_deadline, activo) 
-            VALUES (
-                '" . $objeto->Titulo . "',
-                '" . $objeto->descripcion . "',
-                " . intval($objeto->IDUsuario) . ",
-                " . intval($objeto->IDCategoria) . ",
-                " . intval($objeto->IDPrioridad ?? 3) . ",
-                'pendiente',
-                '$slaRespDeadline',
-                '$slaResolDeadline',
-                1
-            )";
+        (Titulo, descripcion, IDUsuario, IDCategoria, IDPrioridad, 
+        sla_resp_deadline, sla_resol_deadline, activo) 
+        VALUES (
+            '" . $objeto->Titulo . "',
+            '" . $objeto->descripcion . "',
+            " . intval($objeto->IDUsuario) . ",
+            " . intval($objeto->IDCategoria) . ",
+            " . intval($objeto->IDPrioridad ?? 3) . ",
+            '$slaRespDeadline',
+            '$slaResolDeadline',
+            1
+        )";
 
             return $this->enlace->executeSQL_DML_last($sql);
         } catch (Exception $e) {
