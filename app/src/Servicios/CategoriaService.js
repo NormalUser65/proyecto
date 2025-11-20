@@ -23,6 +23,12 @@ class CategoriaService {
   getByNombre(nombre) {
     return axios.get(`${BASE_URL}/nombre/${nombre}`);
   }
+
+// CategoriaService.js
+getByEtiqueta(idEtiqueta) {
+  return axios.get(`${BASE_URL}/getPorEtiqueta/${idEtiqueta}`);
+}
+
    // POST /categorias → Crear categoría
   crearCategoria(categoria) {
     return axios.post(BASE_URL, JSON.stringify(categoria), {

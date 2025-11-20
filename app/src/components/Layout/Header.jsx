@@ -31,9 +31,9 @@ const ticketCount = 0;
 
 const navItems = [
   { title: "Tickets", href: "/tickets" },
-  { title: "Asignaciones", href: "/asignaciones"},
-  { title: "Categorias", href: "/categorias"},
-  { title: "Tecnicos", href: "/tecnicos"},
+  { title: "Asignaciones", href: "/asignaciones" },
+  { title: "Categorias", href: "/categorias" },
+  { title: "Tecnicos", href: "/tecnicos" },
 ];
 
 const userItems = [
@@ -57,63 +57,86 @@ export default function Header() {
             className="flex items-center gap-2 text-xl font-bold tracking-wide hover:opacity-90 transition"
             aria-label="Inicio"
           >
-            <div className=" p-1 rounded-full shadow-sm">
-              <img src={EduhelpLogo} alt="Logo EduHelp" className="h-15"/>{/*Este es el lugar donde va el logo*/}
+            <div className="p-1 rounded-full shadow-sm">
+              <img src={EduhelpLogo} alt="Logo EduHelp" className="h-15" />
             </div>
-            <span className="hidden sm:inline">Eduhelp</span>{/*Nombre de la pagina*/}
+            <span className="hidden sm:inline">Eduhelp</span>
           </Link>
         </div>
+
+        {/* NAV DESKTOP */}
         <nav
-          className={`hidden md:flex items-center gap-2 absolute left-1/2 top-1/2 transform -translate-y-1/2 -translate-x-1/2`}
+          className="hidden md:flex items-center gap-2 absolute left-1/2 top-1/2 transform -translate-y-1/2 -translate-x-1/2"
           aria-label="Navegación principal"
         >
           {navItems.map((item) => (
-            <Link key={item.href} to={item.href} className="flex items-center gap-2 py-2 px-4 rounded-full text-sm hover:bg-white/10 transition" aria-label={item.title}>
+            <Link
+              key={item.href}
+              to={item.href}
+              className="flex items-center gap-2 py-2 px-4 rounded-full text-sm hover:bg-white/10 transition"
+              aria-label={item.title}
+            >
               {item.icon}
               <span className="hidden sm:inline">{item.title}</span>
             </Link>
           ))}
+
           <Menubar className="w-auto bg-transparent border-none shadow-none">
             <MenubarMenu>
               <MenubarTrigger className="flex items-center gap-2 py-2 px-4 rounded-full text-sm hover:bg-white/10 transition">
-              <Layers className="h-4 w-4" /> Mantenimientos
-              <ChevronDown className="h-3 w-3" />
+                <Layers className="h-4 w-4" /> Mantenimientos
+                <ChevronDown className="h-3 w-3" />
               </MenubarTrigger>
-              <MenubarContent className="bg-white/10 backdrop-blur-lg border-none rounded-xl shadow-xl mt-2">
-              <MenubarItem asChild>
-                <Link
-                to="/categorias/crear"
-                className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
-                >
-                  Crear una Categoría
-                  </Link>
-                  </MenubarItem>
-              <MenubarItem asChild>
-                <Link to="/tecnicos/crear"
-                className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
-                >
-                  Crear un Técnico
-                  </Link>
-                  </MenubarItem>
 
-                  </MenubarContent>
-                  </MenubarMenu>
-                  </Menubar>
-          </nav>
+              <MenubarContent className="bg-white/10 backdrop-blur-lg border-none rounded-xl shadow-xl mt-2">
+                <MenubarItem asChild>
+                  <Link
+                    to="/categorias/crear"
+                    className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
+                  >
+                    Crear una Categoría
+                  </Link>
+                </MenubarItem>
+
+                <MenubarItem asChild>
+                  <Link
+                    to="/tecnicos/crear"
+                    className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
+                  >
+                    Crear un Técnico
+                  </Link>
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>
+          <Menubar>
+            <MenubarMenu>
+              <MenubarContent>
+                <MenubarItem asChild>
+                  <Link
+                    to="/tickets/crear"
+                    className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
+                  >
+                    Crear Ticket
+                  </Link>
+                </MenubarItem>
+              </MenubarContent>
+            </MenubarMenu>
+          </Menubar>
+        </nav>
+
+        {/* Íconos derecha */}
         <div className="ml-auto flex items-center gap-2">
           <Link to="/tickets" className="relative hover:opacity-90" aria-label="Tickets">
             <div className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition">
               <Ticket className="h-5 w-5 text-white" />
             </div>
-            <Badge
-              className="absolute -top-2 -right-2 rounded-full px-2 py-0 text-xs font-semibold"
-              variant="secondary"
-              aria-hidden="true"
-            >
+            <Badge className="absolute -top-2 -right-2 rounded-full px-2 py-0 text-xs font-semibold" variant="secondary">
               {ticketCount}
             </Badge>
           </Link>
 
+          {/* Usuario Desktop */}
           <div className="hidden md:flex">
             <Menubar className="w-auto bg-transparent border-none shadow-none">
               <MenubarMenu>
@@ -121,6 +144,7 @@ export default function Header() {
                   <User className="h-4 w-4" /> {userData.email}
                   <ChevronDown className="h-3 w-3" />
                 </MenubarTrigger>
+
                 <MenubarContent className="bg-white/10 backdrop-blur-lg border-none rounded-xl shadow-xl mt-2">
                   {userItems.map((item) => (
                     <MenubarItem key={item.href} asChild>
@@ -138,7 +162,7 @@ export default function Header() {
             </Menubar>
           </div>
 
-          {/* Botón menú móvil */}
+          {/* MENU Celular */}
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <button
@@ -148,23 +172,25 @@ export default function Header() {
                 {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
               </button>
             </SheetTrigger>
+
             <SheetContent side="left" className="bg-gradient-to-b from-primary/90 to-secondary/90 text-white backdrop-blur-lg border-none">
               <nav className="mt-10 space-y-6 px-4" aria-label="Navegación móvil">
-                <Link to="/" className="flex items-center gap-2 text-xl font-semibold" onClick={() => setMobileOpen(false)}>
+                <Link
+                  to="/"
+                  className="flex items-center gap-2 text-xl font-semibold"
+                  onClick={() => setMobileOpen(false)}
+                >
                   <Clapperboard /> MovieSphere
                 </Link>
 
                 <div>
-                  <h4 className="text-lg font-semibold mb-2 flex items-center gap-2">
-                   Opciones
-                  </h4>
+                  <h4 className="text-lg font-semibold mb-2 flex items-center gap-2">Opciones</h4>
                   {navItems.map((item) => (
                     <Link
                       key={item.href}
                       to={item.href}
                       onClick={() => setMobileOpen(false)}
                       className="flex items-center gap-3 py-2 px-4 rounded-full bg-white/10 hover:bg-white/20 transition"
-                      aria-label={item.title}
                     >
                       {item.icon} {item.title}
                     </Link>
@@ -175,13 +201,13 @@ export default function Header() {
                   <h4 className="text-lg font-semibold mb-2 flex items-center gap-2">
                     <User /> {userData.email}
                   </h4>
+
                   {userItems.map((item) => (
                     <Link
                       key={item.href}
                       to={item.href}
                       onClick={() => setMobileOpen(false)}
                       className="flex items-center gap-3 py-2 px-4 rounded-full bg-white/10 hover:bg-white/20 transition"
-                      aria-label={item.title}
                     >
                       {item.icon} {item.title}
                     </Link>

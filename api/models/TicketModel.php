@@ -6,15 +6,14 @@ class TicketModel
     {
         $this->enlace = new MySqlConnect();
     }
-    /*Listar */
+    // Lista
     public function all()
     {
         try {
-            //Consulta sql
-            $vSql = "SELECT * FROM ticket;";
-            //Ejecutar la consulta
+            $vSql = "SELECT t.*, p.nombre AS prioridad_nombre
+            FROM ticket t
+            INNER JOIN prioridad p ON t.IDPrioridad = p.id;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
-            // Retornar el objeto
             return $vResultado;
         } catch (Exception $e) {
             handleException($e);
@@ -24,11 +23,11 @@ class TicketModel
     public function ObtenerPorID($ID)
     {
         try {
-            //Consulta sql
-            $vSql = "SELECT * FROM ticket WHERE id = $ID;";
-            //Ejecutar la consulta
+            $vSql = "SELECT t.*, p.nombre AS prioridad_nombre
+            FROM ticket t
+            INNER JOIN prioridad p ON t.IDPrioridad = p.id
+            WHERE t.id = $ID;";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
-            // Retornar el objeto
             return $vResultado[0];
         } catch (Exception $e) {
             handleException($e);
@@ -61,6 +60,55 @@ class TicketModel
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             // Retornar el objeto
             return $vResultado[0];
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function crearTicket($objeto)
+    {
+        try {
+            // Zona horaria
+            date_default_timezone_set('America/Costa_Rica');
+
+            // Tiempos por categoría
+            $sqlSla = "SELECT s.max_resp_minutos, s.max_resol_minutos
+            FROM categoria c
+            INNER JOIN sla s ON c.sla_id = s.id
+            WHERE c.id = " . intval($objeto->IDCategoria);
+
+            $slaData = $this->enlace->executeSQL($sqlSla, "obj");
+
+            if (empty($slaData)) {
+                throw new Exception("No se encontró SLA para la categoría {$objeto->IDCategoria}");
+            }
+
+            $respMin = intval($slaData[0]->max_resp_minutos);
+            $resolMin = intval($slaData[0]->max_resol_minutos);
+
+            // Cálculo de slas
+            $fechaCreacion = date("Y-m-d H:i:s");
+            $timestamp = strtotime($fechaCreacion);
+
+            $slaRespDeadline  = date("Y-m-d H:i:s", $timestamp + ($respMin * 60));
+            $slaResolDeadline = date("Y-m-d H:i:s", $timestamp + ($resolMin * 60));
+
+            // Insert
+            $sql = "INSERT INTO ticket 
+        (Titulo, descripcion, IDUsuario, IDCategoria, IDPrioridad, 
+        sla_resp_deadline, sla_resol_deadline, activo) 
+        VALUES (
+            '" . $objeto->Titulo . "',
+            '" . $objeto->descripcion . "',
+            " . intval($objeto->IDUsuario) . ",
+            " . intval($objeto->IDCategoria) . ",
+            " . intval($objeto->IDPrioridad ?? 3) . ",
+            '$slaRespDeadline',
+            '$slaResolDeadline',
+            1
+        )";
+
+            return $this->enlace->executeSQL_DML_last($sql);
         } catch (Exception $e) {
             handleException($e);
         }

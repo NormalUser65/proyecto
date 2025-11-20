@@ -48,4 +48,26 @@ class tickets
             handleException($e);
         }
     }
+    
+    public function create()
+{
+    try {
+        $request = new Request();
+        $inputJSON = $request->getJSON();
+
+        $model = new TicketModel();
+        $result = $model->crearTicket($inputJSON);
+
+        $response = new Response();
+        $response->toJSON([
+            "success" => true,
+            "status" => 201,
+            "data" => $result
+        ]);
+    } catch (Exception $e) {
+        handleException($e);
+    }
+}
+
+
 }

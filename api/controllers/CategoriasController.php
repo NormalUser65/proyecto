@@ -55,6 +55,34 @@ class categorias
         }
     }
 
+    public function getPorEtiqueta($idEtiqueta)
+{
+    $response = new Response();
+    try {
+        if (!is_numeric($idEtiqueta)) {
+            throw new Exception("ID de etiqueta inválido");
+        }
+        $model = new CategoriaModel();
+        $result = $model->getByEtiqueta($idEtiqueta);
+
+        if (!empty($result)) {
+            $response->toJSON([
+                "success" => true,
+                "status" => 200,
+                "data" => $result
+            ]);
+        } else {
+            $response->toJSON([
+                "success" => false,
+                "status" => 404,
+                "message" => "No se encontraron categorías asociadas a la etiqueta"
+            ]);
+        }
+    } catch (Exception $e) {
+        handleException($e);
+    }
+}
+
     // POST Crear
     public function create()
     {
@@ -97,4 +125,3 @@ class categorias
         }
     }
 }
-
