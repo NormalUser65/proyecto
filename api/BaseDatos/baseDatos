@@ -14,7 +14,7 @@ INSERT INTO rol (nombre, description) VALUES
 ('Técnico', 'Encargado de resolver tickets'),
 ('Cliente', 'Usuario que reporta incidencias');
 
--- users
+-- usuario
 CREATE TABLE usuario (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(255) NOT NULL UNIQUE,
@@ -27,15 +27,15 @@ CREATE TABLE usuario (
   CONSTRAINT fk_usuario_rol FOREIGN KEY (IDRol) REFERENCES rol(id)
 ) ENGINE=InnoDB;
 
--- specialities
+-- especialidad
 CREATE TABLE especialidad (
   id INT AUTO_INCREMENT PRIMARY KEY,
-  codigo VARCHAR(60) NOT NULL UNIQUE,
+  code VARCHAR(60) NOT NULL UNIQUE,
   nombre VARCHAR(120) NOT NULL,
-  descripcion TEXT
+  description TEXT
 ) ENGINE=InnoDB;
 
--- technician_specialities (N:N)
+-- tecnico_especialidad
 CREATE TABLE Tecnico_especialidad (
   IDTecnico BIGINT NOT NULL,
   IDEspecialidad INT NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE Tecnico_especialidad (
   CONSTRAINT fk_ts_spec FOREIGN KEY (IDEspecialidad) REFERENCES especialidad(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- sla_profiles
+-- sla
 CREATE TABLE sla (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(120) NOT NULL,
@@ -55,7 +55,7 @@ CREATE TABLE sla (
   CHECK (max_resp_minutos < max_resol_minutos)
 ) ENGINE=InnoDB;
 
--- categories
+-- categoria
 CREATE TABLE categoria (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(120) NOT NULL,
@@ -64,14 +64,14 @@ CREATE TABLE categoria (
   CONSTRAINT fk_categories_sla FOREIGN KEY (sla_id) REFERENCES sla(id)
 ) ENGINE=InnoDB;
 
--- tags
+-- etiqueta
 CREATE TABLE etiqueta (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(80) NOT NULL,
   UNIQUE KEY uq_Nombre_Etiqueta (nombre)
 ) ENGINE=InnoDB;
 
--- category_tags (N:N)
+-- categoria_etiqueta
 CREATE TABLE Categoria_Etiqueta (
   IDCategoria INT NOT NULL,
   IDEtiqueta INT NOT NULL,
@@ -80,7 +80,7 @@ CREATE TABLE Categoria_Etiqueta (
   CONSTRAINT fk_ct_Et FOREIGN KEY (IDEtiqueta) REFERENCES etiqueta(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- speciality_categories (N:N)
+-- especialidad_categoria
 CREATE TABLE especialidad_categoria (
   IDEspecialidad INT NOT NULL,
   IDCategoria INT NOT NULL,
@@ -88,6 +88,17 @@ CREATE TABLE especialidad_categoria (
   CONSTRAINT fk_sc_spec FOREIGN KEY (IDEspecialidad) REFERENCES especialidad(id) ON DELETE CASCADE,
   CONSTRAINT fk_sc_cat FOREIGN KEY (IDCategoria) REFERENCES categoria(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+-- prioridad (NUEVA TABLA)
+CREATE TABLE prioridad (
+  id TINYINT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(50) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+
+INSERT INTO prioridad (nombre) VALUES
+('Alta'),
+('Media'),
+('Baja');
 
 -- ticket
 CREATE TABLE ticket (
@@ -97,23 +108,24 @@ CREATE TABLE ticket (
   IDUsuario BIGINT NOT NULL,
   creado_en DATETIME DEFAULT CURRENT_TIMESTAMP,
   ult_Actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  IDCategoria INT DEFAULT NULL,
-  prioridad TINYINT NOT NULL DEFAULT 3,
+  IDCategoria INT,
+  IDPrioridad TINYINT NOT NULL DEFAULT 3,
   estado VARCHAR(40) NOT NULL DEFAULT 'pendiente',
-  IDTecnico BIGINT DEFAULT NULL,
-  sla_resp_deadline DATETIME DEFAULT NULL,
-  sla_resol_deadline DATETIME DEFAULT NULL,
-  sla_resp_met TINYINT(1) DEFAULT NULL,
-  sla_resol_met TINYINT(1) DEFAULT NULL,
-  cerrado_el DATETIME DEFAULT NULL,
-  resumen_res TEXT DEFAULT NULL,
-  activo TINYINT(1) DEFAULT 1,
+  IDTecnico BIGINT,
+  sla_resp_deadline DATETIME,
+  sla_resol_deadline DATETIME,
+  sla_resp_met TINYINT(1),
+  sla_resol_met TINYINT(1),
+  cerrado_el DATETIME,
+  resumen_res TEXT,
+  activo TINYINT(1) NOT NULL DEFAULT 1,
   CONSTRAINT fk_ticket_Usuario FOREIGN KEY (IDUsuario) REFERENCES usuario(id),
   CONSTRAINT fk_ticket_category FOREIGN KEY (IDCategoria) REFERENCES categoria(id),
+  CONSTRAINT fk_ticket_prioridad FOREIGN KEY (IDPrioridad) REFERENCES prioridad(id),
   CONSTRAINT fk_ticket_IDTecnico FOREIGN KEY (IDTecnico) REFERENCES usuario(id)
 ) ENGINE=InnoDB;
 
--- ticket_history
+-- historial_ticket
 CREATE TABLE Historial_ticket (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   IDticket BIGINT NOT NULL,
@@ -127,7 +139,7 @@ CREATE TABLE Historial_ticket (
   CONSTRAINT fk_th_user FOREIGN KEY (cambiado_por) REFERENCES usuario(id)
 ) ENGINE=InnoDB;
 
--- attachments 
+-- imagen
 CREATE TABLE Imagen (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   IDHistorial BIGINT NOT NULL,
@@ -135,7 +147,7 @@ CREATE TABLE Imagen (
   CONSTRAINT fk_img_historial FOREIGN KEY (IDHistorial) REFERENCES Historial_ticket(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
--- assignments
+-- asignacion
 CREATE TABLE asignacion (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   IDTicket BIGINT NOT NULL,
@@ -215,11 +227,6 @@ VALUES
 ('estudiante1@eduhelp.com', 'user123', 'María López', 3, 'es', 1, 'disponible'),
 ('docente1@eduhelp.com', 'user456', 'Luis Herrera', 3, 'es', 1, 'disponible');
 
-INSERT INTO usuario (email, contrasenna, nombre, IDRol, language, activo, disponibilidad)
-VALUES
-('tecnico_redes@eduhelp.com', 'net123', 'Ricardo Solís', 2, 'es', 1, 'disponible'),
-('tecnico_lab@eduhelp.com', 'lab123', 'Daniela Arce', 2, 'es', 1, 'disponible');
-
 -- SLA
 INSERT INTO sla (nombre, max_resp_minutos, max_resol_minutos, activo)
 VALUES
@@ -257,7 +264,7 @@ VALUES
 (4, 5);
 
 -- ESPECIALIDADES
-INSERT INTO especialidad (codigo, nombre, descripcion)
+INSERT INTO especialidad (code, nombre, description)
 VALUES
 ('ESP001', 'Soporte técnico de Aulas', 'Encargado del mantenimiento y soporte de equipos en aulas'),
 ('ESP002', 'Finanzas', 'Área de control de pagos y matrículas'),
@@ -283,14 +290,13 @@ VALUES
 (3, 3),
 (3, 4);
 
--- ticket
-INSERT INTO ticket (Titulo, descripcion, IDUsuario, IDCategoria, prioridad, estado, IDTecnico)
+INSERT INTO ticket (Titulo, descripcion, IDUsuario, IDCategoria, IDPrioridad, estado, IDTecnico, creado_en)
 VALUES
-('Proyector sin señal', 'El proyector del aula 302 no muestra imagen.', 4, 1, 2, 'pendiente', 2),
-('Pago de matrícula no procesado', 'El sistema indica error al pagar la matrícula.', 5, 2, 3, 'en progreso', 3),
-('Recuperar contraseña', 'No puedo ingresar a mi cuenta institucional.', 4, 3, 2, 'pendiente', 3),
-('Problemas eléctricos en aula 102', 'Tomacorrientes dañados en varios puestos.', 5, 4, 1, 'pendiente', 3),
-('Consulta general sobre correo institucional', 'Solicitud de acceso a correo de docente.', 4, 5, 3, 'pendiente', 2);
+('Proyector sin señal', 'El proyector del aula 302 no muestra imagen.', 4, 1, 2, 'pendiente', 2, '2025-10-27 09:00:00'),
+('Pago de matrícula no procesado', 'El sistema indica error al pagar la matrícula.', 5, 2, 3, 'en progreso', 3, '2025-10-27 14:00:00'),
+('Recuperar contraseña', 'No puedo ingresar a mi cuenta institucional.', 4, 3, 2, 'pendiente', 3, '2025-10-28 10:00:00'),
+('Problemas eléctricos en aula 102', 'Tomacorrientes dañados en varios puestos.', 5, 4, 1, 'pendiente', 3, '2025-10-29 11:00:00'),
+('Consulta general sobre correo institucional', 'Solicitud de acceso a correo de docente.', 4, 5, 3, 'pendiente', 2, '2025-10-30 13:00:00');
 
 -- HISTORIAL DE TICKET
 INSERT INTO Historial_ticket (IDticket, from_state, to_state, cambiado_por, comentario)
@@ -354,17 +360,3 @@ VALUES
 (3, 4, 5, 'Excelente soporte'),
 (4, 5, 4, 'El mantenimiento fue correcto'),
 (5, 4, 5, 'Buena atención del soporte técnico');
-
-INSERT INTO ticket (Titulo, descripcion, IDUsuario, IDCategoria, prioridad, estado, IDTecnico, creado_en)
-VALUES
-('Proyector sin señal', 'El proyector del aula 302 no muestra imagen.', 4, 1, 2, 'pendiente', 2, '2025-10-27 09:00:00'),
-('Pago de matrícula no procesado', 'El sistema indica error al pagar la matrícula.', 5, 2, 3, 'en progreso', 3, '2025-10-27 14:00:00'),
-('Recuperar contraseña', 'No puedo ingresar a mi cuenta institucional.', 4, 3, 2, 'pendiente', 3, '2025-10-28 10:00:00'),
-('Problemas eléctricos en aula 102', 'Tomacorrientes dañados en varios puestos.', 5, 4, 1, 'pendiente', 3, '2025-10-29 11:00:00'),
-('Consulta general sobre correo institucional', 'Solicitud de acceso a correo de docente.', 4, 5, 3, 'pendiente', 2, '2025-10-30 13:00:00');
-
-UPDATE ticket SET creado_en = '2025-10-27 09:00:00' WHERE id = 1;
-UPDATE ticket SET creado_en = '2025-10-27 14:00:00' WHERE id = 2;
-UPDATE ticket SET creado_en = '2025-10-28 10:00:00' WHERE id = 3;
-UPDATE ticket SET creado_en = '2025-10-29 11:00:00' WHERE id = 4;
-UPDATE ticket SET creado_en = '2025-10-30 13:00:00' WHERE id = 5;

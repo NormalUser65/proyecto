@@ -85,9 +85,17 @@ export default function Header() {
                 to="/categorias/crear"
                 className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
                 >
-                  Crear Categoría
+                  Crear una Categoría
                   </Link>
                   </MenubarItem>
+              <MenubarItem asChild>
+                <Link to="/tecnicos/crear"
+                className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
+                >
+                  Crear un Técnico
+                  </Link>
+                  </MenubarItem>
+
                   </MenubarContent>
                   </MenubarMenu>
                   </Menubar>

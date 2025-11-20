@@ -67,7 +67,7 @@ export function ActualizarCategoria() {
       if (response.data.success) {
         const cat = response.data.data;
 
-        // 2. Cargar opciones para selects
+        // Cargar opciones para selects
         const slaRes = await SLAService.getAll();
         const etiquetasRes = await EtiquetaService.getAll();
         const especialidadesRes = await EspecialidadService.getAll();

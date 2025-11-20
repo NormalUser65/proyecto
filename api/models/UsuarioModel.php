@@ -45,6 +45,8 @@ class UsuarioModel
     public function ListaDetalleTecnicos($id)
     {
         try {
+            $EspecialidadM = new EspecialidadModel();
+
             $vSql = "SELECT u.contrasenna, u.id AS IDTecnico, u.nombre AS NombreTecnico, u.email, u.disponibilidad,
         GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ', ') AS Especialidades,
         COUNT(DISTINCT t.id) AS TicketsActivos
@@ -52,23 +54,66 @@ class UsuarioModel
         LEFT JOIN Tecnico_especialidad te ON te.IDTecnico = u.id
         LEFT JOIN especialidad e ON e.id = te.IDEspecialidad
         LEFT JOIN ticket t ON t.IDTecnico = u.id AND t.activo = 1
-        WHERE u.IDRol = 2 AND u.id = '$id'
+        WHERE u.IDRol = 2 AND u.id = $id
         GROUP BY u.id, u.nombre, u.email, u.disponibilidad;";
+
             $vResultado = $this->enlace->ExecuteSQL($vSql);
-            return $vResultado;
+
+            if (!empty($vResultado)) {
+                $tecnico = $vResultado[0];
+            $listaEspecialidades = $EspecialidadM->listaEspecialidadTecnico($tecnico->IDTecnico);
+            $tecnico->ListaEsp = $listaEspecialidades;
+        }
+            return $tecnico;
         } catch (Exception $e) {
             handleException($e);
         }
     }
 
-    public function ActualizarTecnico($item)
+    public function ActualizarTecnico($objeto)
     {
         try {
-            $vSql = "";
+            $Sql = "Update usuario SET 
+            nombre = '$objeto->NombreTecnico',
+            email = '$objeto->email',
+            contrasenna = '$objeto->Contrasenna'
+            Where id=$objeto->IDTecnico";
+            $vResultado = $this->enlace->ExecuteSQL_DML($Sql);
 
+            $Sql = "Delete from Tecnico_especialidad where IDTecnico=$objeto->IDTecnico";
+            $vResultadoD = $this->enlace->executeSQL_DML($Sql);
 
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
-            return $vResultado;
+            if (!empty($objeto->Especialidades)) {
+                foreach ($objeto->Especialidades as $item) {
+                    $item = intval($item);
+                $Sql = "INSERT INTO Tecnico_especialidad (IDTecnico, IDEspecialidad)
+                        VALUES ($objeto->IDTecnico, $item)";
+                $vResultadoG = $this->enlace->executeSQL_DML($Sql);
+                }
+            }
+            return $this->ListaDetalleTecnicos($objeto->IDTecnico);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+    public function CrearTecnico($objeto)
+    {
+        try {
+            $Sql = "INSERT INTO usuario (email, contrasenna, nombre, IDRol, language, activo, disponibilidad)
+                    VALUES ('$objeto->email','$objeto->Contrasenna', '$objeto->NombreTecnico', 2, 'es', 1, 'disponible')";
+            $idTecnico = $this->enlace->executeSQL_DML_last($Sql);
+
+                if (!empty($objeto->Especialidades)) {
+                    foreach ($objeto->Especialidades as $item) {
+                        $item = intval($item);
+                        $Sql = "INSERT INTO Tecnico_especialidad (IDTecnico, IDEspecialidad)
+                        VALUES ($idTecnico, $item)";
+                        $this->enlace->executeSQL_DML($Sql);
+                    }
+                }
+
+            return $this->ListaDetalleTecnicos($idTecnico);
         } catch (Exception $e) {
             handleException($e);
         }

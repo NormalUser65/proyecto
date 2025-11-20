@@ -13,9 +13,10 @@ import { ListaCategoria } from './components/Categoria/ListaCategoria'
 import { ListaTicket } from './components/Ticket/ListaTicket'
 import { VistaSemanalAsignaciones } from "./components/Asignacion/VistaSemanalAsignaciones"
 import { DetalleCategoria } from './components/Categoria/DetalleCategoria'
-import { CrearCategoria } from './components/Categoria/CrearCategoria'
 import { DetalleTicket } from './components/Ticket/DetalleTicket'
 import { ActualizarTecnico } from './components/Tecnico/ActualizarTecnico'
+import { CrearTecnico } from './components/Tecnico/CrearTecnico'
+import { CrearCategoria } from './components/Categoria/CrearCategoria'
 import { ActualizarCategoria } from './components/Categoria/ActualizarCategoria'
 
 const rutas = createBrowserRouter([
@@ -33,10 +34,8 @@ const rutas = createBrowserRouter([
       { path: 'asignaciones', element: <VistaSemanalAsignaciones /> },
       { path: 'categorias/detalle/:id', element: <DetalleCategoria /> },
       // editar tecnicos
-      { path:"tecnicos/editar/:id",element:<ActualizarTecnico /> },
-      {
-        path:"tecnicos/editar/:id",element:<ActualizarTecnico />
-      },
+      {path:"tecnicos/editar/:id",element:<ActualizarTecnico />},
+      {path: "tecnicos/crear", element: <CrearTecnico/>},
 
       // Mantenimiento categorias
       {path: 'categorias/crear', element: <CrearCategoria/>},

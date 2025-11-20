@@ -24,8 +24,8 @@ export function DetalleTecnico() {
             try {
                 const response = await UsuariosService.obtenerUsuarioPorId(id)
                 // Si la petición es exitosa, se guardan los datos 
-                console.log(response.data);
-                setCategory(response.data);
+                console.log(response.data.data);
+                setCategory(response.data.data);
                 if(!response.data.success){ 
                             setError(response.data.message) 
                         } 
@@ -42,10 +42,10 @@ export function DetalleTecnico() {
 
     if (loading) return <LoadingGrid count={1} type="grid" />;
     if (error) return <ErrorAlert title="Error al cargar el Tecnico" message={error} />;
-    if (!category || category.data.length === 0)
+    if (!category)
         return <EmptyState message="No se encontraron datos para este tecnico." />;
 
-    const data = category.data[0];
+    const data = category;
 
     return (
     <div className="max-w-4xl mx-auto py-12 px-4">

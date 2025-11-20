@@ -27,13 +27,8 @@ import { CustomMultiSelect } from "../ui/custom/custom-multiple-select"; // sele
 import { CustomSelect } from "../ui/custom/custom-select";
 import { CustomInputField } from "../ui/custom/custom-input-field";
 
-export function ActualizarTecnico() {
-
-
-  const navigate = useNavigate();
-  //Obtener parámetro del id de la película
-  const { id }=useParams();
-  const BASE_URL_image= import.meta.env.VITE_BASE_URL+"uploads"
+export function CrearTecnico() {
+const navigate = useNavigate();
 
   /*** Estados para selects y preview de imagen ***/
   const [datosTecnico, SetearDataTecnico] = useState([]);
@@ -81,46 +76,26 @@ export function ActualizarTecnico() {
       Contrasenna: "",
       Especialidades: [],
     },
-    values: datosTecnico,
     resolver:yupResolver(TecnicoEsquema)
   });
+
   
   /***Listados de carga en el formulario ***/
   useEffect(()=>{
     const fechData=async()=>{
       try {
-        //Obtener El tecnico a actualizar
-        const tecnicoRes=await UsuarioService.obtenerUsuarioPorId(id);
+
         const especialidadesRes=await EspecialidadService.getAll();
-        // Si la petición es exitosa, se guardan los datos 
+
         SetearEspecialidades(especialidadesRes.data.data || []);
-        //Obtener pelicula y asignarla formulario
 
-
-        if(tecnicoRes.data){
-          const tecnico=tecnicoRes.data.data;
-          console.log(tecnico)
-          
-          //Carga de las especialidades
-        let especialidadesArray = [];
-        if (Array.isArray(tecnico.ListaEsp)) {
-          especialidadesArray = tecnico.ListaEsp.map(e => String(e.id_especialidad));
-        }
-          reset({
-            IDTecnico: tecnico.IDTecnico,
-            NombreTecnico: tecnico.NombreTecnico,
-            email: tecnico.email,
-            Contrasenna: tecnico.contrasenna,
-            Especialidades: especialidadesArray,
-          }) 
-        }
       } catch (error) {
         console.log(error)
         if(error.name != "AbortError") setError(error.message)
       }
     }
     fechData()
-  },[id])
+  },[])
 
   /*** Submit ***/
   const onSubmit = async (datos) => {
@@ -130,21 +105,20 @@ export function ActualizarTecnico() {
       if (await TecnicoEsquema.isValid(datos)) {
         console.log(datos)
 
-      const response = await UsuarioService.ActualizarTecnico(datos);
-      console.log(response.data) 
+      const response = await UsuarioService.CrearTecnico(datos);
     if (response.data) {
-          toast.success(`El tecnico actualizado #${response.data.data.IDTecnico} - ${response.data.data.NombreTecnico}`, { 
+          toast.success(`Técnico Agregado #${response.data.data.IDTecnico} - ${response.data.data.NombreTecnico}`, { 
             duration: 3000, 
             position: "top-center", 
           }); 
     } else {
-      setError(response.data?.message || "No se pudo actualizar el técnico");
+      setError(response.data?.message || "No se pudo crear el técnico");
     }
     navigate("/tecnicos");
   }
     } catch (err) {
       console.error(err);
-      setError("Error al editar el usuario");
+      setError("Error al crear el Técnico");
     }
   };
 
@@ -152,7 +126,7 @@ export function ActualizarTecnico() {
 
   return (
     <Card className="rounded-2xl border-primary/60 p-6 max-w-5xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Actualizar Técnico</h2>
+      <h2 className="text-2xl font-bold mb-6">Crear Técnico</h2>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 

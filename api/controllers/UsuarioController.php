@@ -84,4 +84,45 @@ class Usuario
         }
     }
 
+    public function update()
+    {
+        try {
+            $request = new Request();
+            $response = new Response();
+            //Obtener json enviado
+            $inputJSON = $request->getJSON();
+            error_log("DEBUG: " . print_r($inputJSON, true));
+            //Instancia del modelo
+            $Usuario = new UsuarioModel();
+            //Acción del modelo a ejecutar
+            $result = $Usuario->ActualizarTecnico($inputJSON);
+            //Dar respuesta
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            $response->toJSON($result);
+            handleException($e);
+            
+        }
+    }
+
+    public function create()
+    {
+        try {
+            $request = new Request();
+            $response = new Response();
+            //Obtener json enviado
+            $inputJSON = $request->getJSON();
+            //Instancia del modelo
+            $Usuario = new UsuarioModel();
+            //Acción del modelo a ejecutar
+            $result = $Usuario->CrearTecnico($inputJSON);
+            //Dar respuesta
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            $response->toJSON($result);
+            handleException($e);
+            
+        }
+    }
+
 }

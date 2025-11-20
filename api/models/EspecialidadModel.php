@@ -22,19 +22,25 @@ class EspecialidadModel
     }
     /*Obtiene la lista de especialidades de un tecnico*/
     public function listaEspecialidadTecnico($id)
-    {
-        try {
-            //Consulta sql
-            $vSql = "SELECT e.id AS id_especialidad, e.codigo, e.nombre,e.descripcion FROM Tecnico_especialidad te 
-            INNER JOIN especialidad e ON te.IDEspecialidad = e.id WHERE te.IDTecnico = 2;";
-            //Ejecutar la consulta
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
-            // Retornar el objeto
-            return $vResultado[0];
-        } catch (Exception $e) {
-            handleException($e);
-        }
+{
+    try {
+        // Consulta SQL usando el ID real
+        $vSql = "SELECT 
+                    e.id AS id_especialidad, 
+                    e.nombre
+                FROM Tecnico_especialidad te 
+                INNER JOIN especialidad e 
+                ON te.IDEspecialidad = e.id 
+                WHERE te.IDTecnico = $id;";
+
+        $vResultado = $this->enlace->ExecuteSQL($vSql);
+        return $vResultado;
+
+    } catch (Exception $e) {
+        handleException($e);
     }
+}
+
 
     /*Obtener por el nombre*/
     public function getNombre($nombre)

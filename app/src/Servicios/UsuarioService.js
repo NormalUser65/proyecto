@@ -17,12 +17,16 @@ class UsuarioService {
   }
 
   ActualizarTecnico(Tecnico) {
-    return axios({
+  return axios({
       method: 'put',
       url: BASE_URL,
       data: JSON.stringify(Tecnico)
 
     })
+  }
+
+  CrearTecnico(Tecnico) {
+    return axios.post(BASE_URL, JSON.stringify(Tecnico));
   }
 }
 
