@@ -31,6 +31,10 @@ class UsuarioService {
   CrearTecnico(Tecnico) {
     return axios.post(BASE_URL, JSON.stringify(Tecnico));
   }
+
+  ValEmail(email){
+    return axios.get(`${BASE_URL}/ValEmail/${email}`);
+  }
 }
 
 export default new UsuarioService();

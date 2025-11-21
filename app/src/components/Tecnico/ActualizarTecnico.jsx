@@ -48,13 +48,27 @@ export function ActualizarTecnico() {
             .min(2, "El nombre debe tener al menos 2 caracteres"),
 
     email: yup.string()
-      .required('El correo es requerido')
-      .test('is-email-valid', 'Por favor, introduce un correo electrónico válido',
-          value => {
-          //usa el validator
-          if (!value) return true; 
-            return validator.isEmail(value);
-          }), 
+          .required('El correo es requerido')
+          .test('email-validator', 'Por favor, introduce un correo electrónico válido',
+              dato => {
+              //validator
+              if (!dato) return true; 
+                return validator.isEmail(dato);
+              })
+          .test('validar-email', 'Este email ya fue registrado',
+            async (dato) => {
+              if (!dato) return true;
+              try {
+                const correo = await UsuarioService.ValEmail(dato);
+                const exists = correo.data?.data?.exists;
+                return !exists;
+              } catch (error) {
+                console.log(error);
+                return true;
+              }
+            }
+          )
+              ,
 
     Contrasenna: yup.string()
           .required("La contraseña es requerida")
@@ -65,6 +79,9 @@ export function ActualizarTecnico() {
           .matches(/[!@#$%&*()?":{}|<>]/, 'La contraseña debe tener al menos un carácter especial'),
 
     Especialidades: yup.array().min(1, 'El Técnico debe tener mínimo una especialidad'), 
+        Estado: yup.string()
+        .oneOf(['disponible', 'No disponible'], 'debe seleccionar si está disponible o No disponible')
+        .required('El estado es requerido')
   })
 
   /*** React Hook Form ***/
@@ -80,6 +97,7 @@ export function ActualizarTecnico() {
       email: "",
       Contrasenna: "",
       Especialidades: [],
+      Estado: "disponible"
     },
     values: datosTecnico,
     resolver:yupResolver(TecnicoEsquema)
@@ -89,10 +107,10 @@ export function ActualizarTecnico() {
   useEffect(()=>{
     const fechData=async()=>{
       try {
-        //Obtener El tecnico a actualizar
+        //Obtener
         const tecnicoRes=await UsuarioService.obtenerUsuarioPorId(id);
         const especialidadesRes=await EspecialidadService.getAll();
-        // Si la petición es exitosa, se guardan los datos 
+        //se guardan los datos 
         SetearEspecialidades(especialidadesRes.data.data || []);
         //Obtener pelicula y asignarla formulario
 
@@ -198,7 +216,28 @@ export function ActualizarTecnico() {
                   error={errors.Contrasenna?.message} />}
             />
           </div>
+          {/*Estado*/}
+        <div>
+          <Controller
+            name="Estado"
+            control={control}
+            render={({ field }) => (
+              <div>
+                <label className="block font-medium mb-1">Estado</label>
+                <select {...field} className="border rounded p-2 w-full text-black">
+                  <option value="disponible">disponible</option>
+                  <option value="No disponible">No disponible</option>
+                </select>
+                {errors.Estado && (
+                  <p className="text-red-600 text-sm">{errors.Estado.message}</p>
+                )}
+          </div>
+            )}
+        />
         </div>
+        </div>
+
+        
 
         {/* Especialidades */}
         <div>

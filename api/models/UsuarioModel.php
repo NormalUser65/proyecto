@@ -76,7 +76,8 @@ class UsuarioModel
             $Sql = "Update usuario SET 
             nombre = '$objeto->NombreTecnico',
             email = '$objeto->email',
-            contrasenna = '$objeto->Contrasenna'
+            contrasenna = '$objeto->Contrasenna',
+            disponibilidad = '$objeto->Estado'
             Where id=$objeto->IDTecnico";
             $vResultado = $this->enlace->ExecuteSQL_DML($Sql);
 
@@ -99,9 +100,10 @@ class UsuarioModel
 
     public function CrearTecnico($objeto)
     {
+        error_log("DEBUG EN EL mODEL: " . print_r($objeto, true));
         try {
             $Sql = "INSERT INTO usuario (email, contrasenna, nombre, IDRol, language, activo, disponibilidad)
-                    VALUES ('$objeto->email','$objeto->Contrasenna', '$objeto->NombreTecnico', 2, 'es', 1, 'disponible')";
+                    VALUES ('$objeto->email','$objeto->Contrasenna', '$objeto->NombreTecnico', 2, 'es', 1, '$objeto->Estado')";
             $idTecnico = $this->enlace->executeSQL_DML_last($Sql);
 
                 if (!empty($objeto->Especialidades)) {
@@ -133,6 +135,20 @@ class UsuarioModel
             handleException($e);
         }
     }
+//Para la validación en el fronend de crear el usuario para saber si ya está registrado el correo
+    public function ValEmail($email)
+{
+    try {
+        $vSql = "SELECT COUNT(*) as total FROM usuario WHERE email = ?";
+        $resultado = $this->enlace->executeSQL_DML($vSql, [$email]);
+        return $resultado[0]['total'] > 0;
+    } catch (Exception $e) {
+        handleException($e);
+        return false;
+    }
+}
+
+
 
     public function obtenerusuarioPorId($id)
     {

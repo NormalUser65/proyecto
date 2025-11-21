@@ -44,12 +44,20 @@ const navigate = useNavigate();
 
     email: yup.string()
       .required('El correo es requerido')
-      .test('is-email-valid', 'Por favor, introduce un correo electrónico válido',
-          value => {
-          //usa el validator
-          if (!value) return true; 
-            return validator.isEmail(value);
-          }), 
+      .test('email-validator', 'Por favor, introduce un correo electrónico válido',
+          dato => {
+          //validator
+          if (!dato) return true; 
+            return validator.isEmail(dato);
+          })
+      .test('validar-email', 'Este email ya fue registrado', 
+        async (dato) => { 
+          if (!dato) return true; 
+          try { const correo = await UsuarioService.ValEmail(dato); 
+            return !correo.data?.data?.exists; 
+          } catch (error) { 
+            console.log(error) 
+            return true; } } ), 
 
     Contrasenna: yup.string()
           .required("La contraseña es requerida")
@@ -60,6 +68,9 @@ const navigate = useNavigate();
           .matches(/[!@#$%&*()?":{}|<>]/, 'La contraseña debe tener al menos un carácter especial'),
 
     Especialidades: yup.array().min(1, 'El Técnico debe tener mínimo una especialidad'), 
+    Estado: yup.string()
+    .oneOf(['disponible', 'No disponible'], 'debe seleccionar si está disponible o No disponible')
+    .required('El estado es requerido')
   })
 
   /*** React Hook Form ***/
@@ -69,11 +80,11 @@ const navigate = useNavigate();
     formState: { errors },
   } = useForm({
     defaultValues: {
-      IDTecnico:"",
       NombreTecnico:"",
       email: "",
       Contrasenna: "",
       Especialidades: [],
+      Estado: "disponible"
     },
     resolver:yupResolver(TecnicoEsquema)
   });
@@ -98,7 +109,7 @@ const navigate = useNavigate();
 
   /*** Submit ***/
   const onSubmit = async (datos) => {
-
+console.log("DEBUG onSubmit datos:", datos);
     try {
       console.log(datos)
       if (await TecnicoEsquema.isValid(datos)) {
@@ -171,6 +182,27 @@ const navigate = useNavigate();
                   error={errors.Contrasenna?.message} />}
             />
           </div>
+
+          {/*Estado*/}
+        <div>
+          <Controller
+            name="Estado"
+            control={control}
+            render={({ field }) => (
+              <div>
+                <label className="block font-medium mb-1">Estado</label>
+                <select {...field} className="border rounded p-2 w-full text-black">
+                  <option value="disponible">disponible</option>
+                  <option value="No disponible">No disponible</option>
+                </select>
+                {errors.Estado && (
+                  <p className="text-red-600 text-sm">{errors.Estado.message}</p>
+                )}
+          </div>
+            )}
+        />
+        </div>
+
         </div>
 
         {/* Especialidades */}

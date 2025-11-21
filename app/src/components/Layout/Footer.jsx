@@ -11,10 +11,9 @@ export function Footer() {
         </div>
 
         <div className="text-center text-sm md:text-base leading-tight">
-            <p className="font-medium">Desarrollado por:</p>
             <div className="p-1">
-                <p><span>Ana Paula Fernández Alfaro y Fabricio Arias Zamora</span></p>
-                <p>Universidad Tecnica Nacional</p> 
+                <p className="text-xs md:text-sm">Ana Fernández Alfaro y Fabricio Arias</p>
+                <p className="text-xs md:text-sm">Universidad Tecnica Nacional</p> 
             </div>
         </div>
         <div className="text-right text-sm md:text-base mt-3 md:mt-0 opacity-90">
