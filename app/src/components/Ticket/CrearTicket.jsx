@@ -235,6 +235,7 @@ export function CrearTicket() {
                 <CustomSelect
                   field={field}
                   data={dataPrioridades || []}
+                  label="Prioridad"
                   getOptionLabel={(item) => item.nombre}
                   getOptionValue={(item) => item.id}
                 />
