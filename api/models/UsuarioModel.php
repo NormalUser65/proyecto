@@ -22,9 +22,10 @@ class UsuarioModel
     }
 
     /*Lista con los datos de los t[ecnicos] esto es lo que se va a usar para generar las cartas*/
-    public function ListaTecnicos(){
-    try {
-        $vSql ='SELECT u.id AS IDTecnico, u.nombre AS NombreTecnico, u.email, u.disponibilidad,
+    public function ListaTecnicos()
+    {
+        try {
+            $vSql = 'SELECT u.id AS IDTecnico, u.nombre AS NombreTecnico, u.email, u.disponibilidad,
         GROUP_CONCAT(DISTINCT e.nombre SEPARATOR ", ") AS Especialidades,
         COUNT(DISTINCT t.id) AS TicketsActivos
         FROM usuario u
@@ -34,12 +35,12 @@ class UsuarioModel
         WHERE u.IDRol = 2
         GROUP BY u.id, u.nombre, u.email, u.disponibilidad;';
 
-        $vResultado = $this->enlace->ExecuteSQL($vSql);
-        return $vResultado;
-    } catch (Exception $e) {
-        handleException($e);
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado;
+        } catch (Exception $e) {
+            handleException($e);
+        }
     }
-}
 
     //Esta funcion es la que se va a usar para generar el detalle de los tecnicos
     public function ListaDetalleTecnicos($id)
@@ -61,9 +62,9 @@ class UsuarioModel
 
             if (!empty($vResultado)) {
                 $tecnico = $vResultado[0];
-            $listaEspecialidades = $EspecialidadM->listaEspecialidadTecnico($tecnico->IDTecnico);
-            $tecnico->ListaEsp = $listaEspecialidades;
-        }
+                $listaEspecialidades = $EspecialidadM->listaEspecialidadTecnico($tecnico->IDTecnico);
+                $tecnico->ListaEsp = $listaEspecialidades;
+            }
             return $tecnico;
         } catch (Exception $e) {
             handleException($e);
@@ -87,9 +88,9 @@ class UsuarioModel
             if (!empty($objeto->Especialidades)) {
                 foreach ($objeto->Especialidades as $item) {
                     $item = intval($item);
-                $Sql = "INSERT INTO Tecnico_especialidad (IDTecnico, IDEspecialidad)
+                    $Sql = "INSERT INTO Tecnico_especialidad (IDTecnico, IDEspecialidad)
                         VALUES ($objeto->IDTecnico, $item)";
-                $vResultadoG = $this->enlace->executeSQL_DML($Sql);
+                    $vResultadoG = $this->enlace->executeSQL_DML($Sql);
                 }
             }
             return $this->ListaDetalleTecnicos($objeto->IDTecnico);
@@ -100,27 +101,53 @@ class UsuarioModel
 
     public function CrearTecnico($objeto)
     {
-        error_log("DEBUG EN EL mODEL: " . print_r($objeto, true));
         try {
+            // Validar si el correo ya existe
+            if ($this->verificarEmail($objeto->email)) {
+                // En este punto no se crea nada, simplemente devolvemos la lista
+                return $this->ListaUsuarios();
+            }
+
             $Sql = "INSERT INTO usuario (email, contrasenna, nombre, IDRol, language, activo, disponibilidad)
-                    VALUES ('$objeto->email','$objeto->Contrasenna', '$objeto->NombreTecnico', 2, 'es', 1, '$objeto->Estado')";
+                VALUES ('$objeto->email','$objeto->Contrasenna', '$objeto->NombreTecnico', 2, 'es', 1, 'disponible')";
             $idTecnico = $this->enlace->executeSQL_DML_last($Sql);
 
-                if (!empty($objeto->Especialidades)) {
-                    foreach ($objeto->Especialidades as $item) {
-                        $item = intval($item);
-                        $Sql = "INSERT INTO Tecnico_especialidad (IDTecnico, IDEspecialidad)
+            if (!empty($objeto->Especialidades)) {
+                foreach ($objeto->Especialidades as $item) {
+                    $item = intval($item);
+                    $Sql = "INSERT INTO Tecnico_especialidad (IDTecnico, IDEspecialidad)
                         VALUES ($idTecnico, $item)";
-                        $this->enlace->executeSQL_DML($Sql);
-                    }
+                    $this->enlace->executeSQL_DML($Sql);
                 }
+            }
 
             return $this->ListaDetalleTecnicos($idTecnico);
         } catch (Exception $e) {
             handleException($e);
         }
     }
-    
+
+    public function verificarEmail($email)
+    {
+        try {
+            $emailNorm = strtolower(trim($email));
+            $vSql = "SELECT COUNT(*) as total FROM usuario WHERE email = '$emailNorm'";
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+
+            if (empty($vResultado)) return false;
+
+            $first = $vResultado[0];
+            $total = is_array($first) ? intval($first['total'] ?? 0) : intval($first->total ?? 0);
+
+            return $total > 0;
+        } catch (Exception $e) {
+            handleException($e);
+            return false;
+        }
+    }
+
+
+
 
     /* Obtener por email */
     public function get($email)
@@ -130,23 +157,22 @@ class UsuarioModel
             $vSql = "SELECT * FROM usuario WHERE email = '$email'";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado[0];
-
         } catch (Exception $e) {
             handleException($e);
         }
     }
-//Para la validación en el fronend de crear el usuario para saber si ya está registrado el correo
+    //Para la validación en el fronend de crear el usuario para saber si ya está registrado el correo
     public function ValEmail($email)
-{
-    try {
-        $vSql = "SELECT COUNT(*) as total FROM usuario WHERE email = ?";
-        $resultado = $this->enlace->executeSQL_DML($vSql, [$email]);
-        return $resultado[0]['total'] > 0;
-    } catch (Exception $e) {
-        handleException($e);
-        return false;
+    {
+        try {
+            $vSql = "SELECT COUNT(*) as total FROM usuario WHERE email = ?";
+            $resultado = $this->enlace->executeSQL_DML($vSql, [$email]);
+            return $resultado[0]['total'] > 0;
+        } catch (Exception $e) {
+            handleException($e);
+            return false;
+        }
     }
-}
 
 
 
@@ -157,7 +183,6 @@ class UsuarioModel
             $vSql = "SELECT * FROM usuario WHERE id = '$id'";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado[0];
-
         } catch (Exception $e) {
             handleException($e);
         }
@@ -170,10 +195,8 @@ class UsuarioModel
             $vSql = "SELECT * FROM usuario WHERE IDRol = $IdRol";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             return $vResultado;
-
         } catch (Exception $e) {
             handleException($e);
         }
     }
 }
-

@@ -69,16 +69,16 @@ class Usuario
     }
 
     public function ValEmail($email)
-{
-    try {
-        $Usuario = new UsuarioModel();
-        $exists = $Usuario->ValEmail($email);
-        $response = new Response();
-        $response->toJSON(["exists" => $exists]);
-    } catch (Exception $e) {
-        handleException($e);
+    {
+        try {
+            $Usuario = new UsuarioModel();
+            $exists = $Usuario->ValEmail($email);
+            $response = new Response();
+            $response->toJSON(["exists" => $exists]);
+        } catch (Exception $e) {
+            handleException($e);
+        }
     }
-}
 
 
     public function obtenerusuarioPorId($id)
@@ -114,7 +114,6 @@ class Usuario
         } catch (Exception $e) {
             $response->toJSON($result);
             handleException($e);
-            
         }
     }
 
@@ -136,8 +135,29 @@ class Usuario
         } catch (Exception $e) {
             $response->toJSON($result);
             handleException($e);
-            
         }
     }
 
+    public function verificarEmail($email)
+    {
+        try {
+            $response = new Response();
+            $UsuarioM = new UsuarioModel();
+            $existe = $UsuarioM->verificarEmail($email);
+
+            return $response->toJSON([
+                "success" => true,
+                "status" => 200,
+                "email" => $email,
+                "existe" => $existe
+            ]);
+        } catch (Exception $e) {
+            $response = new Response();
+            return $response->toJSON([
+                "success" => false,
+                "status" => 500,
+                "message" => $e->getMessage()
+            ]);
+        }
+    }
 }

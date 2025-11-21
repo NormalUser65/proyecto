@@ -3,22 +3,33 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate, useParams } from "react-router-dom";
-import toast from "react-hot-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 //Encargado/a de realizar esta parte: Ana Paula Fernández Alfaro
 
 //Validator
-import validator from 'validator';
+import validator from "validator";
 
 // shadcn/ui
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // icons
-import {Save, ArrowLeft } from "lucide-react";
+import { Save, ArrowLeft } from "lucide-react";
 
 // servicios
 import EspecialidadService from "@/Servicios/EspecialidadService";
@@ -30,50 +41,70 @@ import { CustomSelect } from "../ui/custom/custom-select";
 import { CustomInputField } from "../ui/custom/custom-input-field";
 
 export function CrearTecnico() {
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
   /*** Estados para selects y preview de imagen ***/
-  const [datosTecnico, SetearDataTecnico] = useState([]);
+  const [, SetearDataTecnico] = useState([]);
   const [datosEspecialidades, SetearEspecialidades] = useState([]);
+
+  const [openSuccess, setOpenSuccess] = useState(false);
+  const [createdName, setCreatedName] = useState("");
 
   const [error, setError] = useState("");
 
   /*** Esquema de validación Yup ***/
-  const TecnicoEsquema= yup.object({
-    NombreTecnico: yup.string()
-            .required('El nombre es requerido')
-            .min(2, "El nombre debe tener al menos 2 caracteres"),
+  const TecnicoEsquema = yup.object({
+    NombreTecnico: yup
+      .string()
+      .required("El nombre es requerido")
+      .min(2, "El nombre debe tener al menos 2 caracteres"),
 
-    email: yup.string()
-      .required('El correo es requerido')
-      .test('email-validator', 'Por favor, introduce un correo electrónico válido',
-          dato => {
+    email: yup
+      .string()
+      .required("El correo es requerido")
+      .test(
+        "email-validator",
+        "Por favor, introduce un correo electrónico válido",
+        (dato) => {
           //validator
-          if (!dato) return true; 
-            return validator.isEmail(dato);
-          })
-      .test('validar-email', 'Este email ya fue registrado', 
-        async (dato) => { 
-          if (!dato) return true; 
-          try { const correo = await UsuarioService.ValEmail(dato); 
-            return !correo.data?.data?.exists; 
-          } catch (error) { 
-            console.log(error) 
-            return true; } } ), 
+          if (!dato) return true;
+          return validator.isEmail(dato);
+        }
+      )
+      .test("validar-email", "Este email ya fue registrado", async (dato) => {
+        if (!dato) return true;
+        try {
+          const correo = await UsuarioService.ValEmail(dato);
+          return !correo.data?.data?.exists;
+        } catch (error) {
+          console.log(error);
+          return true;
+        }
+      }),
 
-    Contrasenna: yup.string()
-          .required("La contraseña es requerida")
-          .min(8, 'Deber contar con al menos 8 dígitos')
-          .matches(/[a-z]/, 'La contraseña debe tener al menos una minúscula')
-          .matches(/[A-Z]/, 'La contraseña debe tener al menos una mayúscula')
-          .matches(/[0-9]/, 'La contraseña debe tener al menos un número')
-          .matches(/[!@#$%&*()?":{}|<>]/, 'La contraseña debe tener al menos un carácter especial'),
+    Contrasenna: yup
+      .string()
+      .required("La contraseña es requerida")
+      .min(8, "Deber contar con al menos 8 dígitos")
+      .matches(/[a-z]/, "La contraseña debe tener al menos una minúscula")
+      .matches(/[A-Z]/, "La contraseña debe tener al menos una mayúscula")
+      .matches(/[0-9]/, "La contraseña debe tener al menos un número")
+      .matches(
+        /[!@#$%&*()?":{}|<>]/,
+        "La contraseña debe tener al menos un carácter especial"
+      ),
 
-    Especialidades: yup.array().min(1, 'El Técnico debe tener mínimo una especialidad'), 
-    Estado: yup.string()
-    .oneOf(['disponible', 'No disponible'], 'debe seleccionar si está disponible o No disponible')
-    .required('El estado es requerido')
-  })
+    Especialidades: yup
+      .array()
+      .min(1, "El Técnico debe tener mínimo una especialidad"),
+    Estado: yup
+      .string()
+      .oneOf(
+        ["disponible", "No disponible"],
+        "debe seleccionar si está disponible o No disponible"
+      )
+      .required("El estado es requerido"),
+  });
 
   /*** React Hook Form ***/
   const {
@@ -82,52 +113,48 @@ const navigate = useNavigate();
     formState: { errors },
   } = useForm({
     defaultValues: {
-      NombreTecnico:"",
+      NombreTecnico: "",
       email: "",
       Contrasenna: "",
       Especialidades: [],
-      Estado: "disponible"
+      Estado: "disponible",
     },
-    resolver:yupResolver(TecnicoEsquema)
+    resolver: yupResolver(TecnicoEsquema),
   });
 
-  
   /***Listados de carga en el formulario ***/
-  useEffect(()=>{
-    const fechData=async()=>{
+  useEffect(() => {
+    const fechData = async () => {
       try {
-
-        const especialidadesRes=await EspecialidadService.getAll();
+        const especialidadesRes = await EspecialidadService.getAll();
 
         SetearEspecialidades(especialidadesRes.data.data || []);
-
       } catch (error) {
-        console.log(error)
-        if(error.name != "AbortError") setError(error.message)
+        console.log(error);
+        if (error.name != "AbortError") setError(error.message);
       }
-    }
-    fechData()
-  },[])
+    };
+    fechData();
+  }, []);
 
   /*** Submit ***/
   const onSubmit = async (datos) => {
-console.log("DEBUG onSubmit datos:", datos);
     try {
-      console.log(datos)
       if (await TecnicoEsquema.isValid(datos)) {
-        console.log(datos)
+        const response = await UsuarioService.CrearTecnico(datos);
 
-      const response = await UsuarioService.CrearTecnico(datos);
-    if (response.data) {
-          toast.success(`Técnico Agregado #${response.data.data.IDTecnico} - ${response.data.data.NombreTecnico}`, { 
-            duration: 3000, 
-            position: "top-center", 
-          }); 
-    } else {
-      setError(response.data?.message || "No se pudo crear el técnico");
-    }
-    navigate("/tecnicos");
-  }
+        if (response.data?.success) {
+          setCreatedName(response.data.data.NombreTecnico);
+          setOpenSuccess(true);
+
+          setTimeout(() => {
+            setOpenSuccess(false);
+            navigate("/tecnicos");
+          }, 2000);
+        } else {
+          setError(response.data?.message || "No se pudo crear el técnico");
+        }
+      }
     } catch (err) {
       console.error(err);
       setError("Error al crear el Técnico");
@@ -137,113 +164,146 @@ console.log("DEBUG onSubmit datos:", datos);
   if (error) return <p className="text-red-600">{error}</p>;
 
   return (
-    <Card className="rounded-2xl border-primary/60 p-6 max-w-5xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Crear Técnico</h2>
+    <div className="py-12 px-4">
+      <Card className="rounded-2xl border-primary/60 p-6 max-w-5xl mx-auto">
+        <h2 className="text-2xl font-bold mb-6">Crear Técnico</h2>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-
-        {/*Nombre Completo*/}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 ">
-          <div>
-            {/* Controller entrada year */}
-            <Controller name="NombreTecnico" control={control} render={({field})=>
-              <CustomInputField 
-                {...field} 
-                label="Nombre Completo" 
-                placeholder="Ingrese el nombre completo"
-                error={errors.NombreTecnico?.message}
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/*Nombre Completo*/}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 ">
+            <div>
+              {/* Controller entrada year */}
+              <Controller
+                name="NombreTecnico"
+                control={control}
+                render={({ field }) => (
+                  <CustomInputField
+                    {...field}
+                    label="Nombre Completo"
+                    placeholder="Ingrese el nombre completo"
+                    error={errors.NombreTecnico?.message}
+                  />
+                )}
               />
-            } />
+            </div>
+
+            {/*Email*/}
+            <div>
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <CustomInputField
+                    {...field}
+                    label="Correo Electrónico"
+                    placeholder="correo_de_ejemplo@correo.com"
+                    error={errors.email?.message}
+                  />
+                )}
+              />
+            </div>
+
+            {/*contraseña*/}
+            <div>
+              <Controller
+                name="Contrasenna"
+                control={control}
+                render={({ field }) => (
+                  <CustomInputField
+                    {...field}
+                    label="Contraseña"
+                    error={errors.Contrasenna?.message}
+                  />
+                )}
+              />
+            </div>
+
+            {/*Estado*/}
+            <div>
+              <Controller
+                name="Estado"
+                control={control}
+                render={({ field }) => (
+                  <div>
+                    <label className="block font-medium mb-1">Estado</label>
+                    <select
+                      {...field}
+                      className="border rounded p-2 w-full text-black"
+                    >
+                      <option value="disponible">disponible</option>
+                      <option value="No disponible">No disponible</option>
+                    </select>
+                    {errors.Estado && (
+                      <p className="text-red-600 text-sm">
+                        {errors.Estado.message}
+                      </p>
+                    )}
+                  </div>
+                )}
+              />
+            </div>
+
+            <div>
+              <Label htmlFor="cargaTrabajo">Carga de trabajo</Label>
+              <Input
+                id="cargaTrabajo"
+                value={0}
+                disabled
+                className="text-black"
+              />
+            </div>
           </div>
 
-
-          {/*Email*/}
+          {/* Especialidades */}
           <div>
+            {/* Controller entrada Especialidades */}
             <Controller
-              name="email"
-              control={control}
-              render={({ field }) =>
-                <CustomInputField
-                  {...field}
-                  label="Correo Electrónico"
-                  placeholder="correo_de_ejemplo@correo.com"
-                  error={errors.email?.message} />
-              }
-            />
-          </div>
-
-          {/*contraseña*/}
-          <div>
-            <Controller
-              name="Contrasenna"
-              control={control}
-              render={({ field }) =>
-                <CustomInputField
-                  {...field}
-                  label="Contraseña"
-                  error={errors.Contrasenna?.message} />}
-            />
-          </div>
-
-          {/*Estado*/}
-          <div>
-            <Controller
-              name="Estado"
+              name="Especialidades"
               control={control}
               render={({ field }) => (
-                <div>
-                  <label className="block font-medium mb-1">Estado</label>
-                  <select {...field} className="border rounded p-2 w-full text-black">
-                    <option value="disponible">disponible</option>
-                    <option value="No disponible">No disponible</option>
-                  </select>
-                  {errors.Estado && (
-                    <p className="text-red-600 text-sm">{errors.Estado.message}</p>
-                  )}
-                </div>
+                <CustomMultiSelect
+                  field={field}
+                  data={datosEspecialidades}
+                  label="Especialidades"
+                  getOptionLabel={(item) => item.nombre}
+                  getOptionValue={(item) => item.id_especialidad ?? item.id}
+                  error={errors.Especialidades?.message}
+                  placeholder="Seleccione la(s) especialidad(es)"
+                />
               )}
             />
           </div>
 
-          <div>
-            <Label htmlFor="cargaTrabajo">Carga de trabajo</Label>
-            <Input id="cargaTrabajo" value={0} disabled className="text-black"/>
+          <div className="flex justify-between gap-4 mt-6">
+            <Button
+              type="button"
+              variant="default"
+              className="flex items-center gap-2 bg-accent text-white"
+              onClick={() => navigate(-1)}
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Regresar
+            </Button>
+            {/* Botón Guardar */}
+            <Button type="submit" className="flex-1">
+              <Save className="w-4 h-4" />
+              Guardar
+            </Button>
           </div>
-        </div>
-
-        {/* Especialidades */}
-        <div>
-          {/* Controller entrada Especialidades */}
-          <Controller name="Especialidades" control={control} render={({field})=> 
-            <CustomMultiSelect
-              field={field}
-              data={datosEspecialidades}
-              label="Especialidades"
-              getOptionLabel={(item)=>item.nombre}
-              getOptionValue={(item)=> item.id_especialidad ?? item.id}
-              error={errors.Especialidades?.message}
-              placeholder="Seleccione la(s) especialidad(es)"
-            />
-          } />
-        </div>
-
-        <div className="flex justify-between gap-4 mt-6">
-          <Button
-            type="button"
-            variant="default"
-            className="flex items-center gap-2 bg-accent text-white"
-            onClick={() => navigate(-1)}
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Regresar
-          </Button>
-          {/* Botón Guardar */}
-          <Button type="submit" className="flex-1">
-            <Save className="w-4 h-4" />
-            Guardar
-          </Button>
-        </div>
-      </form>
-    </Card>
+        </form>
+      </Card>
+      {/* Modal de éxito */}
+      <Dialog open={openSuccess} onOpenChange={setOpenSuccess}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>¡Técnico creado con éxito!</DialogTitle>
+            <DialogDescription>
+              Se creó el técnico <strong>{createdName}</strong>. Serás
+              redirigido al listado en unos segundos.
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 }
