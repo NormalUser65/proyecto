@@ -196,7 +196,7 @@ export function CrearTicket() {
             {errors.Titulo && (
               <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
                 {errors.Titulo.message}
-                </p>
+              </p>
             )}
           </div>
 
@@ -225,6 +225,7 @@ export function CrearTicket() {
 
           {/* Prioridad */}
           <div>
+            <Label className="block mb-2 font-semibold">Prioridad</Label>
             <Controller
               name="prioridad"
               control={control}
@@ -232,7 +233,6 @@ export function CrearTicket() {
                 <CustomSelect
                   field={field}
                   data={dataPrioridades || []}
-                  label="Prioridad"
                   getOptionLabel={(item) => item.nombre}
                   getOptionValue={(item) => item.id}
                 />
