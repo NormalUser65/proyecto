@@ -53,7 +53,7 @@ export function CrearTicket() {
       .string()
       .required("El título es requerido")
       .min(10, "Debe tener al menos 10 caracteres")
-      .max(255, "No puede superar los 255 caracteres"),
+      .max(250, "No puede superar los 250 caracteres"),
     descripcion: yup
       .string()
       .required("La descripción es requerida")
