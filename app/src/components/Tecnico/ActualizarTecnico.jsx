@@ -5,6 +5,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 
+//Encargado/a de realizar esta parte: Ana Paula Fernández Alfaro
+
 //Validator
 import validator from 'validator';
 

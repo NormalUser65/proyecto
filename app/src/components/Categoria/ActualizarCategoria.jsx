@@ -18,6 +18,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 
+//Encargado/a de realizar esta parte: Fabricio Arias Zamora
+
 // Servicios
 import CategoriaService from "../../Servicios/CategoriaService";
 import SLAService from "../../Servicios/SlaService";
