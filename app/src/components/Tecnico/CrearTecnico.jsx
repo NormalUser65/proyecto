@@ -184,25 +184,29 @@ console.log("DEBUG onSubmit datos:", datos);
           </div>
 
           {/*Estado*/}
-        <div>
-          <Controller
-            name="Estado"
-            control={control}
-            render={({ field }) => (
-              <div>
-                <label className="block font-medium mb-1">Estado</label>
-                <select {...field} className="border rounded p-2 w-full text-black">
-                  <option value="disponible">disponible</option>
-                  <option value="No disponible">No disponible</option>
-                </select>
-                {errors.Estado && (
-                  <p className="text-red-600 text-sm">{errors.Estado.message}</p>
-                )}
+          <div>
+            <Controller
+              name="Estado"
+              control={control}
+              render={({ field }) => (
+                <div>
+                  <label className="block font-medium mb-1">Estado</label>
+                  <select {...field} className="border rounded p-2 w-full text-black">
+                    <option value="disponible">disponible</option>
+                    <option value="No disponible">No disponible</option>
+                  </select>
+                  {errors.Estado && (
+                    <p className="text-red-600 text-sm">{errors.Estado.message}</p>
+                  )}
+                </div>
+              )}
+            />
           </div>
-            )}
-        />
-        </div>
 
+          <div>
+            <Label htmlFor="cargaTrabajo">Carga de trabajo</Label>
+            <Input id="cargaTrabajo" value={0} disabled className="text-black"/>
+          </div>
         </div>
 
         {/* Especialidades */}

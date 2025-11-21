@@ -235,6 +235,11 @@ export function ActualizarTecnico() {
             )}
         />
         </div>
+
+        <div>
+            <Label htmlFor="cargaTrabajo">Carga de trabajo</Label>
+            <Input id="cargaTrabajo" value={0} disabled className="text-black"/>
+          </div>
         </div>
 
         
