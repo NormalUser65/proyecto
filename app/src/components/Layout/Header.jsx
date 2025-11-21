@@ -106,12 +106,7 @@ export default function Header() {
                     Crear un Técnico
                   </Link>
                 </MenubarItem>
-              </MenubarContent>
-            </MenubarMenu>
-          </Menubar>
-          <Menubar>
-            <MenubarMenu>
-              <MenubarContent>
+
                 <MenubarItem asChild>
                   <Link
                     to="/tickets/crear"
@@ -123,6 +118,7 @@ export default function Header() {
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
+          
         </nav>
 
         {/* Íconos derecha */}
@@ -180,7 +176,7 @@ export default function Header() {
                   className="flex items-center gap-2 text-xl font-semibold"
                   onClick={() => setMobileOpen(false)}
                 >
-                  <Clapperboard /> MovieSphere
+                  
                 </Link>
 
                 <div>

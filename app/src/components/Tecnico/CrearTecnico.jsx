@@ -66,7 +66,6 @@ const navigate = useNavigate();
   const {
     control,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
