@@ -190,7 +190,19 @@ class asignacionModel
                        INNER JOIN prioridad p ON t.IDPrioridad = p.id
                        WHERE t.IDEstado = 1 AND t.activo = 1
                        ORDER BY puntaje DESC";
+
+        /** @var array<object>|null $tickets */
         $tickets = $this->enlace->executeSQL($sqlTickets);
+
+        // Validación defensiva: si no hay tickets, devolver mensaje claro
+        if (empty($tickets)) {
+            return [
+                "success" => false,
+                "status"  => 200,
+                "message" => "No hay tickets pendientes para asignar",
+                "data"    => []
+            ];
+        }
 
         $resultados = [];
 
@@ -199,6 +211,7 @@ class asignacionModel
             $categoriaId = intval($ticket->IDCategoria);
             $usuarioId   = intval($ticket->IDUsuario);
             $puntaje     = intval($ticket->puntaje);
+            $tiempoRest  = intval($ticket->tiempoRestanteSLA);
 
             // 2. Buscar técnicos disponibles para la categoría
             $sqlTecnicos = "SELECT u.id, u.nombre, e.nombre AS especialidadCoincidente,
@@ -240,7 +253,7 @@ class asignacionModel
                 $sqlHistorial = "INSERT INTO Historial_ticket 
                                  (IDticket, from_state, to_state, cambiado_por, comentario, Creado_el)
                                  VALUES ($ticketId, 1, 2, $usuarioId, '" . addslashes($justificacion) . "', NOW())";
-                $historialId = $this->enlace->executeSQL_DML_last($sqlHistorial);
+                $this->enlace->executeSQL_DML_last($sqlHistorial);
 
                 // 6. Insertar asignación
                 $sqlAsignacion = "INSERT INTO asignacion 
@@ -249,17 +262,30 @@ class asignacionModel
                 $this->enlace->executeSQL_DML($sqlAsignacion);
 
                 $resultados[] = [
-                    "ticketId"     => $ticketId,
-                    "tecnicoId"    => $tecnicoId,
-                    "puntaje"      => $puntaje,
-                    "especialidad" => $especialidad,
-                    "regla"        => $reglaTxt,
-                    "mensaje"      => "Ticket asignado automáticamente"
+                    "ticketId"       => $ticketId,
+                    "tecnicoId"      => $tecnicoId,
+                    "tecnicoNombre"  => $tecnicos[0]->nombre,
+                    "puntaje"        => $puntaje,
+                    "tiempoRestante" => $tiempoRest,
+                    "especialidad"   => $especialidad,
+                    "regla"          => $reglaTxt,
+                    "mensaje"        => "Ticket asignado automáticamente"
                 ];
             }
         }
 
+        // Si ningún ticket pudo ser asignado
+        if (empty($resultados)) {
+            return [
+                "success" => false,
+                "status"  => 200,
+                "message" => "No hay técnicos disponibles en este momento para asignar tickets",
+                "data"    => []
+            ];
+        }
+
         return ["success" => true, "data" => $resultados];
+
     } catch (Exception $e) {
         handleException($e);
     }
