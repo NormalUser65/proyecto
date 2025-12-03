@@ -35,6 +35,12 @@ class UsuarioService {
   ValEmail(email){
     return axios.get(`${BASE_URL}/ValEmail/${email}`);
   }
+  // Nuevo método para técnicos filtrados por categoría
+  getTecnicosPorCategoria(categoriaId) {
+    return axios.get(`${BASE_URL}/getTecnicosPorCategoria`, {
+      params: { categoriaId },
+    });
+  }
 }
 
 export default new UsuarioService();

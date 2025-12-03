@@ -199,4 +199,27 @@ class UsuarioModel
             handleException($e);
         }
     }
+
+    public function getTecnicosPorCategoria($categoriaId)
+    {
+        try {
+            $vSql = "SELECT u.id, u.nombre, GROUP_CONCAT(e.nombre SEPARATOR ', ') AS especialidades,
+            (SELECT COUNT(*) 
+            FROM ticket t 
+            WHERE t.IDTecnico = u.id 
+            AND t.IDEstado IN (2,3)) AS carga
+            FROM usuario u
+            INNER JOIN Tecnico_especialidad te ON u.id = te.IDTecnico
+            INNER JOIN especialidad e ON te.IDEspecialidad = e.id
+            INNER JOIN especialidad_categoria ec ON e.id = ec.IDEspecialidad
+            WHERE u.activo = 1
+            AND ec.IDCategoria = $categoriaId
+            GROUP BY u.id, u.nombre
+            HAVING carga <= 5";
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return ["success" => true, "data" => $vResultado];
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
 }

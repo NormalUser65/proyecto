@@ -1,6 +1,11 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 import { Info, CalendarDays, Tag, User, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -49,6 +54,34 @@ export function ListaCartTicket({ data }) {
                   <TooltipContent>Ver detalle</TooltipContent>
                 </Tooltip>
               </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span>
+                      <Button
+                        asChild
+                        variant="secondary"
+                        disabled={item.estado_nombre === "Pendiente"}
+                        className="rounded-full bg-secondary/20 hover:bg-secondary/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {item.estado_nombre === "Pendiente" ? (
+                          <span>Cambiar Estado</span>
+                        ) : (
+                          <Link to={`cambiarEstado/${item.id}`}>
+                            Cambiar Estado
+                          </Link>
+                        )}
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  {item.estado_nombre === "Pendiente" && (
+                    <TooltipContent>
+                      El estado inicial "Pendiente" no puede ser modificado
+                      desde aquí.
+                    </TooltipContent>
+                  )}
+                </Tooltip>
+              </TooltipProvider>
             </div>
 
             {/* Contenido */}
@@ -56,7 +89,10 @@ export function ListaCartTicket({ data }) {
               <p className="text-sm text-muted-foreground">"{item.Titulo}"</p>
               <p className="text-sm text-muted-foreground flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 text-secondary" />
-                Estado: <span className="text-foreground ml-1">{item.estado}</span>
+                Estado:{" "}
+                <span className="text-foreground ml-1">
+                  {item.estado_nombre}
+                </span>
               </p>
               <p className="text-sm text-muted-foreground flex items-center gap-2">
                 <CalendarDays className="h-4 w-4 text-secondary" />

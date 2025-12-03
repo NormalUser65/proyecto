@@ -73,7 +73,7 @@ export function DetalleTicket() {
           <div className="flex items-center gap-4">
             <AlertCircle className="h-5 w-5 text-secondary" />
             <span className="font-semibold">Estado:</span>
-            <Badge variant="outline">{data.estado}</Badge>
+            <Badge variant="outline">{data.estado_nombre}</Badge>
           </div>
           <div className="flex items-center gap-4">
             <Tag className="h-5 w-5 text-secondary" />

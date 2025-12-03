@@ -4,13 +4,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Save } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,} from "@/components/ui/dialog";
 
 //Encargado/a de realizar esta parte: Fabricio Arias Zamora
 
@@ -72,7 +66,13 @@ export function CrearTicket() {
       .number()
       .typeError("Seleccione una etiqueta válida")
       .required("La etiqueta es requerida"),
-  });
+    comentario: yup
+      .string()
+      .nullable()
+      .notRequired()
+      .test("comentario-length","Debe tener al menos 5 caracteres",(value) => !value || value.length >= 5),
+      imagenes: yup.array().of(yup.mixed()).optional(),
+    });
 
   /*** React Hook Form ***/
   const {
@@ -87,6 +87,8 @@ export function CrearTicket() {
       prioridad: "",
       IDCategoria: "",
       IDEtiqueta: "",
+      comentario: "",
+      imagenes: [],
     },
     resolver: yupResolver(ticketSchema),
   });
@@ -145,6 +147,8 @@ export function CrearTicket() {
         ...dataForm,
         IDUsuario: usuarioSolicitanteId,
         IDPrioridad: dataForm.prioridad,
+        comentario: dataForm.comentario,
+        imagenes: dataForm.imagenes || [],
       };
       const response = await TicketService.createTicket(payload);
 
@@ -173,174 +177,201 @@ export function CrearTicket() {
 
   if (error) return <p className="text-red-600">{error}</p>;
 
-  return (
-    <div className="py-12 px-4">
-      <Card className="p-8 max-w-3xl mx-auto shadow-lg">
-        <h2 className="text-2xl font-bold mb-8 text-center">Crear Ticket</h2>
+return (
+  <div className="py-12 px-4">
+    <Card className="p-8 max-w-3xl mx-auto shadow-lg">
+      <h2 className="text-2xl font-bold mb-8 text-center">Crear Ticket</h2>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-          {/* Título */}
-          <div>
-            <Label htmlFor="Titulo" className="block mb-2 font-semibold">
-              Título
-            </Label>
-            <Controller
-              name="Titulo"
-              control={control}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  id="Titulo"
-                  placeholder="Ingrese el título del ticket"
-                />
-              )}
-            />
-            {errors.Titulo && (
-              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-                {errors.Titulo.message}
-              </p>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+        {/* Título */}
+        <div>
+          <Label htmlFor="Titulo" className="block mb-2 font-semibold">
+            Título
+          </Label>
+          <Controller
+            name="Titulo"
+            control={control}
+            render={({ field }) => (
+              <Input {...field} id="Titulo" placeholder="Ingrese el título del ticket" />
             )}
-          </div>
-
-          {/* Descripción */}
-          <div>
-            <Label htmlFor="descripcion" className="block mb-2 font-semibold">
-              Descripción
-            </Label>
-            <Controller
-              name="descripcion"
-              control={control}
-              render={({ field }) => (
-                <Input
-                  {...field}
-                  id="descripcion"
-                  placeholder="Descripción del ticket"
-                />
-              )}
-            />
-            {errors.descripcion && (
-              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-                {errors.descripcion.message}
-              </p>
-            )}
-          </div>
-
-          {/* Prioridad */}
-          <div>
-            <Label className="block mb-2 font-semibold">Prioridad</Label>
-            <Controller
-              name="prioridad"
-              control={control}
-              render={({ field }) => (
-                <CustomSelect
-                  field={field}
-                  data={dataPrioridades || []}
-                  label="Prioridad"
-                  getOptionLabel={(item) => item.nombre}
-                  getOptionValue={(item) => item.id}
-                />
-              )}
-            />
-            {errors.prioridad && (
-              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-                {errors.prioridad.message}
-              </p>
-            )}
-          </div>
-
-          {/* Etiqueta → Categoría asociada */}
-          <div>
-            <Label className="block mb-2 font-semibold">Etiqueta</Label>
-            <CustomSelect
-              field={{ value: "", onChange: handleEtiquetaChange }}
-              data={dataEtiquetas || []}
-              label="Etiqueta"
-              getOptionLabel={(item) => item.nombre}
-              getOptionValue={(item) => item.id}
-            />
-            {errors.IDEtiqueta && (
-              <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-                {errors.IDEtiqueta.message}
-              </p>
-            )}
-          </div>
-
-          {/* Categoría asociada (No editable) */}
-          {categoriaSeleccionada && (
-            <div>
-              <Label className="block mb-2 font-semibold">
-                Categoría asociada
-              </Label>
-              <Input value={categoriaSeleccionada.nombre} disabled />
-            </div>
+          />
+          {errors.Titulo && (
+            <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
+              {errors.Titulo.message}
+            </p>
           )}
+        </div>
 
-          {/* Usuario solicitante (No editable) */}
-          <div>
-            <Label className="block mb-2 font-semibold">Id usuario</Label>
-            <Input value={usuarioSolicitanteId} disabled />
-          </div>
-
-          {/* Nombre del solicitante (No editable) */}
-          {usuarioSolicitante && (
-            <div>
-              <Label className="block mb-2 font-semibold">
-                Nombre del usuario
-              </Label>
-              <Input value={usuarioSolicitante.nombre} disabled />
-            </div>
+        {/* Descripción */}
+        <div>
+          <Label htmlFor="descripcion" className="block mb-2 font-semibold">
+            Descripción
+          </Label>
+          <Controller
+            name="descripcion"
+            control={control}
+            render={({ field }) => (
+              <Input {...field} id="descripcion" placeholder="Descripción del ticket" />
+            )}
+          />
+          {errors.descripcion && (
+            <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
+              {errors.descripcion.message}
+            </p>
           )}
+        </div>
 
-          {/* Correo del solicitante (No editable) */}
-          {usuarioSolicitante && (
-            <div>
-              <Label className="block mb-2 font-semibold">
-                Correo electrónico
-              </Label>
-              <Input value={usuarioSolicitante.email} disabled />
-            </div>
+        {/* Prioridad */}
+        <div>
+          <Label className="block mb-2 font-semibold">Prioridad</Label>
+          <Controller
+            name="prioridad"
+            control={control}
+            render={({ field }) => (
+              <CustomSelect
+                field={field}
+                data={dataPrioridades || []}
+                label="Prioridad"
+                getOptionLabel={(item) => item.nombre}
+                getOptionValue={(item) => item.id}
+              />
+            )}
+          />
+          {errors.prioridad && (
+            <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
+              {errors.prioridad.message}
+            </p>
           )}
+        </div>
 
-          {/* Estado inicial (No ditable) */}
+        {/* Etiqueta → Categoría asociada */}
+        <div>
+          <Label className="block mb-2 font-semibold">Etiqueta</Label>
+          <CustomSelect
+            field={{ value: "", onChange: handleEtiquetaChange }}
+            data={dataEtiquetas || []}
+            label="Etiqueta"
+            getOptionLabel={(item) => item.nombre}
+            getOptionValue={(item) => item.id}
+          />
+          {errors.IDEtiqueta && (
+            <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
+              {errors.IDEtiqueta.message}
+            </p>
+          )}
+        </div>
+
+        {/* Categoría asociada (No editable) */}
+        {categoriaSeleccionada && (
           <div>
-            <Label className="block mb-2 font-semibold">Estado inicial</Label>
-            <Input value="pendiente" disabled />
+            <Label className="block mb-2 font-semibold">Categoría asociada</Label>
+            <Input value={categoriaSeleccionada.nombre} disabled />
           </div>
+        )}
 
-          {/* Botones */}
-          <div className="flex justify-between gap-4 mt-8">
-            <Button
-              type="button"
-              onClick={() => navigate(-1)}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <ArrowLeft className="w-4 h-4" /> Regresar
-            </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex items-center gap-2"
-            >
-              <Save className="w-4 h-4" />{" "}
-              {isSubmitting ? "Guardando..." : "Guardar"}
-            </Button>
+        {/* Usuario solicitante (No editable) */}
+        <div>
+          <Label className="block mb-2 font-semibold">Id usuario</Label>
+          <Input value={usuarioSolicitanteId} disabled />
+        </div>
+
+        {/* Nombre del solicitante (No editable) */}
+        {usuarioSolicitante && (
+          <div>
+            <Label className="block mb-2 font-semibold">Nombre del usuario</Label>
+            <Input value={usuarioSolicitante.nombre} disabled />
           </div>
-        </form>
-      </Card>
+        )}
 
-      {/* Modal de éxito */}
-      <Dialog open={openSuccess} onOpenChange={setOpenSuccess}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>¡Ticket creado con éxito!</DialogTitle>
-            <DialogDescription>
-              Se creó el ticket <strong>{createdName}</strong>. <br />
-              Serás redirigido al listado en unos segundos.
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-    </div>
-  );
+        {/* Correo del solicitante (No editable) */}
+        {usuarioSolicitante && (
+          <div>
+            <Label className="block mb-2 font-semibold">Correo electrónico</Label>
+            <Input value={usuarioSolicitante.email} disabled />
+          </div>
+        )}
+
+        {/* Estado inicial (No editable) */}
+        <div>
+          <Label className="block mb-2 font-semibold">Estado inicial</Label>
+          <Input value="Pendiente" disabled />
+        </div>
+
+        {/* Comentario opcional */}
+        <div>
+          <Label htmlFor="comentario" className="block mb-2 font-semibold">
+            Comentario
+          </Label>
+          <Controller
+            name="comentario"
+            control={control}
+            render={({ field }) => (
+              <Input {...field} id="comentario" placeholder="Comentario inicial del ticket" />
+            )}
+          />
+          {errors.comentario && (
+            <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
+              {errors.comentario.message}
+            </p>
+          )}
+        </div>
+
+        {/* Evidencia opcional */}
+        <div>
+          <Label htmlFor="imagenes" className="block mb-2 font-semibold">
+            Imagen
+          </Label>
+          <Controller
+            name="imagenes"
+            control={control}
+            render={({ field }) => (
+              <Input
+                type="file"
+                multiple
+                onChange={(e) => {
+                  const files = Array.from(e.target.files);
+                  const fileNames = files.map(file => file.name); // solo nombres
+                  field.onChange(fileNames);
+                }}
+              />
+            )}
+          />
+        </div>
+
+        {/* Botones */}
+        <div className="flex justify-between gap-4 mt-8">
+          <Button
+            type="button"
+            onClick={() => navigate(-1)}
+            variant="outline"
+            className="flex items-center gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" /> Regresar
+          </Button>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex items-center gap-2"
+          >
+            <Save className="w-4 h-4" />{" "}
+            {isSubmitting ? "Guardando..." : "Guardar"}
+          </Button>
+        </div>
+      </form>
+    </Card>
+
+    {/* Modal de éxito */}
+    <Dialog open={openSuccess} onOpenChange={setOpenSuccess}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>¡Ticket creado con éxito!</DialogTitle>
+          <DialogDescription>
+            Se creó el ticket <strong>{createdName}</strong>. <br />
+            Serás redirigido al listado en unos segundos.
+          </DialogDescription>
+        </DialogHeader>
+      </DialogContent>
+    </Dialog>
+  </div>
+);
 }
