@@ -64,7 +64,8 @@ export function ListaCartTicket({ data }) {
                         disabled={item.estado_nombre === "Pendiente"}
                         className="rounded-full bg-secondary/20 hover:bg-secondary/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       >
-                        {item.estado_nombre === "Pendiente" ? (
+                        {item.estado_nombre === "Pendiente" ||
+                        item.estado_nombre === "Cerrado" ? (
                           <span>Cambiar Estado</span>
                         ) : (
                           <Link to={`cambiarEstado/${item.id}`}>
@@ -76,8 +77,14 @@ export function ListaCartTicket({ data }) {
                   </TooltipTrigger>
                   {item.estado_nombre === "Pendiente" && (
                     <TooltipContent>
-                      El estado inicial "Pendiente" no puede ser modificado
-                      desde aquí.
+                      El estado inicial "Pendiente" no pueden ser modificados
+                      directamente, realice la asignación correspondiente.
+                    </TooltipContent>
+                  )}
+
+                  {item.estado_nombre === "Cerrado" && (
+                    <TooltipContent>
+                      Los tickets en estado "Cerrado" no pueden ser modificados.
                     </TooltipContent>
                   )}
                 </Tooltip>

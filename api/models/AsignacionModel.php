@@ -10,17 +10,9 @@ class asignacionModel
     public function all()
     {
         try {
-            $vSql = "SELECT 
-                    a.id, 
-                    a.IDTicket, 
-                    a.IDTecnico, 
-                    a.asignado_por, 
-                    a.hora_Asig, 
-                    a.method, 
-                    a.descripcion, 
-                    a.activo,
+            $vSql = "SELECT a.id, a.IDTicket, a.IDTecnico, a.asignado_por, a.hora_Asig, a.method, a.descripcion, a.activo,
                     t.IDEstado, 
-                    e.nombre AS estado,   -- 🔹 nombre del estado
+                    e.nombre AS estado,
                     t.IDCategoria, 
                     c.nombre AS nombreCategoria, 
                     t.creado_en, 
@@ -28,7 +20,7 @@ class asignacionModel
                 FROM asignacion a
                 INNER JOIN ticket t ON a.IDTicket = t.id
                 LEFT JOIN categoria c ON t.IDCategoria = c.id
-                LEFT JOIN estado e ON t.IDEstado = e.id   -- 🔹 join con tabla estado
+                LEFT JOIN estado e ON t.IDEstado = e.id
                 WHERE a.activo = 1;";
 
             $vResultado = $this->enlace->ExecuteSQL($vSql);
@@ -184,6 +176,94 @@ class asignacionModel
             handleException($e);
         }
     }
+
+    public function asignarAutomatico()
+{
+    try {
+        // 1. Obtener tickets pendientes con puntaje calculado y ordenados
+        $sqlTickets = "SELECT t.id, t.Titulo, t.descripcion, t.IDCategoria, 
+                              t.IDPrioridad, p.nombre AS prioridad_nombre,
+                              TIMESTAMPDIFF(MINUTE, NOW(), t.sla_resol_deadline) AS tiempoRestanteSLA,
+                              ((t.IDPrioridad * 1000) - TIMESTAMPDIFF(MINUTE, NOW(), t.sla_resol_deadline)) AS puntaje,
+                              t.IDUsuario
+                       FROM ticket t
+                       INNER JOIN prioridad p ON t.IDPrioridad = p.id
+                       WHERE t.IDEstado = 1 AND t.activo = 1
+                       ORDER BY puntaje DESC";
+        $tickets = $this->enlace->executeSQL($sqlTickets);
+
+        $resultados = [];
+
+        foreach ($tickets as $ticket) {
+            $ticketId    = intval($ticket->id);
+            $categoriaId = intval($ticket->IDCategoria);
+            $usuarioId   = intval($ticket->IDUsuario);
+            $puntaje     = intval($ticket->puntaje);
+
+            // 2. Buscar técnicos disponibles para la categoría
+            $sqlTecnicos = "SELECT u.id, u.nombre, e.nombre AS especialidadCoincidente,
+                                   (SELECT COUNT(*) FROM ticket t2 
+                                    WHERE t2.IDTecnico = u.id AND t2.IDEstado IN (2,3)) AS carga
+                            FROM usuario u
+                            INNER JOIN Tecnico_especialidad te ON u.id = te.IDTecnico
+                            INNER JOIN especialidad e ON te.IDEspecialidad = e.id
+                            INNER JOIN especialidad_categoria ec ON e.id = ec.IDEspecialidad
+                            WHERE u.activo = 1 AND ec.IDCategoria = $categoriaId
+                            GROUP BY u.id, u.nombre, e.nombre
+                            HAVING carga <= 5
+                            ORDER BY carga ASC
+                            LIMIT 1";
+            $tecnicos = $this->enlace->executeSQL($sqlTecnicos);
+
+            if (!empty($tecnicos)) {
+                $tecnicoId   = intval($tecnicos[0]->id);
+                $especialidad = $tecnicos[0]->especialidadCoincidente;
+
+                // 3. Justificación con regla aplicada
+                $sqlRegla = "SELECT codigo, nombre FROM Reglas_Autotriage r
+                             INNER JOIN Condiciones_Autotriage c ON r.id = c.IDRegla
+                             WHERE c.condition_key = 'categoria' AND c.value = (
+                                 SELECT nombre FROM categoria WHERE id = $categoriaId
+                             ) LIMIT 1";
+                $regla = $this->enlace->executeSQL($sqlRegla);
+                $reglaTxt = !empty($regla) ? $regla[0]->codigo . ' - ' . $regla[0]->nombre : 'Regla no definida';
+
+                $justificacion = "Asignación automática con puntaje $puntaje. "
+                               . "Especialidad: $especialidad. "
+                               . "Regla aplicada: $reglaTxt.";
+
+                // 4. Actualizar ticket
+                $sqlUpdate = "UPDATE ticket SET IDEstado = 2, IDTecnico = $tecnicoId WHERE id = $ticketId";
+                $this->enlace->executeSQL_DML($sqlUpdate);
+
+                // 5. Insertar historial
+                $sqlHistorial = "INSERT INTO Historial_ticket 
+                                 (IDticket, from_state, to_state, cambiado_por, comentario, Creado_el)
+                                 VALUES ($ticketId, 1, 2, $usuarioId, '" . addslashes($justificacion) . "', NOW())";
+                $historialId = $this->enlace->executeSQL_DML_last($sqlHistorial);
+
+                // 6. Insertar asignación
+                $sqlAsignacion = "INSERT INTO asignacion 
+                                  (IDTicket, IDTecnico, asignado_por, method, descripcion)
+                                  VALUES ($ticketId, $tecnicoId, $usuarioId, 'auto', '" . addslashes($justificacion) . "')";
+                $this->enlace->executeSQL_DML($sqlAsignacion);
+
+                $resultados[] = [
+                    "ticketId"     => $ticketId,
+                    "tecnicoId"    => $tecnicoId,
+                    "puntaje"      => $puntaje,
+                    "especialidad" => $especialidad,
+                    "regla"        => $reglaTxt,
+                    "mensaje"      => "Ticket asignado automáticamente"
+                ];
+            }
+        }
+
+        return ["success" => true, "data" => $resultados];
+    } catch (Exception $e) {
+        handleException($e);
+    }
+}
 
     public function getTicketsPendientes()
     {

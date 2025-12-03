@@ -8,7 +8,8 @@ export function GestionAsignacion() {
     <div className="max-w-5xl mx-auto p-8">
       <h1 className="text-3xl font-bold mb-4">Gestión de Asignaciones</h1>
       <p className="text-muted-foreground mb-8">
-        Selecciona el método de asignación de tickets en estado <strong>Pendiente</strong>.
+        Selecciona el método de asignación de tickets en estado{" "}
+        <strong>Pendiente</strong>.
       </p>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -21,11 +22,15 @@ export function GestionAsignacion() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              El sistema detecta automáticamente los tickets pendientes y asigna el técnico más adecuado
-              según SLA, prioridad, carga de trabajo y especialidad.
+              El sistema detecta automáticamente los tickets pendientes y asigna
+              el técnico más adecuado según SLA, prioridad, carga de trabajo y
+              especialidad.
             </p>
-            <Button disabled className="w-full">
-              Próximamente
+            <Button
+              asChild
+              className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+            >
+              <Link to="/asignaciones/auto">Ir a Asignación Automática</Link>
             </Button>
           </CardContent>
         </Card>
@@ -39,10 +44,13 @@ export function GestionAsignacion() {
           </CardHeader>
           <CardContent className="space-y-4">
             <p className="text-sm text-muted-foreground">
-              El administrador selecciona manualmente el técnico adecuado para cada ticket pendiente,
-              validando especialidad y carga de trabajo.
+              El administrador selecciona manualmente el técnico adecuado para
+              cada ticket pendiente, validando especialidad y carga de trabajo.
             </p>
-            <Button asChild className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90">
+            <Button
+              asChild
+              className="w-full bg-secondary text-secondary-foreground hover:bg-secondary/90"
+            >
               <Link to="/asignaciones/manual">Ir a Asignación Manual</Link>
             </Button>
           </CardContent>

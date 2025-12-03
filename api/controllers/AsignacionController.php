@@ -107,6 +107,18 @@ class asignaciones
         }
     }
 
+     public function asignarAutomatico()
+    {
+        $response = new Response();
+        try {
+            $model = new asignacionModel();
+            $result = $model->asignarAutomatico();
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
     public function pendientes()
     {
         $response = new Response();

@@ -38,7 +38,7 @@ export function CambioEstado() {
   const [estadoActual, setEstadoActual] = useState(null);
 
   // Simulación de usuario responsable
-  const usuarioResponsableId = 4; // variable fija en la lógica
+  const usuarioResponsableId = 5; // variable fija en la lógica
 
   /*** Validación Yup ***/
   const cambioSchema = yup.object({

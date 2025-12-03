@@ -24,19 +24,26 @@ class TicketModel
 
     // Obtener ticket por ID
     public function ObtenerPorID($ID)
-    {
-        try {
-            $vSql = "SELECT t.*, p.nombre AS prioridad_nombre, e.nombre AS estado_nombre
-            FROM ticket t
-            INNER JOIN prioridad p ON t.IDPrioridad = p.id
-            INNER JOIN estado e ON t.IDEstado = e.id
-            WHERE t.id = " . intval($ID);
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
-            return $vResultado[0];
-        } catch (Exception $e) {
-            handleException($e);
-        }
+{
+    try {
+        $vSql = "SELECT t.*, 
+        p.nombre AS prioridad_nombre, 
+        e.nombre AS estado_nombre,
+        c.nombre AS categoria_nombre,
+        u.nombre AS usuario_nombre
+        FROM ticket t
+        INNER JOIN prioridad p ON t.IDPrioridad = p.id
+        INNER JOIN estado e ON t.IDEstado = e.id
+        INNER JOIN categoria c ON t.IDCategoria = c.id
+        INNER JOIN usuario u ON t.IDUsuario = u.id
+        WHERE t.id = " . intval($ID);
+
+        $vResultado = $this->enlace->ExecuteSQL($vSql);
+        return $vResultado[0];
+    } catch (Exception $e) {
+        handleException($e);
     }
+}
 
     public function CantTrabajoTecnico($id)
     {

@@ -22,6 +22,7 @@ import { CrearTicket } from './components/Ticket/CrearTicket'
 import { CambioEstado } from './components/Ticket/CambioEstado'
 import { GestionAsignacion } from './components/Asignacion/GestionAsignacion'
 import { AsignacionManual } from './components/Asignacion/AsignacionManual'
+import { AsignacionAutomatica } from './components/Asignacion/AsignacionAutomatica'
 import { HistorialTicket } from './components/Ticket/HistorialTicket'
 
 
@@ -57,7 +58,8 @@ const rutas = createBrowserRouter([
 
       // Gestión de asignaciones
       { path: 'asignaciones/gestion', element: <GestionAsignacion /> },
-      { path: 'asignaciones/manual', element: <AsignacionManual /> }
+      { path: 'asignaciones/manual', element: <AsignacionManual /> },
+      { path: 'asignaciones/auto', element: <AsignacionAutomatica /> },
 
     ],
   },

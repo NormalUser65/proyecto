@@ -38,15 +38,17 @@ class AsignacionService {
   }
 
   // GET /asignaciones/asignarManual
-asignarManual(formData) {
-  return axios.post(`${BASE_URL}/asignarManual`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
-}
+  asignarManual(formData) {
+    return axios.post(`${BASE_URL}/asignarManual`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
 
-
+  asignarAutomatico() {
+    return axios.get(`${BASE_URL}/asignarAutomatico`);
+  }
 
   // GET /asignaciones/pendientes
   getTicketsPendientes() {
@@ -55,4 +57,3 @@ asignarManual(formData) {
 }
 
 export default new AsignacionService();
-

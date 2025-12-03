@@ -79,14 +79,16 @@ export function DetalleTicket() {
             <Tag className="h-5 w-5 text-secondary" />
             <span className="font-semibold">Categoría:</span>
             <p className="text-muted-foreground">
-              {data.IDCategoria ?? "Sin categoría"}
+              {data.categoria_nombre ?? "Sin categoría"}
             </p>
           </div>
+
           <div className="flex items-center gap-4">
             <User className="h-5 w-5 text-secondary" />
             <span className="font-semibold">Solicitante:</span>
-            <p className="text-muted-foreground">{data.IDUsuario}</p>
+            <p className="text-muted-foreground">{data.usuario_nombre}</p>
           </div>
+
           <div className="flex items-center gap-4">
             <Timer className="h-5 w-5 text-secondary" />
             <span className="font-semibold">Prioridad:</span>
@@ -110,7 +112,7 @@ export function DetalleTicket() {
           <div>
             <span className="font-semibold">SLA de Resolución:</span>
             <p className="text-muted-foreground">
-              {data.sla_resol_deadline // ✅ ahora sí el campo correcto
+              {data.sla_resol_deadline
                 ? new Intl.DateTimeFormat("es-CR", {
                     dateStyle: "long",
                     timeStyle: "short",
