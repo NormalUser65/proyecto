@@ -160,4 +160,26 @@ class Usuario
             ]);
         }
     }
+
+    public function getTecnicosPorCategoria()
+    {
+        $response = new Response();
+        try {
+            // Obtener el parámetro desde la request (ej. GET ?categoriaId=3)
+            $categoriaId = intval($_GET['categoriaId'] ?? 0);
+
+            if (!$categoriaId) {
+                throw new Exception("Debe indicar una categoría válida.");
+            }
+
+            // Instanciar el modelo
+            $model = new UsuarioModel();
+            $result = $model->getTecnicosPorCategoria($categoriaId);
+
+            // Devolver en formato JSON
+            $response->toJSON($result);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
 }

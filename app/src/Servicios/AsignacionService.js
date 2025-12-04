@@ -1,15 +1,16 @@
 // AsignacionService.js
-import axios from 'axios';
+import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_BASE_URL + 'asignaciones';
+const BASE_URL = import.meta.env.VITE_BASE_URL + "asignaciones";
 
 class AsignacionService {
-    getAll() {
+  getAll() {
     return axios.get(BASE_URL);
-}
-    getById(id) {
+  }
+
+  getById(id) {
     return axios.get(`${BASE_URL}/${id}`);
-}
+  }
 
   // GET /asignacion/tecnico/{id}
   getTicketsByTecnico(id) {
@@ -34,6 +35,24 @@ class AsignacionService {
   // GET /asignacion/nombre/{nombre}
   getByNombre(nombre) {
     return axios.get(`${BASE_URL}/nombre/${nombre}`);
+  }
+
+  // GET /asignaciones/asignarManual
+  asignarManual(formData) {
+    return axios.post(`${BASE_URL}/asignarManual`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  }
+
+  asignarAutomatico() {
+    return axios.get(`${BASE_URL}/asignarAutomatico`);
+  }
+
+  // GET /asignaciones/pendientes
+  getTicketsPendientes() {
+    return axios.get(`${BASE_URL}/pendientes`);
   }
 }
 

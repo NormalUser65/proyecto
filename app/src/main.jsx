@@ -18,7 +18,14 @@ import { CrearTecnico } from './components/Tecnico/CrearTecnico'
 import { CrearCategoria } from './components/Categoria/CrearCategoria'
 import { ActualizarCategoria } from './components/Categoria/ActualizarCategoria'
 import { CrearTicket } from './components/Ticket/CrearTicket'
+
 import './i18n/i18n'
+import { CambioEstado } from './components/Ticket/CambioEstado'
+import { GestionAsignacion } from './components/Asignacion/GestionAsignacion'
+import { AsignacionManual } from './components/Asignacion/AsignacionManual'
+import { AsignacionAutomatica } from './components/Asignacion/AsignacionAutomatica'
+import { HistorialTicket } from './components/Ticket/HistorialTicket'
+
 
 const rutas = createBrowserRouter([
   {
@@ -43,7 +50,18 @@ const rutas = createBrowserRouter([
 
       // Mantenimiento categorias
       {path: 'categorias/crear', element: <CrearCategoria/>},
-      { path: 'categorias/editar/:id', element: <ActualizarCategoria/> }
+      { path: 'categorias/editar/:id', element: <ActualizarCategoria/> },
+
+      // Trazabilidad del Ticket
+      { path: 'tickets/cambiarEstado/:id', element: <CambioEstado /> },
+      { path: 'tickets/historial/:id', element: <HistorialTicket /> },
+
+
+      // Gestión de asignaciones
+      { path: 'asignaciones/gestion', element: <GestionAsignacion /> },
+      { path: 'asignaciones/manual', element: <AsignacionManual /> },
+      { path: 'asignaciones/auto', element: <AsignacionAutomatica /> },
+
     ],
   },
 ])

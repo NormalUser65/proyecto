@@ -1,6 +1,11 @@
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 import { Info, CalendarDays, Tag, User, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -50,6 +55,41 @@ export function ListaCartTicket({ data }) {
                     </Button>
                   </TooltipTrigger>
                   <TooltipContent> {t("listaCartTicket.tooltip_detalle")}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <span>
+                      <Button
+                        asChild
+                        variant="secondary"
+                        disabled={item.estado_nombre === "Pendiente"}
+                        className="rounded-full bg-secondary/20 hover:bg-secondary/40 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {item.estado_nombre === "Pendiente" ||
+                        item.estado_nombre === "Cerrado" ? (
+                          <span>Cambiar Estado</span>
+                        ) : (
+                          <Link to={`cambiarEstado/${item.id}`}>
+                            Cambiar Estado
+                          </Link>
+                        )}
+                      </Button>
+                    </span>
+                  </TooltipTrigger>
+                  {item.estado_nombre === "Pendiente" && (
+                    <TooltipContent>
+                      El estado inicial "Pendiente" no pueden ser modificados
+                      directamente, realice la asignación correspondiente.
+                    </TooltipContent>
+                  )}
+
+                  {item.estado_nombre === "Cerrado" && (
+                    <TooltipContent>
+                      Los tickets en estado "Cerrado" no pueden ser modificados.
+                    </TooltipContent>
+                  )}
                 </Tooltip>
               </TooltipProvider>
             </div>
