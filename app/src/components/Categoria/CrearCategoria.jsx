@@ -26,8 +26,10 @@ import EspecialidadService from "../../Servicios/EspecialidadService";
 
 import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
 import { CustomSelect } from "../ui/custom/custom-select";
+import { useTranslation } from "react-i18next";
 
 export function CrearCategoria() {
+  const { t } = useTranslation("crearCategoria");
   const navigate = useNavigate();
 
   const [dataSLA, setDataSLA] = useState([]);
@@ -38,7 +40,7 @@ export function CrearCategoria() {
   const [openSuccess, setOpenSuccess] = useState(false);
   const [createdName, setCreatedName] = useState("");
 
-  /*** Validación Yup ***/
+    /*** Validación Yup ***/
   const categoriaSchema = yup.object({
     nombre: yup
       .string()
@@ -85,7 +87,7 @@ export function CrearCategoria() {
     resolver: yupResolver(categoriaSchema),
   });
 
-  /*** Cargar datos iniciales ***/
+    /*** Cargar datos iniciales ***/
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -103,7 +105,7 @@ export function CrearCategoria() {
     fetchData();
   }, []);
 
-  // Submit
+    // Submit
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const onSubmit = async (dataForm) => {
@@ -119,15 +121,15 @@ export function CrearCategoria() {
         setTimeout(() => {
           setOpenSuccess(false);
           navigate("/categorias");
-          setIsSubmitting(false); 
+          setIsSubmitting(false);
         }, 2000);
       } else {
         setError(response.data.message);
-        setIsSubmitting(false); 
+        setIsSubmitting(false);
       }
     } catch {
       setError("Error al crear categoría");
-      setIsSubmitting(false); 
+      setIsSubmitting(false);
     }
   };
 
@@ -136,13 +138,15 @@ export function CrearCategoria() {
   return (
     <div className="py-12 px-4">
       <Card className="p-8 max-w-3xl mx-auto shadow-lg">
-        <h2 className="text-2xl font-bold mb-8 text-center">Crear Categoría</h2>
+        <h2 className="text-2xl font-bold mb-8 text-center">
+          {t("crearCategoria.titulo")}
+        </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Nombre */}
           <div>
-            <Label htmlFor="nombre" className="block mb-2 font-semibold">
-              Nombre
+            <Label className="block mb-2 font-semibold">
+              {t("crearCategoria.form.nombre")}
             </Label>
             <Controller
               name="nombre"
@@ -150,8 +154,7 @@ export function CrearCategoria() {
               render={({ field }) => (
                 <Input
                   {...field}
-                  id="nombre"
-                  placeholder="Ingrese el nombre de la categoría"
+                  placeholder={t("crearCategoria.form.placeholderNombre")}
                 />
               )}
             />
@@ -164,8 +167,8 @@ export function CrearCategoria() {
 
           {/* Descripción */}
           <div>
-            <Label htmlFor="description" className="block mb-2 font-semibold">
-              Descripción
+            <Label className="block mb-2 font-semibold">
+              {t("crearCategoria.form.descripcion")}
             </Label>
             <Controller
               name="description"
@@ -174,7 +177,7 @@ export function CrearCategoria() {
                 <Input
                   {...field}
                   id="description"
-                  placeholder="Descripción de la categoría"
+                  placeholder={t("crearCategoria.form.placeholderDescripcion")}
                 />
               )}
             />
@@ -194,7 +197,7 @@ export function CrearCategoria() {
                 <CustomSelect
                   field={field}
                   data={dataSLA}
-                  label="SLA"
+                  label={t("crearCategoria.form.sla")}
                   getOptionLabel={(sla) =>
                     `${sla.nombre} (${sla.max_resp_minutos} min resp., ${sla.max_resol_minutos} min resolución)`
                   }
@@ -210,7 +213,7 @@ export function CrearCategoria() {
           </div>
 
           <div>
-            {/* Etiquetas */}
+          {/* Etiquetas */}
             <Controller
               name="etiquetas"
               control={control}
@@ -218,10 +221,10 @@ export function CrearCategoria() {
                 <CustomMultiSelect
                   field={field}
                   data={dataEtiquetas}
-                  label="Etiquetas"
+                  label={t("crearCategoria.form.etiquetas")}
                   getOptionLabel={(item) => item.nombre}
                   getOptionValue={(item) => item.id}
-                  placeholder="Seleccione etiquetas"
+                  placeholder={t("crearCategoria.form.placeholderEtiquetas")}
                 />
               )}
             />
@@ -241,10 +244,10 @@ export function CrearCategoria() {
                 <CustomMultiSelect
                   field={field}
                   data={dataEspecialidades}
-                  label="Especialidades"
+                  label={t("crearCategoria.form.especialidades")}
                   getOptionLabel={(item) => item.nombre}
                   getOptionValue={(item) => item.id}
-                  placeholder="Seleccione especialidades"
+                  placeholder={t("crearCategoria.form.placeholderEspecialidades")}
                 />
               )}
             />
@@ -262,14 +265,15 @@ export function CrearCategoria() {
               onClick={() => navigate(-1)}
               variant="outline"
               className="flex items-center gap-2">
-              <ArrowLeft className="w-4 h-4" /> Regresar
+              <ArrowLeft className="w-4 h-4" />
+              {t("crearCategoria.botones.regresar")}
             </Button>
             <Button
               type="submit"
               disabled={isSubmitting}
               className="flex items-center gap-2">
                 <Save className="w-4 h-4" />{" "}
-              {isSubmitting ? "Guardando..." : "Guardar"}
+              {isSubmitting ? t("crearCategoria.botones.guardando") : t("crearCategoria.botones.guardar")}
             </Button>
           </div>
         </form>
@@ -278,10 +282,9 @@ export function CrearCategoria() {
       <Dialog open={openSuccess} onOpenChange={setOpenSuccess}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>¡Categoría creada con éxito!</DialogTitle>
+            <DialogTitle>{t("crearCategoria.modal.titulo")}</DialogTitle>
             <DialogDescription>
-              Se creó la categoría <strong>{createdName}</strong>. Serás
-              redirigido al listado en unos segundos.
+              {t("crearCategoria.modal.descripcion", { name: createdName })}
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

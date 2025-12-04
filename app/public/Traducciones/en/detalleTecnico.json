@@ -1,0 +1,15 @@
+{
+    "detalleTecnico": {
+        "tituloFallback": "Technician",
+        "errorTitulo": "Error loading technician",
+        "emptyMessage": "No data found for this technician.",
+        "identificador": "Identifier:",
+        "nombreRegistrado": "Registered name:",
+        "correoContacto": "Contact email:",
+        "cargaTrabajoActual": "Current workload:",
+        "ticketsActivos": "active tickets",
+        "disponibilidad": "Availability:",
+        "especialidadesTitulo": "Technician specialties:",
+        "botonRegresar": "Go Back"
+    }
+}

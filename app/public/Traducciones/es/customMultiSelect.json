@@ -1,0 +1,8 @@
+{
+  "customMultiSelect": {
+    "placeholderSeleccionar": "Seleccionar {{label}}",
+    "placeholderBuscar": "Buscar {{label}}...",
+    "noResultados": "No se encontraron resultados.",
+    "seleccionados": "{{count}} seleccionado(s)"
+  }
+}

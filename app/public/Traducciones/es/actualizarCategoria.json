@@ -1,0 +1,32 @@
+{
+    "actualizarCategoria": {
+        "titulo": "Actualizar Categoría",
+        "nombre": "Nombre",
+        "descripcion": "Descripción",
+        "sla": "SLA",
+        "errorCrear": "Error al actualizar categoría",
+        "validacion": {
+        "nombreRequerido": "El nombre es requerido",
+        "nombreMin": "Debe tener al menos 10 caracteres",
+        "nombreMax": "No puede superar los 50 caracteres",
+        "nombreCaracteresInvalidos": "No se permiten caracteres especiales",
+        "descripcionRequerida": "La descripción es requerida",
+        "descripcionMin": "Debe tener al menos 20 caracteres",
+        "descripcionMax": "No puede superar los 250 caracteres",
+        "slaRequerido": "El SLA es requerido",
+        "slaInvalido": "Seleccione un SLA válido",
+        "slaPositivo": "El SLA debe ser un número positivo",
+        "etiquetasMin": "Debe seleccionar al menos una etiqueta",
+        "especialidadesMin": "Debe seleccionar al menos una especialidad"
+        },
+            "botones": {
+            "regresar": "Regresar",
+            "guardar": "Guardar cambios",
+            "guardando": "Guardando..."
+        },
+        "modal": {
+            "titulo": "¡Categoría actualizada con éxito!",
+            "descripcion": "Se actualizó la categoría {{name}}. Serás redirigido al listado en unos segundos."
+        }
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "actualizarTecnico": {
+        "titulo": "Actualizar Técnico",
+        "nombreCompleto": "Nombre Completo",
+        "placeholderNombre": "Ingrese el nombre completo",
+        "correo": "Correo Electrónico",
+        "placeholderCorreo": "correo_de_ejemplo@correo.com",
+        "contrasenna": "Contraseña",
+        "estado": "Estado",
+        "estado_disponible": "disponible",
+        "estado_noDisponible": "No disponible",
+        "cargaTrabajo": "Carga de trabajo",
+        "especialidades": "Especialidades",
+        "placeholderEspecialidades": "Seleccione la(s) especialidad(es)",
+        "boton_regresar": "Regresar",
+        "boton_guardar": "Guardar",
+        "modalTitulo": "¡Técnico actualizado con éxito!",
+        "modalDescripcion": "Se actualizó el técnico <strong>{createdName}</strong>. Serás redirigido al listado en unos segundos.",
+        "errores": {
+            "nombre_requerido": "El nombre es requerido",
+            "nombre_min": "El nombre debe tener al menos 2 caracteres",
+            "correo_requerido": "El correo es requerido",
+            "correo_invalido": "Por favor, introduce un correo electrónico válido",
+            "correo_existe": "Este email ya fue registrado",
+            "contrasenna_requerida": "La contraseña es requerida",
+            "contrasenna_min": "Debe contar con al menos 8 dígitos",
+            "contrasenna_minuscula": "La contraseña debe tener al menos una minúscula",
+            "contrasenna_mayuscula": "La contraseña debe tener al menos una mayúscula",
+            "contrasenna_numero": "La contraseña debe tener al menos un número",
+            "contrasenna_especial": "La contraseña debe tener al menos un carácter especial",
+            "especialidad_min": "El Técnico debe tener mínimo una especialidad",
+            "estado_requerido": "El estado es requerido",
+            "estado_invalido": "Debe seleccionar si está disponible o No disponible"
+        }
+    }
+}

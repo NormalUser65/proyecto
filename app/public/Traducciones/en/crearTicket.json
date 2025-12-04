@@ -1,0 +1,29 @@
+{
+    "crearTicket": {
+    "tituloPagina": "Create Ticket",
+    "tituloLabel": "Title",
+    "placeholderTitulo": "Enter the ticket title",
+    "errorTituloRequerido": "Title is required",
+    "errorTituloMin": "Must be at least 10 characters",
+    "errorTituloMax": "Must not exceed 250 characters",
+    "descripcionLabel": "Description",
+    "placeholderDescripcion": "Ticket description",
+    "errorDescripcionRequerida": "Description is required",
+    "errorDescripcionMin": "Must be at least 20 characters",
+    "prioridadLabel": "Priority",
+    "errorPrioridadInvalida": "Select a valid priority",
+    "errorPrioridadRequerida": "Priority is required",
+    "etiquetaLabel": "Tag",
+    "categoriaLabel": "Associated category",
+    "usuarioIdLabel": "User ID",
+    "usuarioNombreLabel": "User name",
+    "usuarioCorreoLabel": "Email",
+    "estadoInicialLabel": "Initial status",
+    "botonRegresar": "Back",
+    "botonGuardar": "Save",
+    "botonGuardando": "Saving...",
+    "modalTitulo": "Ticket created successfully!",
+    "modalDescripcion": "Ticket {{titulo}} has been created. You will be redirected shortly.",
+    "errorCategoriaNoEncontrada": "No associated categories found"
+    }
+}

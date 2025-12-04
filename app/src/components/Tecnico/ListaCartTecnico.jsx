@@ -6,6 +6,7 @@ import { Info, Pencil, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { AlertCircleIcon, BadgeCheckIcon, CheckIcon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 ListaCartTecnico.propTypes = {
   data: PropTypes.array,
@@ -15,6 +16,7 @@ ListaCartTecnico.propTypes = {
 export function ListaCartTecnico({ data }) {
   const BASE_URL = import.meta.env.VITE_BASE_URL + "uploads";
   const navigate = useNavigate();
+  const { t } = useTranslation("listaCartTecnico");
 
   return (
     <div className="grid gap-4 p-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -67,20 +69,20 @@ export function ListaCartTecnico({ data }) {
                         </Button>
                         
                       </TooltipTrigger>
-                      <TooltipContent>Editar</TooltipContent>
+                      <TooltipContent>{t("listaCartTecnico.editarTooltip")}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
 
                 <div className="space-y-1">
                   <p className="text-sm text-muted-foreground">
-                    Correo asociado:
+                    {t("listaCartTecnico.correoAsociado")}
                     <span className="text-foreground ml-1">{item.email}</span>
                   </p>
 
                   <div className="flex items-center gap-2">
                     <p className="text-sm text-muted-foreground">
-                      Disponibilidad:
+                      {t("listaCartTecnico.disponibilidad")}
                     </p>
                     {miBadge}
                   </div>
@@ -95,11 +97,11 @@ export function ListaCartTecnico({ data }) {
                           className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm px-4"
                         >
                           <Link to={`detalle/${item.IDTecnico}`}>
-                            Ver detalle
+                            {t("listaCartTecnico.verDetalle")}
                           </Link>
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Ver detalles</TooltipContent>
+                      <TooltipContent>{t("listaCartTecnico.verDetallesTooltip")}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>

@@ -1,0 +1,11 @@
+{
+    "detalleCategoria": {
+        "errorTitulo": "Error loading category",
+        "emptyMessage": "No data found for this category.",
+        "descripcion": "Description:",
+        "sla": "SLA:",
+        "etiquetas": "Tags:",
+        "especialidades": "Specialties:",
+        "botonRegresar": "Go back"
+    }
+    }

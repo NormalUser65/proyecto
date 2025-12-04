@@ -1,0 +1,15 @@
+{
+    "detalleTecnico": {
+        "tituloFallback": "Técnico",
+        "errorTitulo": "Error al cargar el Técnico",
+        "emptyMessage": "No se encontraron datos para este técnico.",
+        "identificador": "Identificador:",
+        "nombreRegistrado": "Nombre registrado:",
+        "correoContacto": "Correo de contacto:",
+        "cargaTrabajoActual": "Carga de trabajo actual:",
+        "ticketsActivos": "tickets activos",
+        "disponibilidad": "Disponibilidad:",
+        "especialidadesTitulo": "Especialidades del técnico:",
+        "botonRegresar": "Regresar"
+    }
+}

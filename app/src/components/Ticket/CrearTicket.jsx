@@ -4,6 +4,8 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Save } from "lucide-react";
+import { useTranslation } from "react-i18next";
+
 import {
   Dialog,
   DialogContent,
@@ -32,8 +34,9 @@ import { CustomSelect } from "../ui/custom/custom-select";
 
 export function CrearTicket() {
   const navigate = useNavigate();
+  const { t } = useTranslation("crearTicket");
 
-  // Estados para selects
+    // Estados para selects
   const [dataPrioridades, setDataPrioridades] = useState([]);
   const [dataEtiquetas, setDataEtiquetas] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(null);
@@ -45,25 +48,25 @@ export function CrearTicket() {
   const [, setSlaRespDeadline] = useState("");
   const [, setSlaResolDeadline] = useState("");
 
-  // Simulación de usuario solicitante.
+    // Simulación de usuario solicitante.
   const usuarioSolicitanteId = 5; // variable fija en la lógica
   const [usuarioSolicitante, setUsuarioSolicitante] = useState(null);
 
-  /*** Validación Yup ***/
+    /*** Validación Yup ***/
   const ticketSchema = yup.object({
     Titulo: yup
       .string()
-      .required("El título es requerido")
-      .min(10, "Debe tener al menos 10 caracteres")
-      .max(250, "No puede superar los 250 caracteres"),
+      .required(t("crearTicket.errorTituloRequerido"))
+      .min(10, t("crearTicket.errorTituloMin"))
+      .max(250, t("crearTicket.errorTituloMax")),
     descripcion: yup
       .string()
-      .required("La descripción es requerida")
-      .min(20, "Debe tener al menos 20 caracteres"),
+      .required(t("crearTicket.errorDescripcionRequerida"))
+      .min(20, t("crearTicket.errorDescripcionMin")),
     prioridad: yup
       .number()
-      .typeError("Seleccione una prioridad válida")
-      .required("La prioridad es requerida"),
+      .typeError(t("crearTicket.errorPrioridadInvalida"))
+      .required(t("crearTicket.errorPrioridadRequerida")),
     IDCategoria: yup
       .number()
       .typeError("Seleccione una categoría válida")
@@ -99,7 +102,7 @@ export function CrearTicket() {
         const prioridadesData = prioridadesRes?.data?.data?.data ?? [];
         setDataPrioridades(
           Array.isArray(prioridadesData) ? prioridadesData : []
-        );
+      );
 
         const etiquetasRes = await EtiquetaService.getAll();
         const etiquetasData = etiquetasRes?.data?.data ?? [];
@@ -128,7 +131,7 @@ export function CrearTicket() {
         setCategoriaSeleccionada(categoria);
         setValue("IDCategoria", categoria.id);
       } else {
-        setError("No se encontraron categorías asociadas");
+        setError(t("crearTicket.errorCategoriaNoEncontrada"));
       }
     }
   };
@@ -176,22 +179,22 @@ export function CrearTicket() {
   return (
     <div className="py-12 px-4">
       <Card className="p-8 max-w-3xl mx-auto shadow-lg">
-        <h2 className="text-2xl font-bold mb-8 text-center">Crear Ticket</h2>
+        <h2 className="text-2xl font-bold mb-8 text-center">{t("crearTicket.tituloPagina")}</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Título */}
           <div>
             <Label htmlFor="Titulo" className="block mb-2 font-semibold">
-              Título
+              {t("crearTicket.tituloLabel")}
             </Label>
             <Controller
               name="Titulo"
               control={control}
               render={({ field }) => (
-                <Input
-                  {...field}
-                  id="Titulo"
-                  placeholder="Ingrese el título del ticket"
+                <Input 
+                {...field} 
+                id="Titulo" 
+                placeholder={t("crearTicket.placeholderTitulo")} 
                 />
               )}
             />
@@ -205,16 +208,16 @@ export function CrearTicket() {
           {/* Descripción */}
           <div>
             <Label htmlFor="descripcion" className="block mb-2 font-semibold">
-              Descripción
+              {t("crearTicket.descripcionLabel")}
             </Label>
             <Controller
               name="descripcion"
               control={control}
               render={({ field }) => (
-                <Input
-                  {...field}
-                  id="descripcion"
-                  placeholder="Descripción del ticket"
+                <Input 
+                {...field} 
+                id="descripcion" 
+                placeholder={t("crearTicket.placeholderDescripcion")} 
                 />
               )}
             />
@@ -227,7 +230,7 @@ export function CrearTicket() {
 
           {/* Prioridad */}
           <div>
-            <Label className="block mb-2 font-semibold">Prioridad</Label>
+            <Label className="block mb-2 font-semibold">{t("crearTicket.prioridadLabel")}</Label>
             <Controller
               name="prioridad"
               control={control}
@@ -235,7 +238,7 @@ export function CrearTicket() {
                 <CustomSelect
                   field={field}
                   data={dataPrioridades || []}
-                  label="Prioridad"
+                  label={t("crearTicket.prioridadLabel")}
                   getOptionLabel={(item) => item.nombre}
                   getOptionValue={(item) => item.id}
                 />
@@ -248,13 +251,13 @@ export function CrearTicket() {
             )}
           </div>
 
-          {/* Etiqueta → Categoría asociada */}
+          {/* Etiqueta */}
           <div>
-            <Label className="block mb-2 font-semibold">Etiqueta</Label>
+            <Label className="block mb-2 font-semibold">{t("crearTicket.etiquetaLabel")}</Label>
             <CustomSelect
               field={{ value: "", onChange: handleEtiquetaChange }}
               data={dataEtiquetas || []}
-              label="Etiqueta"
+              label={t("crearTicket.etiquetaLabel")}
               getOptionLabel={(item) => item.nombre}
               getOptionValue={(item) => item.id}
             />
@@ -265,45 +268,44 @@ export function CrearTicket() {
             )}
           </div>
 
-          {/* Categoría asociada (No editable) */}
+          {/* Categoría asociada */}
           {categoriaSeleccionada && (
             <div>
               <Label className="block mb-2 font-semibold">
-                Categoría asociada
+                {t("crearTicket.categoriaLabel")}
               </Label>
               <Input value={categoriaSeleccionada.nombre} disabled />
             </div>
           )}
 
-          {/* Usuario solicitante (No editable) */}
+          {/* Usuario */}
           <div>
-            <Label className="block mb-2 font-semibold">Id usuario</Label>
+            <Label className="block mb-2 font-semibold">{t("crearTicket.usuarioIdLabel")}</Label>
             <Input value={usuarioSolicitanteId} disabled />
           </div>
 
-          {/* Nombre del solicitante (No editable) */}
           {usuarioSolicitante && (
-            <div>
-              <Label className="block mb-2 font-semibold">
-                Nombre del usuario
-              </Label>
-              <Input value={usuarioSolicitante.nombre} disabled />
-            </div>
+            <>
+              <div>
+                <Label className="block mb-2 font-semibold">
+                  {t("crearTicket.usuarioNombreLabel")}
+                </Label>
+                <Input value={usuarioSolicitante.nombre} disabled />
+              </div>
+
+              <div>
+                <Label className="block mb-2 font-semibold">
+                  {t("crearTicket.usuarioCorreoLabel")}
+                </Label>
+                <Input value={usuarioSolicitante.email} disabled />
+              </div>
+            </>
           )}
 
-          {/* Correo del solicitante (No editable) */}
-          {usuarioSolicitante && (
-            <div>
-              <Label className="block mb-2 font-semibold">
-                Correo electrónico
-              </Label>
-              <Input value={usuarioSolicitante.email} disabled />
-            </div>
-          )}
-
-          {/* Estado inicial (No ditable) */}
           <div>
-            <Label className="block mb-2 font-semibold">Estado inicial</Label>
+            <Label className="block mb-2 font-semibold">
+              {t("crearTicket.estadoInicialLabel")}
+            </Label>
             <Input value="pendiente" disabled />
           </div>
 
@@ -315,28 +317,28 @@ export function CrearTicket() {
               variant="outline"
               className="flex items-center gap-2"
             >
-              <ArrowLeft className="w-4 h-4" /> Regresar
+              <ArrowLeft className="w-4 h-4" />
+              {t("crearTicket.botonRegresar")}
             </Button>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="flex items-center gap-2"
+
+            <Button 
+            type="submit" 
+            disabled={isSubmitting} 
+            className="flex items-center gap-2"
             >
-              <Save className="w-4 h-4" />{" "}
-              {isSubmitting ? "Guardando..." : "Guardar"}
+              <Save className="w-4 h-4" />
+              {isSubmitting ? t("crearTicket.botonGuardando") : t("crearTicket.botonGuardar")}
             </Button>
           </div>
         </form>
       </Card>
 
-      {/* Modal de éxito */}
       <Dialog open={openSuccess} onOpenChange={setOpenSuccess}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>¡Ticket creado con éxito!</DialogTitle>
+            <DialogTitle>{t("crearTicket.modalTitulo")}</DialogTitle>
             <DialogDescription>
-              Se creó el ticket <strong>{createdName}</strong>. <br />
-              Serás redirigido al listado en unos segundos.
+              {t("crearTicket.modalDescripcion", { titulo: createdName })}
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

@@ -1,0 +1,15 @@
+{
+    "VistaSemanalAsignaciones": {
+        "titulo": "Weekly Assignments",
+        "subtitulo": "View the status of tickets grouped by day.",
+        "errorCargar": "Error loading assignments",
+        "empty": "No assignments this week.",
+        "ticket": "Ticket",
+        "categoria": "Category:",
+        "slaRestante": "Remaining SLA:",
+        "porcentajeCompletado": "% completed",
+        "cambiarEstado": "Change status",
+        "cambiarEstadoTooltip": "Only available to users with edit permissions",
+        "verDetalle": "View details"
+    }
+}

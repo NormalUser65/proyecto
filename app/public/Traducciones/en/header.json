@@ -1,0 +1,32 @@
+{
+    "header": {
+        "brand": "Eduhelp",
+        "nav": {
+            "tickets": "Tickets",
+            "asignaciones": "Assignments",
+            "categorias": "Categories",
+            "tecnicos": "Technicians",
+            "mantenimientos": "Maintenance",
+            "crearCategoria": "Create a Category",
+            "crearTecnico": "Create a Technician",
+            "crearTicket": "Create Ticket"
+        },
+        "user": {
+            "iniciarSesion": "Log In",
+            "registrarse": "Register",
+            "cerrarSesion": "Log Out"
+        },
+        "mobile": {
+            "opciones": "Options",
+            "menuAbrir": "Open menu",
+            "menuCerrar": "Close menu"
+        },
+        "aria": {
+            "inicio": "Home",
+            "tickets": "Tickets",
+            "mantenimientos": "Maintenance",
+            "usuario": "User options",
+            "verDetalles": "See details"
+        }
+    }
+}

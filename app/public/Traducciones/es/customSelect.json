@@ -1,0 +1,6 @@
+{
+    "customSelect": {
+        "noData": "No hay datos",
+        "selectPlaceholder": "Seleccione {{label}}"
+    }
+}

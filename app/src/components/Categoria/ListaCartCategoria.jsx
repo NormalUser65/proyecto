@@ -5,6 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/comp
 import { Info, Pencil, Layers, Clock } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import { useTranslation } from "react-i18next";
 
 ListaCartCategoria.propTypes = {
   data: PropTypes.array,
@@ -12,6 +13,7 @@ ListaCartCategoria.propTypes = {
 
 export function ListaCartCategoria({ data }) {
   const navigate = useNavigate();
+  const { t } = useTranslation("listaCartCategoria");
 
   const handleUpdate = (idCategoria) => {
     navigate(`/categorias/editar/${idCategoria}`);
@@ -30,7 +32,7 @@ export function ListaCartCategoria({ data }) {
               <div className="absolute top-0 left-0 right-0 h-28 bg-gradient-to-br from-primary to-secondary" />
 
               <CardContent className="relative flex-1 space-y-3 p-4 pt-32">
-                {/* Header con título e ícono */}
+                {/* Header */}
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
                     <div className="flex-shrink-0 w-10 h-10 rounded-full bg-muted flex items-center justify-center text-primary-foreground shadow-inner">
@@ -54,7 +56,7 @@ export function ListaCartCategoria({ data }) {
                           <Pencil className="w-4 h-4 text-foreground" />
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Editar</TooltipContent>
+                      <TooltipContent>{t("listaCartCategoria.tooltipEditar")}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>
@@ -63,7 +65,7 @@ export function ListaCartCategoria({ data }) {
                 <div className="space-y-1">
                   <p className="text-sm text-muted-foreground flex items-center gap-2">
                     <Clock className="h-4 w-4 text-secondary" />
-                    SLA: <span className="text-foreground ml-1">{item.SLA}</span>
+                    {t("listaCartCategoria.sla")}{" "}<span className="text-foreground ml-1">{item.SLA}</span>
                   </p>
                 </div>
 
@@ -77,11 +79,11 @@ export function ListaCartCategoria({ data }) {
                           className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm px-4"
                         >
                           <Link to={`/categorias/detalle/${item.id}`}>
-                            Ver detalle
+                            {t("listaCartCategoria.botonVerDetalle")}
                           </Link>
                         </Button>
                       </TooltipTrigger>
-                      <TooltipContent>Ver detalles</TooltipContent>
+                      <TooltipContent>{t("listaCartCategoria.tooltipVerDetalle")}</TooltipContent>
                     </Tooltip>
                   </TooltipProvider>
                 </div>

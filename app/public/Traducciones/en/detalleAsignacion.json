@@ -1,0 +1,10 @@
+{
+    "detalleAsignacion": {
+        "titulo": "Assignment",
+        "errorTitulo": "Error loading assignment",
+        "emptyMessage": "No data found for this assignment.",
+        "idTecnico": "Technician ID:",
+        "idTicket": "Ticket ID:",
+        "botonRegresar": "Go back"
+    }
+}

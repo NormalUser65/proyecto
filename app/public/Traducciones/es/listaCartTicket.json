@@ -1,0 +1,8 @@
+{
+    "listaCartTicket": {
+        "tooltip_detalle": "Ver detalle",
+        "ticket_numero": "Ticket #{{id}}",
+        "estado": "Estado:",
+        "creado": "Creado:"
+    }
+}

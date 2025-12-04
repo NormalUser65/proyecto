@@ -11,23 +11,26 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export function CustomSelect({ field, data, label, getOptionLabel, getOptionValue, error }) {
+    const { t } = useTranslation("customSelect");
+
     if (!data || data.length === 0) {
-        return <div className="w-full">No hay datos</div>;
+        return <div className="w-full">{t("customSelect.noData")}</div>;
     }
     return (
         <div className="w-full">
             <Select
                 onValueChange={(value) => field.onChange(value)}
                 value={String(field.value ?? "")}
-               
+
             >
                 <SelectTrigger  className={cn(
-                                            "w-full justify-between rounded-xl border border-gray-300 shadow-sm text-base",
-                                            "placeholder:text-gray-400 bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent",
-                                            error && "border-red-500 focus:border-red-500 focus:ring-red-300")}>
-                    <SelectValue placeholder={`Seleccione ${label}`} />
+                        "w-full justify-between rounded-xl border border-gray-300 shadow-sm text-base",
+                        "placeholder:text-gray-400 bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent",
+                        error && "border-red-500 focus:border-red-500 focus:ring-red-300")}>
+                    <SelectValue placeholder={t("customSelect.selectPlaceholder", { label })} />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>

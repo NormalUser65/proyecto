@@ -1,0 +1,13 @@
+{
+    "home": {
+        "titulo_p1": "¿Tienes algún",
+        "titulo_p2": "Problema?",
+        "descripcion_1": "Con eduhelp te ayudamos a reportar fallas en tu sistema educativo de forma rápida y eficiente.",
+        "descripcion_2": "Cuéntanos lo que pasa",
+        "boton_reporte": "Realiza un reporte",
+        "boton_login": "Iniciar Sesión",
+        "panel_titulo": "Reporta fallas y averías donde estés",
+        "panel_descripcion": "Reporta desde fallas en sistemas de matrícula hasta fallas en infraestructura y equipos del aula",
+        "alt_imagen": "Imagen decorativa"
+    }
+}

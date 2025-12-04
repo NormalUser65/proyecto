@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Check, ChevronsUpDown, X, AlertCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
@@ -8,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export function CustomMultiSelect({ field, data, label, getOptionLabel, getOptionValue, error }) {
+    const { t } = useTranslation("customMultiSelect");
+
     const [open, setOpen] = useState(false);
     const [selectedValues, setSelectedValues] = useState(field.value || []);
 
@@ -46,22 +49,22 @@ export function CustomMultiSelect({ field, data, label, getOptionLabel, getOptio
                         role="combobox"
                         aria-expanded={open}
                         className={cn(
-            "w-full justify-between rounded-xl border shadow-sm text-base transition-all duration-200 placeholder:text-gray-400",
-            "bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent text-gray-400",
-            error ? "border-red-500" : "border-gray-300 focus:border-primary"
-        )}
+                            "w-full justify-between rounded-xl border shadow-sm text-base transition-all duration-200 placeholder:text-gray-400",
+                            "bg-transparent hover:bg-transparent active:bg-transparent focus:bg-transparent text-gray-400",
+                            error ? "border-red-500" : "border-gray-300 focus:border-primary"
+                        )}
                     >
                         {selectedItems?.length > 0
-                            ? `${selectedItems.length} seleccionado(s)`
-                            : `Seleccionar ${label}`}
+                            ? t("customMultiSelect.seleccionados", { count: selectedItems.length })
+                            : t("customMultiSelect.placeholderSeleccionar", { label })}
                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                     </Button>
                 </PopoverTrigger>
 
                 <PopoverContent className="w-[300px] p-0">
                     <Command>
-                        <CommandInput  placeholder={`Buscar ${label}...`} />
-                        <CommandEmpty>No se encontraron resultados.</CommandEmpty>
+                        <CommandInput placeholder={t("customMultiSelect.placeholderBuscar", { label })} />
+                        <CommandEmpty>{t("customMultiSelect.noResultados")}</CommandEmpty>
                         <CommandGroup>
                             {data?.map((item) => {
                                 const value = String(getOptionValue(item));

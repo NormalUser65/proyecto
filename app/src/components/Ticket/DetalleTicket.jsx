@@ -15,8 +15,11 @@ import {
 } from "lucide-react";
 import { LoadingGrid } from "../ui/custom/CargandoGrid";
 import { EmptyState } from "../ui/custom/estadoVacio";
+import { useTranslation } from "react-i18next";
 
 export function DetalleTicket() {
+  const { t } = useTranslation("detalleTicket");
+
   const navigate = useNavigate();
   const { id } = useParams();
   const [ticket, setTicket] = useState(null);
@@ -43,9 +46,9 @@ export function DetalleTicket() {
 
   if (loading) return <LoadingGrid count={1} type="grid" />;
   if (error)
-    return <ErrorAlert title="Error al cargar el ticket" message={error} />;
+    return (<ErrorAlert title={t("detalleTicket.errorCargar")} message={error}/>);
   if (!ticket || !ticket.data)
-    return <EmptyState message="No se encontraron datos de este ticket." />;
+    return ( <EmptyState message={t("detalleTicket.noDatos")} />);
 
   const data = ticket.data;
 
@@ -55,88 +58,94 @@ export function DetalleTicket() {
       <Card className="!rounded-2xl">
         <CardContent className="p-6 space-y-4">
           <div>
-            <span className="font-semibold">Descripción:</span>
+            <span className="font-semibold">{t("detalleTicket.descripcion")}</span>
             <p className="text-muted-foreground">{data.descripcion}</p>
           </div>
           <div className="flex items-center gap-4">
             <CalendarDays className="h-5 w-5 text-secondary" />
-            <span className="font-semibold">Fecha de creación:</span>
+            <span className="font-semibold">{t("detalleTicket.fechaCreacion")}</span>
             <p className="text-muted-foreground">
               {data.creado_en
                 ? new Intl.DateTimeFormat("es-CR", {
                     dateStyle: "long",
                     timeStyle: "short",
                   }).format(new Date(data.creado_en))
-                : "No definido"}
+                : t("detalleTicket.noDefinido")}
             </p>
           </div>
           <div className="flex items-center gap-4">
             <AlertCircle className="h-5 w-5 text-secondary" />
-            <span className="font-semibold">Estado:</span>
+            <span className="font-semibold">{t("detalleTicket.estado")}</span>
             <Badge variant="outline">{data.estado}</Badge>
           </div>
           <div className="flex items-center gap-4">
             <Tag className="h-5 w-5 text-secondary" />
-            <span className="font-semibold">Categoría:</span>
+            <span className="font-semibold">{t("detalleTicket.categoria")}</span>
             <p className="text-muted-foreground">
-              {data.IDCategoria ?? "Sin categoría"}
+              {data.IDCategoria ?? t("detalleTicket.sinCategoria")}
             </p>
           </div>
           <div className="flex items-center gap-4">
             <User className="h-5 w-5 text-secondary" />
-            <span className="font-semibold">Solicitante:</span>
+            <span className="font-semibold">{t("detalleTicket.solicitante")}</span>
             <p className="text-muted-foreground">{data.IDUsuario}</p>
           </div>
           <div className="flex items-center gap-4">
             <Timer className="h-5 w-5 text-secondary" />
-            <span className="font-semibold">Prioridad:</span>
+            <span className="font-semibold">{t("detalleTicket.prioridad")}</span>
             <Badge variant="secondary">{data.prioridad_nombre}</Badge>
           </div>
           <div>
-            <span className="font-semibold">SLA de Respuesta:</span>
+            <span className="font-semibold">{t("detalleTicket.slaRespuesta")}</span>
             <p className="text-muted-foreground">
               {data.sla_resp_deadline
                 ? new Intl.DateTimeFormat("es-CR", {
                     dateStyle: "long",
                     timeStyle: "short",
                   }).format(new Date(data.sla_resp_deadline))
-                : "No definido"}
+                : t("detalleTicket.noDefinido")}
             </p>
             <p className="text-muted-foreground">
-              Cumplimiento:{" "}
-              {data.sla_resp_met === 1 ? "Cumplido" : "No cumplido"}
+              {t("detalleTicket.cumplimiento")}{" "}
+              {data.sla_resp_met === 1 ? t("detalleTicket.cumplido") : t("detalleTicket.noCumplido")}
             </p>
           </div>
           <div>
-            <span className="font-semibold">SLA de Resolución:</span>
+            <span className="font-semibold">{t("detalleTicket.slaResolucion")}</span>
             <p className="text-muted-foreground">
-              {data.sla_resol_deadline // ✅ ahora sí el campo correcto
+              {data.sla_resol_deadline
                 ? new Intl.DateTimeFormat("es-CR", {
                     dateStyle: "long",
                     timeStyle: "short",
                   }).format(new Date(data.sla_resol_deadline))
-                : "No definido"}
+                : t("detalleTicket.noDefinido")}
             </p>
             <p className="text-muted-foreground">
-              Cumplimiento:{" "}
-              {data.sla_resol_met === 1 ? "Cumplido" : "No cumplido"}
+              {t("detalleTicket.cumplimiento")}{" "}
+              {data.sla_resol_met === 1
+                ? t("detalleTicket.cumplido")
+                : t("detalleTicket.noCumplido")}
             </p>
           </div>
+
           {data.resumen_res && (
             <div>
-              <span className="font-semibold">Resumen de resolución:</span>
+              <span className="font-semibold">
+                {t("detalleTicket.resumenResolucion")}
+              </span>
               <p className="text-muted-foreground">{data.resumen_res}</p>
             </div>
           )}
         </CardContent>
       </Card>
+
       <Button
         type="button"
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6 !rounded-2xl"
       >
         <ArrowLeft className="w-4 h-4" />
-        Regresar
+        {t("detalleTicket.botonRegresar")}
       </Button>
     </div>
   );

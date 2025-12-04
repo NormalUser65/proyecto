@@ -3,7 +3,6 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import { createBrowserRouter } from 'react-router-dom'
 import { RouterProvider } from 'react-router'
-
 import { Layout } from './components/Layout/Layout'
 import { Home } from './components/Home/Home'
 import { PageNotFound } from './components/Home/PageNotFound'
@@ -19,6 +18,7 @@ import { CrearTecnico } from './components/Tecnico/CrearTecnico'
 import { CrearCategoria } from './components/Categoria/CrearCategoria'
 import { ActualizarCategoria } from './components/Categoria/ActualizarCategoria'
 import { CrearTicket } from './components/Ticket/CrearTicket'
+import './i18n/i18n'
 
 const rutas = createBrowserRouter([
   {

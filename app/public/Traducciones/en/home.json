@@ -1,0 +1,13 @@
+{
+  "home": {
+    "titulo_p1": "Do you have a",
+    "titulo_p2": "Problem?",
+    "descripcion_1": "With EduHelp, we help you report failures in your educational system quickly and efficiently.",
+    "descripcion_2": "Tell us what's happening",
+    "boton_reporte": "Submit a report",
+    "boton_login": "Log In",
+    "panel_titulo": "Report failures and issues wherever you are",
+    "panel_descripcion": "Report anything from enrollment system issues to infrastructure and classroom equipment problems",
+    "alt_imagen": "Decorative image"
+  }
+}

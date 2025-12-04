@@ -1,0 +1,8 @@
+{
+    "listaCartAsignacion": {
+        "asignacionTitulo": "Assignment #{{id}}",
+        "tecnicoId": "Technician ID:",
+        "ticketId": "Ticket ID:"
+    }
+}
+

@@ -1,0 +1,36 @@
+{
+    "crearTecnico": {
+        "titulo": "Create Technician",
+        "nombreCompleto": "Full Name",
+        "placeholderNombre": "Enter the full name",
+        "correo": "Email",
+        "placeholderCorreo": "example_email@mail.com",
+        "contrasenna": "Password",
+        "estado": "Status",
+        "estado_disponible": "available",
+        "estado_noDisponible": "Not available",
+        "cargaTrabajo": "Workload",
+        "especialidades": "Specialties",
+        "placeholderEspecialidades": "Select the specialty(ies)",
+        "boton_regresar": "Back",
+        "boton_guardar": "Save",
+        "modalTitulo": "Technician created successfully!",
+        "modalDescripcion": "The technician {{nombre}} has been created. You will be redirected shortly.",
+        "errores": {
+            "nombre_requerido": "Name is required",
+            "nombre_min": "Name must have at least 2 characters",
+            "correo_requerido": "Email is required",
+            "correo_invalido": "Please enter a valid email",
+            "correo_existe": "This email is already registered",
+            "contrasenna_requerida": "Password is required",
+            "ontrasenna_min": "Must have at least 8 characters",
+            "contrasenna_minuscula": "Password must contain at least one lowercase letter",
+            "contrasenna_mayuscula": "Password must contain at least one uppercase letter",
+            "contrasenna_numero": "Password must contain at least one number",
+            "contrasenna_especial": "Password must contain at least one special character",
+            "especialidad_min": "The technician must have at least one specialty",
+            "estado_requerido": "Status is required",
+            "estado_invalido": "You must select whether they are available or not"
+        }
+    }
+}

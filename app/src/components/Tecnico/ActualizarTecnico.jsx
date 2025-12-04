@@ -3,6 +3,7 @@ import { useForm, Controller, useFieldArray } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
   Dialog,
@@ -43,6 +44,7 @@ import { CustomInputField } from "../ui/custom/custom-input-field";
 
 export function ActualizarTecnico() {
   const navigate = useNavigate();
+  const { t } = useTranslation("actualizarTecnico");
   //Obtener parámetro del id de la película
   const { id } = useParams();
   const BASE_URL_image = import.meta.env.VITE_BASE_URL + "uploads";
@@ -60,7 +62,7 @@ export function ActualizarTecnico() {
   const TecnicoEsquema = yup.object({
     NombreTecnico: yup
       .string()
-      .required("El nombre es requerido")
+      .required(t("actualizarTecnico.errores.nombre_requerido"))
       .min(2, "El nombre debe tener al menos 2 caracteres"),
 
     email: yup
@@ -88,26 +90,26 @@ export function ActualizarTecnico() {
       }),
     Contrasenna: yup
       .string()
-      .required("La contraseña es requerida")
-      .min(8, "Deber contar con al menos 8 dígitos")
-      .matches(/[a-z]/, "La contraseña debe tener al menos una minúscula")
-      .matches(/[A-Z]/, "La contraseña debe tener al menos una mayúscula")
-      .matches(/[0-9]/, "La contraseña debe tener al menos un número")
+      .required(t("actualizarTecnico.errores.contrasenna_requerida"))
+      .min(8, t("actualizarTecnico.errores.contrasenna_min"))
+      .matches(/[a-z]/, t("actualizarTecnico.errores.contrasenna_minuscula"))
+      .matches(/[A-Z]/, t("actualizarTecnico.errores.contrasenna_mayuscula"))
+      .matches(/[0-9]/, t("actualizarTecnico.errores.contrasenna_numero"))
       .matches(
         /[!@#$%&*()?":{}|<>]/,
-        "La contraseña debe tener al menos un carácter especial"
+        t("actualizarTecnico.errores.contrasenna_especial")
       ),
 
     Especialidades: yup
       .array()
-      .min(1, "El Técnico debe tener mínimo una especialidad"),
+      .min(1, t("actualizarTecnico.errores.especialidad_min")),
     Estado: yup
       .string()
       .oneOf(
         ["disponible", "No disponible"],
-        "debe seleccionar si está disponible o No disponible"
+        t("actualizarTecnico.errores.estado_invalido")
       )
-      .required("El estado es requerido"),
+      .required(t("actualizarTecnico.errores.estado_requerido")),
   });
 
   /*** React Hook Form ***/
@@ -168,7 +170,6 @@ export function ActualizarTecnico() {
   }, [id]);
 
   /*** Submit ***/
-  /*** Submit ***/
   const onSubmit = async (datos) => {
     try {
       console.log(datos);
@@ -206,7 +207,7 @@ export function ActualizarTecnico() {
   return (
     <div className="py-12 px-4">
       <Card className="rounded-2xl border-primary/60 p-6 max-w-5xl mx-auto">
-        <h2 className="text-2xl font-bold mb-6">Actualizar Técnico</h2>
+        <h2 className="text-2xl font-bold mb-6">{t("actualizarTecnico.titulo")}</h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/*Nombre Completo*/}
@@ -219,8 +220,8 @@ export function ActualizarTecnico() {
                 render={({ field }) => (
                   <CustomInputField
                     {...field}
-                    label="Nombre Completo"
-                    placeholder="Ingrese el nombre completo"
+                    label={t("actualizarTecnico.nombreCompleto")}
+                    placeholder={t("actualizarTecnico.placeholderNombre")}
                     error={errors.NombreTecnico?.message}
                   />
                 )}
@@ -235,8 +236,8 @@ export function ActualizarTecnico() {
                 render={({ field }) => (
                   <CustomInputField
                     {...field}
-                    label="Correo Electrónico"
-                    placeholder="correo_de_ejemplo@correo.com"
+                    label={t("actualizarTecnico.correo")}
+                    placeholder={t("actualizarTecnico.placeholderCorreo")}
                     error={errors.email?.message}
                   />
                 )}
@@ -251,7 +252,7 @@ export function ActualizarTecnico() {
                 render={({ field }) => (
                   <CustomInputField
                     {...field}
-                    label="Contraseña"
+                    label={t("actualizarTecnico.contrasenna")}
                     error={errors.Contrasenna?.message}
                   />
                 )}
@@ -264,13 +265,13 @@ export function ActualizarTecnico() {
                 control={control}
                 render={({ field }) => (
                   <div>
-                    <label className="block font-medium mb-1">Estado</label>
+                    <label className="block font-medium mb-1">{t("actualizarTecnico.estado")}</label>
                     <select
                       {...field}
                       className="border rounded p-2 w-full text-black"
                     >
-                      <option value="disponible">disponible</option>
-                      <option value="No disponible">No disponible</option>
+                      <option value="disponible">{t("actualizarTecnico.estado_disponible")}</option>
+                      <option value="No disponible">{t("actualizarTecnico.estado_noDisponible")}</option>
                     </select>
                     {errors.Estado && (
                       <p className="text-red-600 text-sm">
@@ -283,7 +284,7 @@ export function ActualizarTecnico() {
             </div>
 
             <div>
-              <Label htmlFor="cargaTrabajo">Carga de trabajo</Label>
+              <Label htmlFor="cargaTrabajo">{t("actualizarTecnico.cargaTrabajo")}</Label>
               <Input
                 id="cargaTrabajo"
                 value={0}
@@ -303,11 +304,11 @@ export function ActualizarTecnico() {
                 <CustomMultiSelect
                   field={field}
                   data={datosEspecialidades}
-                  label="Especialidades"
+                  label={t("actualizarTecnico.especialidades")}
                   getOptionLabel={(item) => item.nombre}
                   getOptionValue={(item) => item.id_especialidad ?? item.id}
                   error={errors.Especialidades?.message}
-                  placeholder="Seleccione la(s) especialidad(es)"
+                  placeholder={t("actualizarTecnico.placeholderEspecialidades")}
                 />
               )}
             />
@@ -321,12 +322,12 @@ export function ActualizarTecnico() {
               onClick={() => navigate(-1)}
             >
               <ArrowLeft className="w-4 h-4" />
-              Regresar
+              {t("actualizarTecnico.boton_regresar")}
             </Button>
             {/* Botón Guardar */}
             <Button type="submit" className="flex-1">
               <Save className="w-4 h-4" />
-              Guardar
+              {t("actualizarTecnico.boton_guardar")}
             </Button>
           </div>
         </form>
@@ -334,10 +335,9 @@ export function ActualizarTecnico() {
       <Dialog open={openSuccess} onOpenChange={setOpenSuccess}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>¡Técnico actualizado con éxito!</DialogTitle>
+            <DialogTitle>{t("actualizarTecnico.modalTitulo")}</DialogTitle>
             <DialogDescription>
-              Se actualizó el técnico <strong>{createdName}</strong>. Serás
-              redirigido al listado en unos segundos.
+              {t("actualizarTecnico.modalDescripcion")}
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

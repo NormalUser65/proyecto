@@ -1,0 +1,25 @@
+{
+    "crearCategoria": {
+        "titulo": "Crear Categoría",
+        "form": {
+            "nombre": "Nombre",
+            "placeholderNombre": "Ingrese el nombre de la categoría",
+            "descripcion": "Descripción",
+            "placeholderDescripcion": "Descripción de la categoría",
+            "sla": "SLA",
+            "etiquetas": "Etiquetas",
+            "especialidades": "Especialidades",
+            "placeholderEtiquetas": "Seleccione etiquetas",
+            "placeholderEspecialidades": "Seleccione especialidades"
+        },
+        "botones": {
+            "regresar": "Regresar",
+            "guardar": "Guardar",
+            "guardando": "Guardando..."
+        },
+        "modal": {
+            "titulo": "¡Categoría creada con éxito!",
+            "descripcion": "Se creó la categoría {{name}}. Serás redirigido al listado en unos segundos."
+        }
+    }
+}

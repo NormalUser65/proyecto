@@ -1,5 +1,4 @@
 "use client";
-
 import EduhelpLogo from "../../assets/EduhelpLogo.png";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -16,6 +15,8 @@ import {
   Clapperboard,
 } from "lucide-react";
 
+import LanguageDropdown from "@/components/LanguageDropdown";
+
 import { Badge } from "@/components/ui/badge";
 import {
   Menubar,
@@ -25,25 +26,28 @@ import {
   MenubarItem,
 } from "@/components/ui/menubar";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+import { useTranslation } from "react-i18next";
 
 const userData = { email: "demo@correo.com" };
 const ticketCount = 0;
 
-const navItems = [
-  { title: "Tickets", href: "/tickets" },
-  { title: "Asignaciones", href: "/asignaciones" },
-  { title: "Categorias", href: "/categorias" },
-  { title: "Tecnicos", href: "/tecnicos" },
-];
-
-const userItems = [
-  { title: "Iniciar Sesión", href: "/user/login", icon: <LogIn className="h-4 w-4" /> },
-  { title: "Registrarse", href: "/user/create", icon: <UserPlus className="h-4 w-4" /> },
-  { title: "Cerrar Sesión", href: "/user/logout", icon: <LogOut className="h-4 w-4" /> },
-];
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { t } = useTranslation("header");
+
+  const navItems = [
+    { title: t("header.nav.tickets"), href: "/tickets" },
+    { title: t("header.nav.asignaciones"), href: "/asignaciones" },
+    { title: t("header.nav.categorias"), href: "/categorias" },
+    { title: t("header.nav.tecnicos"), href: "/tecnicos" }
+  ];
+
+  const userItems = [
+    { title: t("header.user.iniciarSesion"), href: "/user/login", icon: <LogIn className="h-4 w-4" /> },
+    { title: t("header.user.registrarse"), href: "/user/create", icon: <UserPlus className="h-4 w-4" /> },
+    { title: t("header.user.cerrarSesion"), href: "/user/logout", icon: <LogOut className="h-4 w-4" /> }
+  ];
 
   return (
     <header
@@ -60,7 +64,7 @@ export default function Header() {
             <div className="p-1 rounded-full shadow-sm">
               <img src={EduhelpLogo} alt="Logo EduHelp" className="h-15" />
             </div>
-            <span className="hidden sm:inline">Eduhelp</span>
+            <span className="hidden sm:inline">{t("header.brand")}</span>
           </Link>
         </div>
 
@@ -84,7 +88,7 @@ export default function Header() {
           <Menubar className="w-auto bg-transparent border-none shadow-none">
             <MenubarMenu>
               <MenubarTrigger className="flex items-center gap-2 py-2 px-4 rounded-full text-sm hover:bg-white/10 transition">
-                <Layers className="h-4 w-4" /> Mantenimientos
+                <Layers className="h-4 w-4" /> {t("header.nav.mantenimientos")}
                 <ChevronDown className="h-3 w-3" />
               </MenubarTrigger>
 
@@ -94,7 +98,7 @@ export default function Header() {
                     to="/categorias/crear"
                     className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
                   >
-                    Crear una Categoría
+                    {t("header.nav.crearCategoria")}
                   </Link>
                 </MenubarItem>
 
@@ -103,7 +107,7 @@ export default function Header() {
                     to="/tecnicos/crear"
                     className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
                   >
-                    Crear un Técnico
+                    {t("header.nav.crearTecnico")}
                   </Link>
                 </MenubarItem>
 
@@ -112,17 +116,19 @@ export default function Header() {
                     to="/tickets/crear"
                     className="flex items-center gap-2 py-2 px-4 rounded-lg text-sm hover:bg-white/20 transition"
                   >
-                    Crear Ticket
+                    {t("header.nav.crearTicket")}
                   </Link>
                 </MenubarItem>
               </MenubarContent>
             </MenubarMenu>
           </Menubar>
-          
         </nav>
 
-        {/* Íconos derecha */}
+        {/* ICONOS DERECHA */}
         <div className="ml-auto flex items-center gap-2">
+          <div className="flex justify-end mb-4">
+            <LanguageDropdown />
+          </div>
           <Link to="/tickets" className="relative hover:opacity-90" aria-label="Tickets">
             <div className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition">
               <Ticket className="h-5 w-5 text-white" />
@@ -138,7 +144,7 @@ export default function Header() {
               <MenubarMenu>
                 <MenubarTrigger className="flex items-center gap-2 font-medium text-white hover:bg-white/15 px-4 py-2 rounded-full transition">
                   <User className="h-4 w-4" /> {userData.email}
-                  <ChevronDown className="h-3 w-3" />
+                  <ChevronDown className="h-3 w-3 transition-transform duration-200 data-[state=open]:rotate-180" />
                 </MenubarTrigger>
 
                 <MenubarContent className="bg-white/10 backdrop-blur-lg border-none rounded-xl shadow-xl mt-2">
@@ -171,16 +177,12 @@ export default function Header() {
 
             <SheetContent side="left" className="bg-gradient-to-b from-primary/90 to-secondary/90 text-white backdrop-blur-lg border-none">
               <nav className="mt-10 space-y-6 px-4" aria-label="Navegación móvil">
-                <Link
-                  to="/"
-                  className="flex items-center gap-2 text-xl font-semibold"
-                  onClick={() => setMobileOpen(false)}
-                >
-                  
-                </Link>
 
                 <div>
-                  <h4 className="text-lg font-semibold mb-2 flex items-center gap-2">Opciones</h4>
+                  <h4 className="text-lg font-semibold mb-2 flex items-center gap-2">
+                    {t("header.mobile.opciones")}
+                  </h4>
+
                   {navItems.map((item) => (
                     <Link
                       key={item.href}

@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import error from "../../assets/error.jpg";
+import { useTranslation } from "react-i18next";
 
 export function PageNotFound() {
-   const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { t } = useTranslation("pageNotFound");
 
   return (
     <main className="mx-auto mt-20 mb-6 max-w-4xl p-6">
@@ -14,7 +16,7 @@ export function PageNotFound() {
         <div className="md:col-span-4 flex justify-center">
           <img
             src={error}
-            alt="404 Error"
+            alt={t("pageNotFound.imgAlt")}
             className="rounded-lg w-full h-auto max-w-xs"
           />
         </div>
@@ -22,11 +24,11 @@ export function PageNotFound() {
         {/* Texto */}
         <div className="md:col-span-8 text-center md:text-left">
           <h1 className="text-3xl font-bold text-foreground mb-4">
-            Recurso no encontrado
+            {t("pageNotFound.title")}
           </h1>
+
           <p className="text-lg text-muted-foreground mb-6">
-            La página que está buscando podría haber sido eliminada, cambió su
-            nombre o no está disponible temporalmente.
+            {t("pageNotFound.description")}
           </p>
 
           {/* Botón volver */}
@@ -35,7 +37,7 @@ export function PageNotFound() {
             className="flex items-center gap-2"
           >
             <ArrowLeft className="h-4 w-4" />
-            Volver
+            {t("pageNotFound.buttonBack")}
           </Button>
         </div>
       </div>

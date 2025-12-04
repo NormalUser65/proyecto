@@ -1,0 +1,10 @@
+{
+    "detalleAsignacion": {
+        "titulo": "Asignación",
+        "errorTitulo": "Error al cargar la asignación",
+        "emptyMessage": "No se encontraron datos de esta asignación.",
+        "idTecnico": "ID Técnico:",
+        "idTicket": "ID Ticket:",
+        "botonRegresar": "Regresar"
+    }
+}

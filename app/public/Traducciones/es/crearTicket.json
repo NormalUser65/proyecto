@@ -1,0 +1,29 @@
+{
+  "crearTicket": {
+    "tituloPagina": "Crear Ticket",
+    "tituloLabel": "Título",
+    "placeholderTitulo": "Ingrese el título del ticket",
+    "errorTituloRequerido": "El título es requerido",
+    "errorTituloMin": "Debe tener al menos 10 caracteres",
+    "errorTituloMax": "No puede superar los 250 caracteres",
+    "descripcionLabel": "Descripción",
+    "placeholderDescripcion": "Descripción del ticket",
+    "errorDescripcionRequerida": "La descripción es requerida",
+    "errorDescripcionMin": "Debe tener al menos 20 caracteres",
+    "prioridadLabel": "Prioridad",
+    "errorPrioridadInvalida": "Seleccione una prioridad válida",
+    "errorPrioridadRequerida": "La prioridad es requerida",
+    "etiquetaLabel": "Etiqueta",
+    "categoriaLabel": "Categoría asociada",
+    "usuarioIdLabel": "Id usuario",
+    "usuarioNombreLabel": "Nombre del usuario",
+    "usuarioCorreoLabel": "Correo electrónico",
+    "estadoInicialLabel": "Estado inicial",
+    "botonRegresar": "Regresar",
+    "botonGuardar": "Guardar",
+    "botonGuardando": "Guardando...",
+    "modalTitulo": "¡Ticket creado con éxito!",
+    "modalDescripcion": "Se creó el ticket {{titulo}}. Serás redirigido al listado en unos segundos.",
+    "errorCategoriaNoEncontrada": "No se encontraron categorías asociadas"
+  }
+}

@@ -1,0 +1,13 @@
+{
+    "listaCartTecnico": {
+        "correoAsociado": "Associated email:",
+        "disponibilidad": "Availability:",
+        "verDetalle": "View details",
+        "verDetallesTooltip": "View details",
+        "editarTooltip": "Edit",
+        "estados": {
+            "disponible": "available",
+            "noDisponible": "Not available"
+        }
+    }
+}

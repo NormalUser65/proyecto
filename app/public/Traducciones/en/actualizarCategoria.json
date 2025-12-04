@@ -1,0 +1,32 @@
+{
+    "actualizarCategoria": {
+        "titulo": "Update Category",
+        "nombre": "Name",
+        "descripcion": "Description",
+        "sla": "SLA",
+        "errorCrear": "Error updating category",
+        "validacion": {
+        "nombreRequerido": "Name is required",
+        "nombreMin": "Must have at least 10 characters",
+        "nombreMax": "Cannot exceed 50 characters",
+        "nombreCaracteresInvalidos": "Special characters are not allowed",
+        "descripcionRequerida": "Description is required",
+        "descripcionMin": "Must have at least 20 characters",
+        "descripcionMax": "Cannot exceed 250 characters",
+        "slaRequerido": "SLA is required",
+        "slaInvalido": "Select a valid SLA",
+        "slaPositivo": "SLA must be a positive number",
+        "etiquetasMin": "You must select at least one tag",
+        "especialidadesMin": "You must select at least one specialty"
+        },
+        "botones": {
+            "regresar": "Back",
+            "guardar": "Save changes",
+            "guardando": "Saving..."
+        },
+        "modal": {
+            "titulo": "Category updated successfully!",
+            "descripcion": "The category {{name}} has been updated. You will be redirected in a few seconds."
+        }
+    }
+}

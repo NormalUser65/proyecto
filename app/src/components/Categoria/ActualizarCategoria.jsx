@@ -25,12 +25,14 @@ import CategoriaService from "../../Servicios/CategoriaService";
 import SLAService from "../../Servicios/SlaService";
 import EtiquetaService from "../../Servicios/EtiquetaService";
 import EspecialidadService from "../../Servicios/EspecialidadService";
+import { useTranslation } from "react-i18next";
 
 // Componentes reutilizables
 import { CustomMultiSelect } from "../ui/custom/custom-multiple-select";
 import { CustomSelect } from "../ui/custom/custom-select";
 
 export function ActualizarCategoria() {
+  const { t } = useTranslation("actualizarCategoria");
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -181,14 +183,14 @@ export function ActualizarCategoria() {
     <div className="py-12 px-4">
       <Card className="p-8 max-w-3xl mx-auto shadow-lg">
         <h2 className="text-2xl font-bold mb-8 text-center">
-          Actualizar Categoría
+          {t("actualizarCategoria.titulo")}
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Nombre */}
           <div>
             <Label htmlFor="nombre" className="block mb-2 font-semibold">
-              Nombre
+              {t("actualizarCategoria.nombre")}
             </Label>
             <Controller
               name="nombre"
@@ -197,15 +199,15 @@ export function ActualizarCategoria() {
             />
             {errors.nombre && (
               <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-                {errors.nombre.message}
-                </p>
+                {t(`actualizarCategoria.validacion.${errors.nombre.type}`)}
+              </p>
             )}
           </div>
 
           {/* Descripción */}
           <div>
             <Label htmlFor="description" className="block mb-2 font-semibold">
-              Descripción
+              {t("actualizarCategoria.descripcion")}
             </Label>
             <Controller
               name="description"
@@ -214,7 +216,7 @@ export function ActualizarCategoria() {
             />
             {errors.description && (
               <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-                {errors.description.message}
+                {t(`actualizarCategoria.validacion.${errors.description.type}`)}
               </p>
             )}
           </div>
@@ -228,7 +230,7 @@ export function ActualizarCategoria() {
                 <CustomSelect
                   field={field}
                   data={dataSLA}
-                  label="SLA"
+                  label={t("actualizarCategoria.sla")}
                   getOptionLabel={(sla) =>
                     `${sla.nombre} (${sla.max_resp_minutos} min resp., ${sla.max_resol_minutos} min resolución)`
                   }
@@ -238,7 +240,7 @@ export function ActualizarCategoria() {
             />
             {errors.sla_id && (
               <p className="text-sm bg-red-100 border border-red-400 text-red-600 rounded px-2 py-1">
-                {errors.sla_id.message}
+                {t("actualizarCategoria.validacion.slaRequerido")}
                 </p>
             )}
           </div>
@@ -294,14 +296,18 @@ export function ActualizarCategoria() {
               onClick={() => navigate(-1)}
               variant="outline"
               className="flex items-center gap-2">
-              <ArrowLeft className="w-4 h-4" /> Regresar
+              <ArrowLeft className="w-4 h-4" />{" "}
+              {t("actualizarCategoria.botones.regresar")}
             </Button>
+
             <Button
               type="submit"
               disabled={isSubmitting}
               className="flex items-center gap-2">
-              <Save className="w-4 h-4" />{" "}
-              {isSubmitting ? "Guardando..." : "Guardar cambios"}
+              <Save className="w-4 h-4" />
+              {isSubmitting
+                ? t("actualizarCategoria.botones.guardando")
+                : t("actualizarCategoria.botones.guardar")}
             </Button>
           </div>
         </form>
@@ -311,10 +317,13 @@ export function ActualizarCategoria() {
       <Dialog open={openSuccess} onOpenChange={setOpenSuccess}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>¡Categoría actualizada con éxito!</DialogTitle>
+            <DialogTitle>
+              {t("actualizarCategoria.modal.titulo")}
+            </DialogTitle>
             <DialogDescription>
-              Se actualizó la categoría <strong>{createdName}</strong>. Serás
-              redirigido al listado en unos segundos.
+              {t("actualizarCategoria.modal.descripcion", {
+                name: createdName,
+              })}
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

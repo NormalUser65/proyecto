@@ -1,0 +1,8 @@
+{
+    "pageNotFound": {
+        "title": "Recurso no encontrado",
+        "description": "La página que está buscando podría haber sido eliminada, cambió su nombre o no está disponible temporalmente.",
+        "buttonBack": "Volver",
+        "imgAlt": "Error 404"
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "crearCategoria": {
+        "titulo": "Create Category",
+        "form": {
+            "nombre": "Name",
+            "placeholderNombre": "Enter the category name",
+            "descripcion": "Description",
+            "placeholderDescripcion": "Category description",
+            "sla": "SLA",
+            "etiquetas": "Tags",
+            "especialidades": "Specialties",
+            "placeholderEtiquetas": "Select tags",
+            "placeholderEspecialidades": "Select specialties"
+        },
+        "botones": {
+            "regresar": "Back",
+            "guardar": "Save",
+            "guardando": "Saving..."
+        },
+        "modal": {
+            "titulo": "Category created successfully!",
+            "descripcion": "Category {{name}} was created. You will be redirected shortly."
+        }
+    }
+}
