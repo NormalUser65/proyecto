@@ -9,11 +9,23 @@ import { Link } from "react-router-dom";
 import { LoadingGrid } from "../ui/custom/CargandoGrid";
 import { ErrorAlert } from "../ui/custom/AlertaError";
 import { EmptyState } from "../ui/custom/estadoVacio";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from "@/components/ui/tooltip";
-import { useTranslation } from "react-i18next";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider,
+} from "@/components/ui/tooltip";
 
 function obtenerDiaSemana(fecha) {
-  const dias = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+  const dias = [
+    "Domingo",
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+  ];
   return dias[new Date(fecha).getDay()];
 }
 
@@ -47,7 +59,6 @@ const estadoColor = {
 };
 
 export function VistaSemanalAsignaciones() {
-  const { t } = useTranslation("VistaSemanalAsignaciones");
   const [asignaciones, setAsignaciones] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setCarga] = useState(true);
@@ -71,9 +82,10 @@ export function VistaSemanalAsignaciones() {
   }, []);
 
   if (loading) return <LoadingGrid type="grid" />;
-  if (error) return <ErrorAlert title={t("VistaSemanalAsignaciones.errorCargar")} message={error} />;
+  if (error)
+    return <ErrorAlert title="Error al cargar asignaciones" message={error} />;
   if (!asignaciones || asignaciones.length === 0)
-    return <EmptyState message={t("VistaSemanalAsignaciones.empty")} />;
+    return <EmptyState message="No hay asignaciones esta semana." />;
 
   const agrupadasPorDia = {};
   asignaciones.forEach((objeto) => {
@@ -82,17 +94,31 @@ export function VistaSemanalAsignaciones() {
     agrupadasPorDia[dia].push(objeto);
   });
 
-  const ordenDias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+  const ordenDias = [
+    "Lunes",
+    "Martes",
+    "Miércoles",
+    "Jueves",
+    "Viernes",
+    "Sábado",
+    "Domingo",
+  ];
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-2">
-        {t("VistaSemanalAsignaciones.titulo")}
-      </h1>
-
+      <h1 className="text-3xl font-bold mb-2">Asignaciones Semanales</h1>
       <p className="text-muted-foreground mb-6">
-        {t("VistaSemanalAsignaciones.subtitulo")}
+        Visualiza el estado de los tickets agrupados por día.
       </p>
+
+      <div className="flex justify-end mb-6">
+        <Button
+          asChild
+          className="rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium text-sm px-6"
+        >
+          <Link to="/asignaciones/gestion">Gestionar Asignaciones</Link>
+        </Button>
+      </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {ordenDias.map((dia) => {
@@ -107,17 +133,19 @@ export function VistaSemanalAsignaciones() {
               </h2>
 
               {lista.map((objeto) => (
-                <Card key={objeto.IDTicket} className="mb-4 border border-border shadow-sm rounded-2xl transition-all hover:shadow-md hover:-translate-y-1">
-
+                <Card
+                  key={objeto.id}
+                  className="mb-4 border border-border shadow-sm rounded-2xl transition-all hover:shadow-md hover:-translate-y-1"
+                >
                   <CardHeader className="flex justify-between items-center">
                     <CardTitle className="text-base font-semibold flex items-center gap-2">
                       <Info className="h-4 w-4 text-primary-foreground" />
-                      {t("VistaSemanalAsignaciones.ticket")} #{objeto.IDTicket}
+                      Ticket #{objeto.IDTicket}
                     </CardTitle>
-
                     <Badge
                       className={
-                        estadoColor[objeto.estado?.toLowerCase()] ?? "bg-gray-500 text-white"
+                        estadoColor[objeto.estado?.toLowerCase()] ??
+                        "bg-gray-500 text-white"
                       }
                     >
                       {objeto.estado ?? "Sin estado"}
@@ -132,23 +160,19 @@ export function VistaSemanalAsignaciones() {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Tag className="h-4 w-4 text-secondary" />
                       <span>
-                        {t("VistaSemanalAsignaciones.categoria")}{" "}
-                        {objeto.nombreCategoria ?? "No definida"}
+                        Categoría: {objeto.nombreCategoria ?? "No definida"}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CalendarDays className="h-4 w-4 text-secondary" />
-                      <span>
-                        {t("VistaSemanalAsignaciones.slaRestante")} {calcularSLA(objeto)}
-                      </span>
+                      <span>SLA restante: {calcularSLA(objeto)}</span>
                     </div>
 
                     <div className="pt-2 border-t">
                       <Progress value={calcularPorcentajeSLA(objeto)} />
                       <p className="text-xs text-muted-foreground mt-1">
-                        {calcularPorcentajeSLA(objeto)}
-                        {t("VistaSemanalAsignaciones.porcentajeCompletado")}
+                        {calcularPorcentajeSLA(objeto)}% completado
                       </p>
                     </div>
 
@@ -156,15 +180,33 @@ export function VistaSemanalAsignaciones() {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-
-                            <Button size="sm" variant="outline" disabled>
-                              {t("VistaSemanalAsignaciones.cambiarEstado")}
-                            </Button>
+                            <span>
+                              <Button
+                                asChild
+                                size="sm"
+                                variant="outline"
+                                disabled={
+                                  objeto.estado?.toLowerCase() === "cerrado"
+                                }
+                                className="rounded-full bg-primary text-white hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {objeto.estado?.toLowerCase() === "cerrado" ? (
+                                  <span>Cambiar estado</span>
+                                ) : (
+                                  <Link
+                                    to={`/tickets/cambiarEstado/${objeto.IDTicket}`}>
+                                    Cambiar estado
+                                  </Link>
+                                )}
+                              </Button>
+                            </span>
                           </TooltipTrigger>
-
-                          <TooltipContent>
-                            {t("VistaSemanalAsignaciones.cambiarEstadoTooltip")}
-                          </TooltipContent>
+                          {objeto.estado?.toLowerCase() === "cerrado" && (
+                            <TooltipContent>
+                              Los tickets en estado "Cerrado" no pueden ser
+                              modificados.
+                            </TooltipContent>
+                          )}
                         </Tooltip>
                       </TooltipProvider>
 
@@ -172,9 +214,8 @@ export function VistaSemanalAsignaciones() {
                         size="sm"
                         className="rounded-full bg-primary text-white hover:bg-primary/90 font-medium text-sm px-4"
                       >
-                        <Link to={`/tickets/detalle/${objeto.IDTicket}`}>
-                          {t("VistaSemanalAsignaciones.verDetalle")}
-
+                        <Link to={`/asignaciones/detalle/${objeto.id}`}>
+                          Ver detalle
                         </Link>
                       </Button>
                     </div>

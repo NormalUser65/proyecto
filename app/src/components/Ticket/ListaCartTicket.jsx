@@ -100,7 +100,7 @@ export function ListaCartTicket({ data }) {
               <p className="text-sm text-muted-foreground flex items-center gap-2">
                 <AlertCircle className="h-4 w-4 text-secondary" />
                 {t("listaCartTicket.estado")}
-                <span className="text-foreground ml-1">{item.estado}</span>
+                <span className="text-foreground ml-1">{item.estado_nombre}</span>
               </p>
               <p className="text-sm text-muted-foreground flex items-center gap-2">
                 <CalendarDays className="h-4 w-4 text-secondary" />
