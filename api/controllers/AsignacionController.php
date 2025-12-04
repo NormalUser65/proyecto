@@ -85,6 +85,22 @@ class asignaciones
         }
     }
 
+    public function detalle($id)
+    {
+        $response = new Response();
+        try {
+            $model = new asignacionModel();
+            $result = $model->getDetalle($id);
+            $response->toJSON([
+                "success" => true,
+                "data" => $result
+            ]);
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
+
     public function asignarManual()
     {
         $response = new Response();
@@ -92,7 +108,7 @@ class asignaciones
             $ticketId      = intval($_POST['ticketId'] ?? 0);
             $tecnicoId     = intval($_POST['tecnicoId'] ?? 0);
             $justificacion = $_POST['justificacion'] ?? '';
-            $imagenUrl     = $_FILES['imagen']['name'] ?? null; 
+            $imagenUrl     = $_FILES['imagen']['name'] ?? null;
 
             if (!$ticketId || !$tecnicoId || !$justificacion) {
                 throw new Exception("Faltan parámetros obligatorios.");
@@ -107,7 +123,7 @@ class asignaciones
         }
     }
 
-     public function asignarAutomatico()
+    public function asignarAutomatico()
     {
         $response = new Response();
         try {

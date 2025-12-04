@@ -3,10 +3,14 @@ import AsignacionService from "../../Servicios/AsignacionService";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { User, ChartBar, Wrench, ScrollText, Clock, Inbox } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
 export function AsignacionAutomatica() {
   const [resultados, setResultados] = useState([]);
   const [mensaje, setMensaje] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     AsignacionService.asignarAutomatico()
@@ -104,6 +108,14 @@ export function AsignacionAutomatica() {
           ))}
         </div>
       )}
+      <Button
+        type="button"
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-8 !rounded-2xl px-6"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Volver
+      </Button>
     </div>
   );
 }

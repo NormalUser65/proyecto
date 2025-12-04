@@ -108,6 +108,7 @@ export function VistaSemanalAsignaciones() {
 
               {lista.map((objeto) => (
                 <Card key={objeto.IDTicket} className="mb-4 border border-border shadow-sm rounded-2xl transition-all hover:shadow-md hover:-translate-y-1">
+
                   <CardHeader className="flex justify-between items-center">
                     <CardTitle className="text-base font-semibold flex items-center gap-2">
                       <Info className="h-4 w-4 text-primary-foreground" />
@@ -155,6 +156,7 @@ export function VistaSemanalAsignaciones() {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
+
                             <Button size="sm" variant="outline" disabled>
                               {t("VistaSemanalAsignaciones.cambiarEstado")}
                             </Button>
@@ -168,10 +170,11 @@ export function VistaSemanalAsignaciones() {
 
                       <Button
                         size="sm"
-                        className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm px-4"
+                        className="rounded-full bg-primary text-white hover:bg-primary/90 font-medium text-sm px-4"
                       >
                         <Link to={`/tickets/detalle/${objeto.IDTicket}`}>
                           {t("VistaSemanalAsignaciones.verDetalle")}
+
                         </Link>
                       </Button>
                     </div>

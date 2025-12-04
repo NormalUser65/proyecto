@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { ArrowLeft } from "lucide-react";
 import { ClipboardList, Layers, Clock, Info } from "lucide-react";
 import AsignacionService from "../../Servicios/AsignacionService";
 import UsuarioService from "../../Servicios/UsuarioService";
@@ -30,21 +31,20 @@ export function AsignacionManual() {
   const [error, setError] = useState("");
 
   /*** Validación Yup ***/
-  const asignacionSchema = yup.object({
-    ticketId: yup
+  /*** Validación Yup ***/
+const asignacionSchema = yup.object({
+  ticketId: yup
     .number()
+    .typeError("Debe seleccionar un ticket")
     .required("Debe seleccionar un ticket"),
-    tecnicoId: yup
+  tecnicoId: yup
     .number()
+    .typeError("Debe seleccionar un técnico")
     .required("Debe seleccionar un técnico"),
-    justificacion: yup
-    .string()
-    .required("Debe escribir una justificación"),
-    imagenes: yup
-    .array()
-    .of(yup.mixed())
-    .optional(),
-  });
+  justificacion: yup.string().required("Debe escribir una justificación"),
+  imagenes: yup.array().of(yup.mixed()).optional(),
+});
+
 
   /*** React Hook Form ***/
   const {
@@ -174,15 +174,17 @@ export function AsignacionManual() {
                 <Card
                   key={t.id}
                   onClick={() => handleSelectTicket(t.id)}
-                  className={`relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-1 cursor-pointer ${
-                    watch("ticketId") === t.id ? "ring-2 ring-primary" : ""
+                  className={`relative flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-1 cursor-pointer ${
+                    watch("ticketId") === t.id
+                      ? "border-2 border-purple-700 ring-2 ring-purple-500"
+                      : "border-border"
                   }`}
                 >
                   <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-br from-primary to-secondary" />
 
                   {/* Check de selección */}
                   {watch("ticketId") === t.id && (
-                    <div className="absolute top-2 right-2 bg-primary text-white rounded-full p-1 shadow-md">
+                    <div className="absolute top-2 right-2 bg-blue-500 text-white rounded-full p-1 shadow-md">
                       ✓
                     </div>
                   )}
@@ -225,6 +227,11 @@ export function AsignacionManual() {
                 </Card>
               ))}
             </div>
+            {errors.ticketId && (
+              <p className="text-sm text-red-600 mt-2">
+                {errors.ticketId.message}
+              </p>
+            )}
           </section>
 
           {/* Técnicos con cards seleccionables*/}
@@ -238,16 +245,16 @@ export function AsignacionManual() {
                   <Card
                     key={tec.id}
                     onClick={() => setValue("tecnicoId", tec.id)}
-                    className={`relative flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-1 cursor-pointer ${
+                    className={`relative flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm transition-all hover:shadow-md hover:-translate-y-1 cursor-pointer ${
                       watch("tecnicoId") === tec.id
-                        ? "ring-2 ring-green-500"
-                        : ""
+                        ? "border-2 border-purple-700 ring-2 ring-blue-500"
+                        : "border-border"
                     }`}
                   >
                     <div className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-br from-green-500 to-emerald-600" />
 
                     {watch("tecnicoId") === tec.id && (
-                      <div className="absolute top-2 right-2 bg-green-500 text-white rounded-full p-1 shadow-md">
+                      <div className="absolute top-2 right-2 bg-blue-500 text-white rounded-full p-1 shadow-md">
                         ✓
                       </div>
                     )}
@@ -285,6 +292,11 @@ export function AsignacionManual() {
                   </Card>
                 ))}
               </div>
+              {errors.tecnicoId && (
+                <p className="text-sm text-red-600 mt-2">
+                  {errors.tecnicoId.message}
+                </p>
+              )}
             </section>
           )}
 
@@ -352,6 +364,15 @@ export function AsignacionManual() {
           </Button>
         </CardContent>
       </Card>
+
+      <Button
+        type="button"
+        onClick={() => navigate(-1)}
+        className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6 !rounded-2xl px-6"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Volver
+      </Button>
 
       {/* Modal de éxito */}
       <Dialog open={openSuccess} onOpenChange={setOpenSuccess}>

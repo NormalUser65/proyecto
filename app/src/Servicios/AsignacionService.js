@@ -37,6 +37,10 @@ class AsignacionService {
     return axios.get(`${BASE_URL}/nombre/${nombre}`);
   }
 
+  getDetalle(id) {
+    return axios.get(`${BASE_URL}/detalle/${id}`);
+  }
+
   // GET /asignaciones/asignarManual
   asignarManual(formData) {
     return axios.post(`${BASE_URL}/asignarManual`, formData, {
