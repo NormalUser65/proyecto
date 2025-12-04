@@ -53,85 +53,111 @@ export function DetalleTicket() {
     <div className="max-w-4xl mx-auto py-12 px-4">
       <h1 className="text-4xl font-extrabold mb-6">{data.Titulo}</h1>
       <Card className="!rounded-2xl">
-        <CardContent className="p-6 space-y-4">
-          <div>
-            <span className="font-semibold">Descripción:</span>
-            <p className="text-muted-foreground">{data.descripcion}</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <CalendarDays className="h-5 w-5 text-secondary" />
-            <span className="font-semibold">Fecha de creación:</span>
-            <p className="text-muted-foreground">
-              {data.creado_en
-                ? new Intl.DateTimeFormat("es-CR", {
-                    dateStyle: "long",
-                    timeStyle: "short",
-                  }).format(new Date(data.creado_en))
-                : "No definido"}
-            </p>
-          </div>
-          <div className="flex items-center gap-4">
-            <AlertCircle className="h-5 w-5 text-secondary" />
-            <span className="font-semibold">Estado:</span>
-            <Badge variant="outline">{data.estado_nombre}</Badge>
-          </div>
-          <div className="flex items-center gap-4">
-            <Tag className="h-5 w-5 text-secondary" />
-            <span className="font-semibold">Categoría:</span>
-            <p className="text-muted-foreground">
-              {data.categoria_nombre ?? "Sin categoría"}
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <User className="h-5 w-5 text-secondary" />
-            <span className="font-semibold">Solicitante:</span>
-            <p className="text-muted-foreground">{data.usuario_nombre}</p>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Timer className="h-5 w-5 text-secondary" />
-            <span className="font-semibold">Prioridad:</span>
-            <Badge variant="secondary">{data.prioridad_nombre}</Badge>
-          </div>
-          <div>
-            <span className="font-semibold">SLA de Respuesta:</span>
-            <p className="text-muted-foreground">
-              {data.sla_resp_deadline
-                ? new Intl.DateTimeFormat("es-CR", {
-                    dateStyle: "long",
-                    timeStyle: "short",
-                  }).format(new Date(data.sla_resp_deadline))
-                : "No definido"}
-            </p>
-            <p className="text-muted-foreground">
-              Cumplimiento:{" "}
-              {data.sla_resp_met === 1 ? "Cumplido" : "No cumplido"}
-            </p>
-          </div>
-          <div>
-            <span className="font-semibold">SLA de Resolución:</span>
-            <p className="text-muted-foreground">
-              {data.sla_resol_deadline
-                ? new Intl.DateTimeFormat("es-CR", {
-                    dateStyle: "long",
-                    timeStyle: "short",
-                  }).format(new Date(data.sla_resol_deadline))
-                : "No definido"}
-            </p>
-            <p className="text-muted-foreground">
-              Cumplimiento:{" "}
-              {data.sla_resol_met === 1 ? "Cumplido" : "No cumplido"}
-            </p>
-          </div>
-          {data.resumen_res && (
+        <CardContent className="p-6">
+          {/* Grid de dos columnas */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             <div>
-              <span className="font-semibold">Resumen de resolución:</span>
-              <p className="text-muted-foreground">{data.resumen_res}</p>
+              <span className="font-semibold">Descripción:</span>
+              <p className="text-muted-foreground">{data.descripcion}</p>
             </div>
-          )}
+
+            <div className="flex items-center gap-4">
+              <CalendarDays className="h-5 w-5 text-secondary" />
+              <span className="font-semibold">Fecha de creación:</span>
+              <p className="text-muted-foreground">
+                {data.creado_en
+                  ? new Intl.DateTimeFormat("es-CR", {
+                      dateStyle: "long",
+                      timeStyle: "short",
+                    }).format(new Date(data.creado_en))
+                  : "No definido"}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <AlertCircle className="h-5 w-5 text-secondary" />
+              <span className="font-semibold">Estado:</span>
+              <Badge variant="outline">{data.estado_nombre}</Badge>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <Tag className="h-5 w-5 text-secondary" />
+              <span className="font-semibold">Categoría:</span>
+              <p className="text-muted-foreground">
+                {data.categoria_nombre ?? "Sin categoría"}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <User className="h-5 w-5 text-secondary" />
+              <span className="font-semibold">Solicitante:</span>
+              <p className="text-muted-foreground">{data.usuario_nombre}</p>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <Timer className="h-5 w-5 text-secondary" />
+              <span className="font-semibold">Prioridad:</span>
+              <Badge variant="secondary">{data.prioridad_nombre}</Badge>
+            </div>
+
+            <div>
+              <span className="font-semibold">SLA de Respuesta:</span>
+              <p className="text-muted-foreground">
+                {data.sla_resp_deadline
+                  ? new Intl.DateTimeFormat("es-CR", {
+                      dateStyle: "long",
+                      timeStyle: "short",
+                    }).format(new Date(data.sla_resp_deadline))
+                  : "No definido"}
+              </p>
+              <p className="text-muted-foreground">
+                Cumplimiento:{" "}
+                {data.sla_resp_met === 1 ? "Cumplido" : "No cumplido"}
+              </p>
+            </div>
+
+            <div>
+              <span className="font-semibold">SLA de Resolución:</span>
+              <p className="text-muted-foreground">
+                {data.sla_resol_deadline
+                  ? new Intl.DateTimeFormat("es-CR", {
+                      dateStyle: "long",
+                      timeStyle: "short",
+                    }).format(new Date(data.sla_resol_deadline))
+                  : "No definido"}
+              </p>
+              <p className="text-muted-foreground">
+                Cumplimiento:{" "}
+                {data.sla_resol_met === 1 ? "Cumplido" : "No cumplido"}
+              </p>
+            </div>
+
+            {data.resumen_res && (
+              <div className="md:col-span-2">
+                <span className="font-semibold">Resumen de resolución:</span>
+                <p className="text-muted-foreground">{data.resumen_res}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Botón de historial dentro del card */}
+          <div className="flex justify-end mt-6">
+            <Button
+              type="button"
+              onClick={() => navigate(`/tickets/historial/${id}`)}
+              className="flex items-center gap-2 bg-primary text-white 
+        hover:bg-primary/30 hover:shadow-lg 
+        focus:ring-2 focus:ring-offset-2 focus:ring-primary 
+        active:scale-95 transition-all duration-150 
+        !rounded-2xl"
+            >
+              <CalendarDays className="w-4 h-4" />
+              Ver historial
+            </Button>
+          </div>
         </CardContent>
       </Card>
+
       <Button
         type="button"
         onClick={() => navigate(-1)}

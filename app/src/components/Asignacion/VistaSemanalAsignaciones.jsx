@@ -134,7 +134,7 @@ export function VistaSemanalAsignaciones() {
 
               {lista.map((objeto) => (
                 <Card
-                  key={objeto.IDTicket}
+                  key={objeto.id}
                   className="mb-4 border border-border shadow-sm rounded-2xl transition-all hover:shadow-md hover:-translate-y-1"
                 >
                   <CardHeader className="flex justify-between items-center">
@@ -180,22 +180,41 @@ export function VistaSemanalAsignaciones() {
                       <TooltipProvider>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Button size="sm" variant="outline" disabled>
-                              Cambiar estado
-                            </Button>
+                            <span>
+                              <Button
+                                asChild
+                                size="sm"
+                                variant="outline"
+                                disabled={
+                                  objeto.estado?.toLowerCase() === "cerrado"
+                                }
+                                className="rounded-full bg-primary text-white hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                              >
+                                {objeto.estado?.toLowerCase() === "cerrado" ? (
+                                  <span>Cambiar estado</span>
+                                ) : (
+                                  <Link
+                                    to={`/tickets/cambiarEstado/${objeto.IDTicket}`}>
+                                    Cambiar estado
+                                  </Link>
+                                )}
+                              </Button>
+                            </span>
                           </TooltipTrigger>
-                          <TooltipContent>
-                            Solo disponible para usuarios con permisos de
-                            edición
-                          </TooltipContent>
+                          {objeto.estado?.toLowerCase() === "cerrado" && (
+                            <TooltipContent>
+                              Los tickets en estado "Cerrado" no pueden ser
+                              modificados.
+                            </TooltipContent>
+                          )}
                         </Tooltip>
                       </TooltipProvider>
 
                       <Button
                         size="sm"
-                        className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90 font-medium text-sm px-4"
+                        className="rounded-full bg-primary text-white hover:bg-primary/90 font-medium text-sm px-4"
                       >
-                        <Link to={`/tickets/detalle/${objeto.IDTicket}`}>
+                        <Link to={`/asignaciones/detalle/${objeto.id}`}>
                           Ver detalle
                         </Link>
                       </Button>

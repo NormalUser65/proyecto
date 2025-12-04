@@ -122,6 +122,43 @@ class asignacionModel
         }
     }
 
+    public function getDetalle($id)
+    {
+        try {
+            $vSql = "SELECT 
+                    a.id AS asignacionId,
+                    a.IDTicket AS IDTicket,
+                    a.IDTecnico AS IDTecnico,
+                    a.asignado_por AS asignadoPor,
+                    a.hora_Asig AS hora_Asig,
+                    a.method AS method,
+                    a.descripcion AS descripcion,
+                    a.activo AS activo,
+                    u.nombre AS tecnicoNombre,
+                    u.email AS tecnicoEmail,
+                    u.disponibilidad AS disponibilidad,
+                    t.Titulo AS Titulo,
+                    t.descripcion AS ticketDescripcion,
+                    t.creado_en AS creado_en,
+                    t.sla_resol_deadline AS sla_resol_deadline,
+                    e.nombre AS estado,
+                    c.nombre AS categoriaNombre,
+                    p.nombre AS prioridadNombre
+                 FROM asignacion a
+                 INNER JOIN usuario u ON a.IDTecnico = u.id
+                 INNER JOIN ticket t ON a.IDTicket = t.id
+                 INNER JOIN estado e ON t.IDEstado = e.id
+                 LEFT JOIN categoria c ON t.IDCategoria = c.id
+                 LEFT JOIN prioridad p ON t.IDPrioridad = p.id
+                 WHERE a.id = $id";
+
+            $vResultado = $this->enlace->ExecuteSQL($vSql);
+            return $vResultado[0];
+        } catch (Exception $e) {
+            handleException($e);
+        }
+    }
+
     public function asignarManual()
     {
         try {
@@ -178,10 +215,10 @@ class asignacionModel
     }
 
     public function asignarAutomatico()
-{
-    try {
-        // 1. Obtener tickets pendientes con puntaje calculado y ordenados
-        $sqlTickets = "SELECT t.id, t.Titulo, t.descripcion, t.IDCategoria, 
+    {
+        try {
+            // 1. Obtener tickets pendientes con puntaje calculado y ordenados
+            $sqlTickets = "SELECT t.id, t.Titulo, t.descripcion, t.IDCategoria, 
                               t.IDPrioridad, p.nombre AS prioridad_nombre,
                               TIMESTAMPDIFF(MINUTE, NOW(), t.sla_resol_deadline) AS tiempoRestanteSLA,
                               ((t.IDPrioridad * 1000) - TIMESTAMPDIFF(MINUTE, NOW(), t.sla_resol_deadline)) AS puntaje,
@@ -191,30 +228,30 @@ class asignacionModel
                        WHERE t.IDEstado = 1 AND t.activo = 1
                        ORDER BY puntaje DESC";
 
-        /** @var array<object>|null $tickets */
-        $tickets = $this->enlace->executeSQL($sqlTickets);
+            /** @var array<object>|null $tickets */
+            $tickets = $this->enlace->executeSQL($sqlTickets);
 
-        // Validación defensiva: si no hay tickets, devolver mensaje claro
-        if (empty($tickets)) {
-            return [
-                "success" => false,
-                "status"  => 200,
-                "message" => "No hay tickets pendientes para asignar",
-                "data"    => []
-            ];
-        }
+            // Validación defensiva: si no hay tickets, devolver mensaje claro
+            if (empty($tickets)) {
+                return [
+                    "success" => false,
+                    "status"  => 200,
+                    "message" => "No hay tickets pendientes para asignar",
+                    "data"    => []
+                ];
+            }
 
-        $resultados = [];
+            $resultados = [];
 
-        foreach ($tickets as $ticket) {
-            $ticketId    = intval($ticket->id);
-            $categoriaId = intval($ticket->IDCategoria);
-            $usuarioId   = intval($ticket->IDUsuario);
-            $puntaje     = intval($ticket->puntaje);
-            $tiempoRest  = intval($ticket->tiempoRestanteSLA);
+            foreach ($tickets as $ticket) {
+                $ticketId    = intval($ticket->id);
+                $categoriaId = intval($ticket->IDCategoria);
+                $usuarioId   = intval($ticket->IDUsuario);
+                $puntaje     = intval($ticket->puntaje);
+                $tiempoRest  = intval($ticket->tiempoRestanteSLA);
 
-            // 2. Buscar técnicos disponibles para la categoría
-            $sqlTecnicos = "SELECT u.id, u.nombre, e.nombre AS especialidadCoincidente,
+                // 2. Buscar técnicos disponibles para la categoría
+                $sqlTecnicos = "SELECT u.id, u.nombre, e.nombre AS especialidadCoincidente,
                                    (SELECT COUNT(*) FROM ticket t2 
                                     WHERE t2.IDTecnico = u.id AND t2.IDEstado IN (2,3)) AS carga
                             FROM usuario u
@@ -226,70 +263,69 @@ class asignacionModel
                             HAVING carga <= 5
                             ORDER BY carga ASC
                             LIMIT 1";
-            $tecnicos = $this->enlace->executeSQL($sqlTecnicos);
+                $tecnicos = $this->enlace->executeSQL($sqlTecnicos);
 
-            if (!empty($tecnicos)) {
-                $tecnicoId   = intval($tecnicos[0]->id);
-                $especialidad = $tecnicos[0]->especialidadCoincidente;
+                if (!empty($tecnicos)) {
+                    $tecnicoId   = intval($tecnicos[0]->id);
+                    $especialidad = $tecnicos[0]->especialidadCoincidente;
 
-                // 3. Justificación con regla aplicada
-                $sqlRegla = "SELECT codigo, nombre FROM Reglas_Autotriage r
+                    // 3. Justificación con regla aplicada
+                    $sqlRegla = "SELECT codigo, nombre FROM Reglas_Autotriage r
                              INNER JOIN Condiciones_Autotriage c ON r.id = c.IDRegla
                              WHERE c.condition_key = 'categoria' AND c.value = (
                                  SELECT nombre FROM categoria WHERE id = $categoriaId
                              ) LIMIT 1";
-                $regla = $this->enlace->executeSQL($sqlRegla);
-                $reglaTxt = !empty($regla) ? $regla[0]->codigo . ' - ' . $regla[0]->nombre : 'Regla no definida';
+                    $regla = $this->enlace->executeSQL($sqlRegla);
+                    $reglaTxt = !empty($regla) ? $regla[0]->codigo . ' - ' . $regla[0]->nombre : 'Regla no definida';
 
-                $justificacion = "Asignación automática con puntaje $puntaje. "
-                               . "Especialidad: $especialidad. "
-                               . "Regla aplicada: $reglaTxt.";
+                    $justificacion = "Asignación automática con puntaje $puntaje. "
+                        . "Especialidad: $especialidad. "
+                        . "Regla aplicada: $reglaTxt.";
 
-                // 4. Actualizar ticket
-                $sqlUpdate = "UPDATE ticket SET IDEstado = 2, IDTecnico = $tecnicoId WHERE id = $ticketId";
-                $this->enlace->executeSQL_DML($sqlUpdate);
+                    // 4. Actualizar ticket
+                    $sqlUpdate = "UPDATE ticket SET IDEstado = 2, IDTecnico = $tecnicoId WHERE id = $ticketId";
+                    $this->enlace->executeSQL_DML($sqlUpdate);
 
-                // 5. Insertar historial
-                $sqlHistorial = "INSERT INTO Historial_ticket 
+                    // 5. Insertar historial
+                    $sqlHistorial = "INSERT INTO Historial_ticket 
                                  (IDticket, from_state, to_state, cambiado_por, comentario, Creado_el)
                                  VALUES ($ticketId, 1, 2, $usuarioId, '" . addslashes($justificacion) . "', NOW())";
-                $this->enlace->executeSQL_DML_last($sqlHistorial);
+                    $this->enlace->executeSQL_DML_last($sqlHistorial);
 
-                // 6. Insertar asignación
-                $sqlAsignacion = "INSERT INTO asignacion 
+                    // 6. Insertar asignación
+                    $sqlAsignacion = "INSERT INTO asignacion 
                                   (IDTicket, IDTecnico, asignado_por, method, descripcion)
                                   VALUES ($ticketId, $tecnicoId, $usuarioId, 'auto', '" . addslashes($justificacion) . "')";
-                $this->enlace->executeSQL_DML($sqlAsignacion);
+                    $this->enlace->executeSQL_DML($sqlAsignacion);
 
-                $resultados[] = [
-                    "ticketId"       => $ticketId,
-                    "tecnicoId"      => $tecnicoId,
-                    "tecnicoNombre"  => $tecnicos[0]->nombre,
-                    "puntaje"        => $puntaje,
-                    "tiempoRestante" => $tiempoRest,
-                    "especialidad"   => $especialidad,
-                    "regla"          => $reglaTxt,
-                    "mensaje"        => "Ticket asignado automáticamente"
+                    $resultados[] = [
+                        "ticketId"       => $ticketId,
+                        "tecnicoId"      => $tecnicoId,
+                        "tecnicoNombre"  => $tecnicos[0]->nombre,
+                        "puntaje"        => $puntaje,
+                        "tiempoRestante" => $tiempoRest,
+                        "especialidad"   => $especialidad,
+                        "regla"          => $reglaTxt,
+                        "mensaje"        => "Ticket asignado automáticamente"
+                    ];
+                }
+            }
+
+            // Si ningún ticket pudo ser asignado
+            if (empty($resultados)) {
+                return [
+                    "success" => false,
+                    "status"  => 200,
+                    "message" => "No hay técnicos disponibles en este momento para asignar tickets",
+                    "data"    => []
                 ];
             }
+
+            return ["success" => true, "data" => $resultados];
+        } catch (Exception $e) {
+            handleException($e);
         }
-
-        // Si ningún ticket pudo ser asignado
-        if (empty($resultados)) {
-            return [
-                "success" => false,
-                "status"  => 200,
-                "message" => "No hay técnicos disponibles en este momento para asignar tickets",
-                "data"    => []
-            ];
-        }
-
-        return ["success" => true, "data" => $resultados];
-
-    } catch (Exception $e) {
-        handleException($e);
     }
-}
 
     public function getTicketsPendientes()
     {

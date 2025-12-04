@@ -90,9 +90,7 @@ class HistorialTicketModel
                     ? array_map(fn($img) => "http://localhost:81/proyecto/api/uploads/" . $img->url, $imagenes)
                     : [];
             }
-
-
-
+            
             return $historial;
         } catch (Exception $e) {
             handleException($e);
