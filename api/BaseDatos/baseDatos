@@ -8,12 +8,6 @@ CREATE TABLE rol (
   description TEXT
 ) ENGINE=InnoDB;
 
--- Inserts
-INSERT INTO rol (nombre, description) VALUES
-('Administrador', 'Acceso total al sistema'),
-('Técnico', 'Encargado de resolver tickets'),
-('Cliente', 'Usuario que reporta incidencias');
-
 -- usuario
 CREATE TABLE usuario (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -95,10 +89,11 @@ CREATE TABLE prioridad (
   nombre VARCHAR(50) NOT NULL UNIQUE
 ) ENGINE=InnoDB;
 
-INSERT INTO prioridad (nombre) VALUES
-('Alta'),
-('Media'),
-('Baja');
+
+CREATE TABLE estado (
+  id TINYINT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(40) NOT NULL UNIQUE
+) ENGINE=InnoDB;
 
 -- ticket
 CREATE TABLE ticket (
@@ -110,7 +105,7 @@ CREATE TABLE ticket (
   ult_Actualizacion DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   IDCategoria INT,
   IDPrioridad TINYINT NOT NULL DEFAULT 3,
-  estado VARCHAR(40) NOT NULL DEFAULT 'pendiente',
+  IDEstado TINYINT NOT NULL DEFAULT 1, -- Referencia a la tabla estado
   IDTecnico BIGINT,
   sla_resp_deadline DATETIME,
   sla_resol_deadline DATETIME,
@@ -119,24 +114,26 @@ CREATE TABLE ticket (
   cerrado_el DATETIME,
   resumen_res TEXT,
   activo TINYINT(1) NOT NULL DEFAULT 1,
-  CONSTRAINT fk_ticket_Usuario FOREIGN KEY (IDUsuario) REFERENCES usuario(id),
-  CONSTRAINT fk_ticket_category FOREIGN KEY (IDCategoria) REFERENCES categoria(id),
+  CONSTRAINT fk_ticket_usuario FOREIGN KEY (IDUsuario) REFERENCES usuario(id),
+  CONSTRAINT fk_ticket_categoria FOREIGN KEY (IDCategoria) REFERENCES categoria(id),
   CONSTRAINT fk_ticket_prioridad FOREIGN KEY (IDPrioridad) REFERENCES prioridad(id),
-  CONSTRAINT fk_ticket_IDTecnico FOREIGN KEY (IDTecnico) REFERENCES usuario(id)
+  CONSTRAINT fk_ticket_estado FOREIGN KEY (IDEstado) REFERENCES estado(id),
+  CONSTRAINT fk_ticket_tecnico FOREIGN KEY (IDTecnico) REFERENCES usuario(id)
 ) ENGINE=InnoDB;
 
 -- historial_ticket
 CREATE TABLE Historial_ticket (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   IDticket BIGINT NOT NULL,
-  from_state VARCHAR(40) DEFAULT NULL,
-  to_state VARCHAR(40) NOT NULL,
+  from_state TINYINT DEFAULT NULL, -- Estado anterior
+  to_state TINYINT NOT NULL,       -- Nuevo estado
   cambiado_por BIGINT NOT NULL,
-  comentario TEXT DEFAULT NULL,
+  comentario TEXT DEFAULT NULL,    -- Comentario opcional
   Creado_el DATETIME DEFAULT CURRENT_TIMESTAMP,
-  Imagenes_Incluidas JSON DEFAULT NULL,
-  CONSTRAINT fk_th_ticket FOREIGN KEY (IDticket) REFERENCES ticket(id) ON DELETE CASCADE,
-  CONSTRAINT fk_th_user FOREIGN KEY (cambiado_por) REFERENCES usuario(id)
+  CONSTRAINT fk_historial_ticket FOREIGN KEY (IDticket) REFERENCES ticket(id) ON DELETE CASCADE,
+  CONSTRAINT fk_historial_usuario FOREIGN KEY (cambiado_por) REFERENCES usuario(id),
+  CONSTRAINT fk_historial_from_estado FOREIGN KEY (from_state) REFERENCES estado(id),
+  CONSTRAINT fk_historial_to_estado FOREIGN KEY (to_state) REFERENCES estado(id)
 ) ENGINE=InnoDB;
 
 -- imagen
@@ -144,7 +141,7 @@ CREATE TABLE Imagen (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   IDHistorial BIGINT NOT NULL,
   url VARCHAR(1024) NOT NULL,
-  CONSTRAINT fk_img_historial FOREIGN KEY (IDHistorial) REFERENCES Historial_ticket(id) ON DELETE CASCADE
+  CONSTRAINT fk_imagen_historial FOREIGN KEY (IDHistorial) REFERENCES Historial_ticket(id) ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
 -- asignacion
@@ -218,14 +215,25 @@ CREATE TABLE valoracion (
   CONSTRAINT fk_valoracion_client FOREIGN KEY (IDcliente) REFERENCES usuario(id)
 ) ENGINE=InnoDB;
 
+-- Inserts
+INSERT INTO rol (nombre, description) VALUES
+('Administrador', 'Acceso total al sistema'),
+('Técnico', 'Encargado de resolver tickets'),
+('Cliente', 'Usuario que reporta incidencias');
+
+INSERT INTO prioridad (nombre) VALUES
+('Alta'),
+('Media'),
+('Baja');
+
 -- usuario
 INSERT INTO usuario (email, contrasenna, nombre, IDRol, language, activo, disponibilidad)
 VALUES
-('admin@eduhelp.com', 'admin123', 'Ana Paula Fernández', 1, 'es', 1, 'disponible'),
+('admin@eduhelp.com', 'admin123', 'Ana Paula Fernández', 2, 'es', 1, 'disponible'),
 ('tecnico_aulas@eduhelp.com', 'tec123', 'Carlos Jiménez', 2, 'es', 1, 'disponible'),
 ('tecnico_ti@eduhelp.com', 'ti123', 'Laura Gómez', 2, 'es', 1, 'disponible'),
-('estudiante1@eduhelp.com', 'user123', 'María López', 3, 'es', 1, 'disponible'),
-('docente1@eduhelp.com', 'user456', 'Luis Herrera', 3, 'es', 1, 'disponible');
+('estudiante1@eduhelp.com', 'user123', 'María López', 2, 'es', 1, 'disponible'),
+('docente1@eduhelp.com', 'user456', 'Luis Herrera', 2, 'es', 1, 'disponible');
 
 -- SLA
 INSERT INTO sla (nombre, max_resp_minutos, max_resol_minutos, activo)
@@ -290,22 +298,33 @@ VALUES
 (3, 3),
 (3, 4);
 
-INSERT INTO ticket (Titulo, descripcion, IDUsuario, IDCategoria, IDPrioridad, estado, IDTecnico, creado_en)
-VALUES
-('Proyector sin señal', 'El proyector del aula 302 no muestra imagen.', 4, 1, 2, 'pendiente', 2, '2025-10-27 09:00:00'),
-('Pago de matrícula no procesado', 'El sistema indica error al pagar la matrícula.', 5, 2, 3, 'en progreso', 3, '2025-10-27 14:00:00'),
-('Recuperar contraseña', 'No puedo ingresar a mi cuenta institucional.', 4, 3, 2, 'pendiente', 3, '2025-10-28 10:00:00'),
-('Problemas eléctricos en aula 102', 'Tomacorrientes dañados en varios puestos.', 5, 4, 1, 'pendiente', 3, '2025-10-29 11:00:00'),
-('Consulta general sobre correo institucional', 'Solicitud de acceso a correo de docente.', 4, 5, 3, 'pendiente', 2, '2025-10-30 13:00:00');
+INSERT INTO estado (nombre) VALUES
+('Pendiente'),
+('Asignado'),
+('En Proceso'),
+('Resuelto'),
+('Cerrado');
 
+
+INSERT INTO ticket (Titulo, descripcion, IDUsuario, IDCategoria, IDPrioridad, IDEstado, sla_resp_deadline, sla_resol_deadline, activo)
+VALUES
+('Proyector sin señal', 'El proyector del aula 302 no muestra imagen.', 4, 1, 2, 1, '2025-10-27 09:30:00', '2025-10-27 12:00:00', 1),
+('Pago de matrícula no procesado', 'El sistema indica error al pagar la matrícula.', 5, 2, 3, 1, '2025-10-27 15:00:00', '2025-10-27 18:00:00', 1),
+('Recuperar contraseña', 'No puedo ingresar a mi cuenta institucional.', 4, 3, 2, 1, '2025-10-28 10:45:00', '2025-10-28 12:00:00', 1),
+('Problemas eléctricos en aula 102', 'Tomacorrientes dañados en varios puestos.', 5, 4, 1, 1, '2025-10-29 11:20:00', '2025-10-29 12:30:00', 1),
+('Consulta general sobre correo institucional', 'Solicitud de acceso a correo de docente.', 4, 5, 3, 1, '2025-10-30 13:15:00', '2025-10-30 14:00:00', 1);
+
+
+/*
 -- HISTORIAL DE TICKET
 INSERT INTO Historial_ticket (IDticket, from_state, to_state, cambiado_por, comentario)
 VALUES
-(1, 'pendiente', 'en progreso', 2, 'Asignado a técnico de aulas'),
-(2, 'pendiente', 'en progreso', 3, 'Revisión en proceso'),
-(3, 'pendiente', 'resuelto', 3, 'Contraseña restablecida'),
-(4, 'pendiente', 'en progreso', 3, 'Mantenimiento asignado'),
-(5, 'pendiente', 'cerrado', 2, 'Consulta atendida');
+(1, 1, 3, 2, 'Asignado a técnico de aulas'),
+(2, 1, 3, 3, 'Revisión en proceso'),
+(3, 1, 4, 3, 'Contraseña restablecida'),
+(4, 1, 3, 3, 'Mantenimiento asignado'),
+(5, 1, 5, 2, 'Consulta atendida');
+
 
 -- IMÁGENES
 INSERT INTO Imagen (IDHistorial, url)
@@ -316,14 +335,11 @@ VALUES
 (4, 'https://eduhelp.com/img/electricidad.png'),
 (5, 'https://eduhelp.com/img/correo.png');
 
+*/
 -- ASIGNACIONES
 INSERT INTO asignacion (IDTicket, IDTecnico, asignado_por, method, descripcion)
 VALUES
-(1, 2, 1, 'manual', 'Asignado por administrador a soporte de aulas'),
-(2, 3, 1, 'manual', 'Asignado a técnico financiero'),
-(3, 3, 1, 'manual', 'Asignado a administración de sistemas'),
-(4, 3, 1, 'manual', 'Asignado a mantenimiento'),
-(5, 2, 1, 'manual', 'Asignado a soporte TI');
+(1, 2, 1, 'manual', 'Asignado por administrador a soporte de aulas');
 
 -- REGLAS AUTOTRIAGE
 INSERT INTO Reglas_Autotriage (codigo, nombre, descrripcion, prioridad, urgencia_SLA, weight_load, max_tech_load, activo, creado_por)
