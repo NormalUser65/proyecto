@@ -1,36 +1,24 @@
 <?php
-class NotificacionController
+class notificacion
 {
-    public function index()
+    public function index($id)
     {
         $response = new Response();
         try {
             $model = new NotificacionModel();
-            $result = $model->all();
+            $result = $model->all($id);
             $response->toJSON($result);
         } catch (Exception $e) {
             handleException($e);
         }
     }
 
-    public function get($id)
+    public function crearNotificacion($objeto)
     {
         $response = new Response();
         try {
             $model = new NotificacionModel();
-            $result = $model->get($id);
-            $response->toJSON($result);
-        } catch (Exception $e) {
-            handleException($e);
-        }
-    }
-
-    public function getNombre($nombre)
-    {
-        $response = new Response();
-        try {
-            $model = new NotificacionModel();
-            $result = $model->getNombre($nombre);
+            $result = $model->crearNotificacion($objeto);
             $response->toJSON($result);
         } catch (Exception $e) {
             handleException($e);

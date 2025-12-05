@@ -1,0 +1,6 @@
+{
+    "listaAsignacion": {
+        "errorTitulo": "Error loading assignments",
+        "emptyMessage": "No assignments found."
+    }
+}

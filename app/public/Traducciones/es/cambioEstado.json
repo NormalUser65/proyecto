@@ -1,0 +1,16 @@
+{
+    "cambioEstado": {
+        "titulo": "Cambio de Estado del Ticket",
+        "nuevoEstadoLabel": "Nuevo Estado",
+        "estadoLabel": "Estado",
+        "comentarioLabel": "Comentario",
+        "comentarioPlaceholder": "Ingrese un comentario sobre el cambio de estado (opcional)",
+        "imagenLabel": "Imagen",
+        "usuarioResponsableLabel": "Usuario responsable",
+        "botonRegresar": "Regresar",
+        "botonGuardar": "Guardar",
+        "botonGuardando": "Guardando...",
+        "modalTitulo": "¡Estado actualizado con éxito!",
+        "modalDescripcion": "El ticket {{id}} fue actualizado correctamente. Serás redirigido al detalle en unos segundos."
+    }
+}

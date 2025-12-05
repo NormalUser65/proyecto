@@ -15,6 +15,8 @@ import {
   Clapperboard,
 } from "lucide-react";
 
+import { NotificationButton } from "../notificationButton";
+
 import LanguageDropdown from "@/components/LanguageDropdown";
 
 import { Badge } from "@/components/ui/badge";
@@ -129,14 +131,9 @@ export default function Header() {
           <div className="flex justify-end mb-4">
             <LanguageDropdown />
           </div>
-          <Link to="/tickets" className="relative hover:opacity-90" aria-label="Tickets">
-            <div className="bg-white/20 p-2 rounded-full hover:bg-white/30 transition">
-              <Ticket className="h-5 w-5 text-white" />
-            </div>
-            <Badge className="absolute -top-2 -right-2 rounded-full px-2 py-0 text-xs font-semibold" variant="secondary">
-              {ticketCount}
-            </Badge>
-          </Link>
+          
+          {/*acá va el menú de las notificaciones*/}
+          <NotificationButton/>
 
           {/* Usuario Desktop */}
           <div className="hidden md:flex">

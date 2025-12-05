@@ -1,13 +1,11 @@
 {
     "detalleTicket": {
-        "errorCargar": "Error al cargar el ticket",
-        "noDatos": "No se encontraron datos de este ticket.",
+        "errorCargar": "Error al cargar el ticket.",
+        "noDatos": "No se encontraron datos del ticket.",
         "descripcion": "Descripción:",
         "fechaCreacion": "Fecha de creación:",
-        "noDefinido": "No definido",
         "estado": "Estado:",
         "categoria": "Categoría:",
-        "sinCategoria": "Sin categoría",
         "solicitante": "Solicitante:",
         "prioridad": "Prioridad:",
         "slaRespuesta": "SLA de Respuesta:",
@@ -16,6 +14,7 @@
         "noCumplido": "No cumplido",
         "slaResolucion": "SLA de Resolución:",
         "resumenResolucion": "Resumen de resolución:",
-        "botonRegresar": "Regresar"
+        "verHistorial": "Ver historial",
+        "botonRegresar": "Volver"
     }
 }

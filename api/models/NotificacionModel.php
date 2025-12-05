@@ -6,12 +6,12 @@ class NotificacionModel
     {
         $this->enlace = new MySqlConnect();
     }
-    /*Listar */
-    public function all()
+    /*Obtiene todas las notificaciones por medio del ID del usuario que está logeado */
+    public function all($id)
     {
         try {
             //Consulta sql
-            $vSql = "SELECT * FROM notificacion;";
+            $vSql = "SELECT * FROM notificacion WHERE IDCliente = $id ORDER BY Fecha_creacion DESC;";
             //Ejecutar la consulta
             $vResultado = $this->enlace->ExecuteSQL($vSql);
             // Retornar el objeto
@@ -21,32 +21,19 @@ class NotificacionModel
         }
     }
     /*Obtener por email*/
-    public function get($id)
-    {
-        try {
-            //Consulta sql
-            $vSql = "SELECT * FROM notificacion where id=$id";
-            //Ejecutar la consulta
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
-            // Retornar el objeto
-            return $vResultado[0];
-        } catch (Exception $e) {
-            handleException($e);
-        }
-    }
+    public function crearNotificacion($objeto)
+{
+    try {
+        $sql = "INSERT INTO notificacion (IDCliente, IDAdmin, IDTicket, tipo, mensaje, Estado)
+        VALUES ($objeto->IDCliente, $objeto->IDAdmin, $objeto->IDTicket, '$objeto->tipo', '$objeto->mensaje', '$objeto->Estado');";
 
-    /*Obtener por el nombre*/
-    public function getNombre($nombre)
-    {
-        try {
-            //Consulta sql
-            $vSql = "SELECT * FROM notificacion where IdRol=$nombre";
-            //Ejecutar la consulta
-            $vResultado = $this->enlace->ExecuteSQL($vSql);
-            // Retornar el objeto
-            return $vResultado[0];
-        } catch (Exception $e) {
-            handleException($e);
-        }
+        $lastId = $this->enlace->executeSQL_DML_last($sql);
+        return $this->enlace->ExecuteSQL("SELECT * FROM notificacion WHERE id = $lastId");
+
+    } catch (Exception $e) {
+        handleException($e);
     }
+}
+
+
 }

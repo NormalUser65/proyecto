@@ -1,0 +1,16 @@
+{
+    "gestionAsignaciones":{    
+    "titulo": "Gestión de Asignaciones",
+    "subtitulo": "Selecciona el método de asignación de tickets en estado Pendiente.",
+    "auto": {
+        "titulo": "Asignación Automática",
+        "descripcion": "El sistema detecta automáticamente los tickets pendientes y asigna el técnico más adecuado según SLA, prioridad, carga de trabajo y especialidad.",
+        "boton": "Ir a Asignación Automática"
+    },
+    "manual": {
+        "titulo": "Asignación Manual",
+        "descripcion": "El administrador selecciona manualmente el técnico adecuado para cada ticket pendiente, validando especialidad y carga de trabajo.",
+        "boton": "Ir a Asignación Manual"
+    }
+}
+}

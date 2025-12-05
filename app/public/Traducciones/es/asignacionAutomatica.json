@@ -1,0 +1,16 @@
+{
+    "titulo": "Asignación Automática",
+    "subtitulo": "El sistema ha analizado los tickets pendientes y asignado técnicos automáticamente según SLA, prioridad, carga, especialidad y reglas de autotriage.",
+    "sinTicketsTitulo": "No hay tickets pendientes para asignar",
+    "sinTicketsDescripcion": "Todos los tickets han sido procesados o asignados.",
+    "ticket": "Ticket",
+    "tecnico": "Técnico:",
+    "puntaje": "Puntaje:",
+    "especialidad": "Especialidad:",
+    "regla": "Regla:",
+    "sla": "SLA:",
+    "slaVencido": "Minutos vencido",
+    "slaQuedan": "Minutos Restantes:",
+    "mensajeBackend": "Mensaje:",
+    "botonRegresar": "Volver"
+}

@@ -79,15 +79,13 @@ export function ListaCartTicket({ data }) {
                     </span>
                   </TooltipTrigger>
                   {item.estado_nombre === "Pendiente" && (
-                    <TooltipContent>
-                      El estado inicial "Pendiente" no pueden ser modificados
-                      directamente, realice la asignación correspondiente.
+                    <TooltipContent> {t("listaCartTicket.alertaPendiente")}
                     </TooltipContent>
                   )}
 
                   {item.estado_nombre === "Cerrado" && (
                     <TooltipContent>
-                      Los tickets en estado "Cerrado" no pueden ser modificados.
+                      {t("listaCartTicket.alertaCerrado")}
                     </TooltipContent>
                   )}
                 </Tooltip>

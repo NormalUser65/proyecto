@@ -1,0 +1,6 @@
+{
+    "listaAsignacion": {
+        "errorTitulo": "Error al cargar asignaciones",
+        "emptyMessage": "No se encontraron asignaciones."
+    }
+}

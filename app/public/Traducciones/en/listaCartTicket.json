@@ -3,6 +3,8 @@
         "tooltip_detalle": "View details",
         "ticket_numero": "Ticket #{{id}}",
         "estado": "Status:",
-        "creado": "Created:"
+        "creado": "Created:",
+        "alertaPendiente": "the initial state 'Pendiente' cannot be modified directly, make an asignation and continue.",
+        "alertaCerrado":"Tickets in 'closed' state can't be modified."
     }
 }

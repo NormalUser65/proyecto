@@ -6,9 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { CalendarDays, User, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
-
+import { useTranslation } from "react-i18next";
 
 export function HistorialTicket() {
+  const { t } = useTranslation("historialTicket");
   const navigate = useNavigate();
   const { id } = useParams();
   const [historial, setHistorial] = useState([]);
@@ -34,7 +35,7 @@ export function HistorialTicket() {
   return (
     <div className="max-w-4xl mx-auto py-12 px-4 space-y-6">
       <h1 className="text-3xl font-extrabold mb-6 text-center">
-        📜 Historial del Ticket #{id}
+        {t("historialTicket.tituloPagina", { id })}
       </h1>
 
       {Array.isArray(historial) && historial.length > 0 ? (
@@ -54,7 +55,7 @@ export function HistorialTicket() {
               <div className="flex flex-col gap-1 text-sm text-muted-foreground">
                 <div className="flex items-center gap-2">
                   <CalendarDays className="h-4 w-4 text-secondary" />
-                  <span className="font-semibold">Fecha de modificación:</span>
+                  <span className="font-semibold">{t("historialTicket.fechaModificacion")}</span>
                   <span>
                     {h.Creado_el
                       ? new Date(h.Creado_el).toLocaleString()
@@ -63,7 +64,7 @@ export function HistorialTicket() {
                 </div>
                 <div className="flex items-center gap-2">
                   <User className="h-4 w-4 text-secondary" />
-                  <span className="font-semibold">Usuario solicitante:</span>
+                  <span className="font-semibold">{t("historialTicket.usuarioSolicitante")}</span>
                   <span>{h.usuario ?? "Usuario desconocido"}</span>
                 </div>
               </div>
@@ -74,7 +75,7 @@ export function HistorialTicket() {
                 <div className="flex items-start gap-2">
                   <MessageSquare className="h-4 w-4 text-secondary mt-1" />
                   <p className="text-sm">
-                    <span className="font-semibold">Observación:</span>{" "}
+                    <span className="font-semibold">{t("historialTicket.observacion")}</span>{" "}
                     {h.comentario}
                   </p>
                 </div>
@@ -83,7 +84,7 @@ export function HistorialTicket() {
               {Array.isArray(h.imagenes) && h.imagenes.length > 0 && (
                 <div>
                   <span className="font-semibold text-sm block mb-2">
-                    Evidencias:
+                    {t("historialTicket.evidencias")}
                   </span>
                   <div className="flex gap-3 flex-wrap">
                     {h.imagenes.map((img, i) => {
@@ -105,7 +106,7 @@ export function HistorialTicket() {
         ))
       ) : (
         <p className="text-muted-foreground text-center">
-          No hay historial disponible.
+          {t("historialTicket.noHistorial")}
         </p>
       )}
 
@@ -117,7 +118,7 @@ export function HistorialTicket() {
           className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 !rounded-2xl px-6"
         >
           <ArrowLeft className="w-4 h-4" />
-          Volver
+          {t("historialTicket.volver")}
         </Button>
       </div>
     </div>

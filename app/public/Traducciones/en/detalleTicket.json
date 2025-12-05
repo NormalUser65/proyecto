@@ -1,13 +1,11 @@
 {
     "detalleTicket": {
-        "errorCargar": "Error loading the ticket",
-        "noDatos": "No data found for this ticket.",
+        "errorCargar": "Error loading the ticket.",
+        "noDatos": "No ticket data found.",
         "descripcion": "Description:",
         "fechaCreacion": "Creation date:",
-        "noDefinido": "Not defined",
         "estado": "Status:",
         "categoria": "Category:",
-        "sinCategoria": "No category",
         "solicitante": "Requester:",
         "prioridad": "Priority:",
         "slaRespuesta": "Response SLA:",
@@ -16,6 +14,7 @@
         "noCumplido": "Not met",
         "slaResolucion": "Resolution SLA:",
         "resumenResolucion": "Resolution summary:",
+        "verHistorial": "View history",
         "botonRegresar": "Go back"
     }
 }

@@ -31,7 +31,15 @@ i18n
         "actualizarCategoria",
         "detalleCategoria",
         "detalleAsignacion",
-        "VistaSemanalAsignaciones"
+        "VistaSemanalAsignaciones",
+        "menuNotificaciones",
+        "listaAsignacion",
+        "listaCartTicket",
+        "historialTicket",
+        "cambioEstado",
+        "gestionAsignaciones",
+        "asignacionAutomatica",
+        "asignacionManual"
     ]
     });
 

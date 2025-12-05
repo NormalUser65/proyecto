@@ -22,7 +22,10 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
+import { useTranslation } from "react-i18next";
+
 export function AsignacionManual() {
+  const { t } = useTranslation("asignacionManual");
   const navigate = useNavigate();
   const [openSuccess, setOpenSuccess] = useState(false);
   const [ticketsPendientes, setTicketsPendientes] = useState([]);
@@ -85,7 +88,8 @@ const asignacionSchema = yup.object({
     const ahora = new Date();
     const diffMs = fin - ahora;
     const diffHrs = Math.max(Math.floor(diffMs / (1000 * 60 * 60)), 0);
-    return `${diffHrs}h restantes`;
+    return `${diffHrs} ${t("slaRestantes")}`;
+
   };
 
   /*** Selección de ticket: cargar técnicos ***/
@@ -149,26 +153,24 @@ const asignacionSchema = yup.object({
   if (loading) return <LoadingGrid type="grid" />;
   if (error) return <ErrorAlert title="Error" message={error} />;
   if (!ticketsPendientes.length)
-    return <EmptyState message="No hay tickets pendientes." />;
+    return <EmptyState message={t("sinTickets")} />;
 
   return (
     <div className="max-w-6xl mx-auto p-6">
       <Card className="rounded-2xl shadow-md overflow-hidden">
         <CardHeader>
           <h1 className="text-2xl font-bold flex items-center gap-2">
-            <ClipboardList className="h-6 w-6 text-primary" /> Asignación Manual
-            de Tickets
+            <ClipboardList className="h-6 w-6 text-primary" /> {t("tituloPagina")}
           </h1>
           <p className="text-muted-foreground text-sm mt-2">
-            Seleccione un ticket pendiente, el técnico adecuado y complete la
-            justificación.
+            {t("subtituloPagina")}
           </p>
         </CardHeader>
 
         <CardContent className="space-y-10">
           {/* Tickets con cards seleccionables */}
           <section>
-            <h2 className="text-xl font-semibold mb-4">Tickets Pendientes</h2>
+            <h2 className="text-xl font-semibold mb-4">{t("ticketsPendientes")}</h2>
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {ticketsPendientes.map((t) => (
                 <Card
@@ -201,7 +203,7 @@ const asignacionSchema = yup.object({
 
                     <div className="flex gap-2">
                       <Badge variant="outline">
-                        {t.nombreCategoria ?? "No definida"}
+                        {t.nombreCategoria ?? t("sinCategoria")}
                       </Badge>
                       <Badge
                         className={
@@ -212,7 +214,7 @@ const asignacionSchema = yup.object({
                             : "bg-green-500 text-white"
                         }
                       >
-                        {t.prioridad_nombre ?? "No definida"}
+                        {t.prioridad_nombre ?? t("sinPrioridad")}
                       </Badge>
                     </div>
 
@@ -302,7 +304,7 @@ const asignacionSchema = yup.object({
 
           {/* Comentario */}
           <section>
-            <h2 className="text-xl font-semibold mb-4">Justificación</h2>
+            <h2 className="text-xl font-semibold mb-4">{t("justificacion")}</h2>
             <Controller
               name="justificacion"
               control={control}
@@ -310,7 +312,7 @@ const asignacionSchema = yup.object({
                 <Input
                   {...field}
                   type="text"
-                  placeholder="Escriba la justificación..."
+                  placeholder={t("justificacion")}
                   className="rounded-lg"
                 />
               )}
@@ -322,10 +324,9 @@ const asignacionSchema = yup.object({
             )}
           </section>
 
-          {/* Imagen (opcional) */}
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle>Imagen</CardTitle>
+              <CardTitle>{t("imagenTitulo")}</CardTitle>
             </CardHeader>
             <CardContent>
               <Controller
@@ -360,7 +361,7 @@ const asignacionSchema = yup.object({
             disabled={isSubmitting}
             className="w-full bg-primary text-primary-foreground hover:bg-primary/90 rounded-lg"
           >
-            {isSubmitting ? "Asignando..." : "Asignar Ticket"}
+            {isSubmitting ? t("asignando") : t("botonAsignar")}
           </Button>
         </CardContent>
       </Card>
@@ -371,17 +372,16 @@ const asignacionSchema = yup.object({
         className="flex items-center gap-2 bg-accent text-white hover:bg-accent/90 mt-6 !rounded-2xl px-6"
       >
         <ArrowLeft className="w-4 h-4" />
-        Volver
+        {t("volver")}
       </Button>
 
       {/* Modal de éxito */}
       <Dialog open={openSuccess} onOpenChange={setOpenSuccess}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>¡Ticket asignado con éxito!</DialogTitle>
+            <DialogTitle>{t("modalTitulo")}</DialogTitle>
             <DialogDescription>
-              El ticket fue asignado correctamente. <br />
-              Serás redirigido a las asignaciones en unos segundos.
+              {t("modalDescripcion")}
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

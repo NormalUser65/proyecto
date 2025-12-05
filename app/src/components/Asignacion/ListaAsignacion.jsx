@@ -4,8 +4,10 @@ import { ListaCartAsignacion } from "./ListaCartAsignacion";
 import { LoadingGrid } from "../ui/custom/CargandoGrid";
 import { EmptyState } from "../ui/custom/estadoVacio";
 import { ErrorAlert } from "../ui/custom/AlertaError";
+import { useTranslation } from "react-i18next";
 
 export function ListaAsignacion() {
+  const { t } = useTranslation("listaAsignacion");
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,9 +31,9 @@ export function ListaAsignacion() {
   }, []);
 
   if (loading) return <LoadingGrid type="grid" />;
-  if (error) return <ErrorAlert title="Error al cargar asignaciones" message={error} />;
+  if (error) return <ErrorAlert title={t("listaAsignacion.errorTitulo")} message={error} />;
   if (!data?.data || data.data.length === 0)
-    return <EmptyState message="No se encontraron asignaciones." />;
+    return <EmptyState  message={t("listaAsignacion.emptyMessage")} />;
 
   return (
     <div className="mx-auto max-w-7xl p-6">

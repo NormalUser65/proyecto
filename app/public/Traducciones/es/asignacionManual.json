@@ -1,0 +1,23 @@
+{
+    "tituloPagina": "Asignación Manual de Tickets",
+    "subtituloPagina": "Seleccione un ticket pendiente, el técnico adecuado y complete la justificación.",
+    "ticketsPendientes": "Tickets Pendientes",
+    "tecnicosDisponibles": "Técnicos Disponibles",
+    "ticket": "Ticket",
+    "categoria": "Categoría",
+    "prioridad": "Prioridad",
+    "sla": "SLA:",
+    "slaRestantes": "h restantes",
+    "sinCategoria": "No definida",
+    "sinPrioridad": "No definida",
+    "justificacion": "Justificación",
+    "placeholderJustificacion": "Escriba la justificación...",
+    "imagenTitulo": "Imagen",
+    "botonAsignar": "Asignar Ticket",
+    "asignando": "Asignando...",
+    "volver": "Volver",
+    "errorTitulo": "Error",
+    "sinTickets": "No hay tickets pendientes.",
+    "modalTitulo": "¡Ticket asignado con éxito!",
+    "modalDescripcion": "El ticket fue asignado correctamente.\nSerás redirigido a las asignaciones en unos segundos."
+}

@@ -1,0 +1,16 @@
+{
+    "historialTicket":{
+        "tituloPagina": "Ticket History #{{id}}",
+        "estadoAnterior": "Previous state",
+        "estadoNuevo": "New state",
+        "fechaModificacion": "Modification date:",
+        "usuarioSolicitante": "Requesting user:",
+        "usuarioDesconocido": "Unknown user",
+        "observacion": "Observation:",
+        "evidencias": "Evidence:",
+        "noDisponible": "Not available",
+        "noHistorial": "No history available.",
+        "volver": "Back"
+    }
+    
+}

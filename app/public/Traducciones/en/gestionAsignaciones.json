@@ -1,0 +1,18 @@
+{
+    "gestionAsignaciones":{    
+    "titulo": "Assignment Management",
+    "subtitulo": "Select the assignment method for tickets in Pending status.",
+
+    "auto": {
+        "titulo": "Automatic Assignment",
+        "descripcion": "The system automatically detects pending tickets and assigns the most suitable technician based on SLA, priority, workload, and specialty.",
+        "boton": "Go to Automatic Assignment"
+    },
+
+    "manual": {
+        "titulo": "Manual Assignment",
+        "descripcion": "The administrator manually selects the appropriate technician for each pending ticket, validating specialty and workload.",
+        "boton": "Go to Manual Assignment"
+    }
+}
+}

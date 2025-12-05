@@ -6,6 +6,7 @@ const BASE_URL = import.meta.env.VITE_BASE_URL + 'historiales';
 class HistorialTicketService {
   // Actualizar estado del ticket y registrar historial
   actualizarEstado(payload) {
+    console.log("Payload en HistorialTicketService:", payload);
     return axios.post(`${BASE_URL}/actualizarEstado`, payload, {
       headers: { 'Content-Type': 'application/json' }
     });

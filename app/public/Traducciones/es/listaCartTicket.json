@@ -3,6 +3,8 @@
         "tooltip_detalle": "Ver detalle",
         "ticket_numero": "Ticket #{{id}}",
         "estado": "Estado:",
-        "creado": "Creado:"
+        "creado": "Creado:",
+        "alertaPendiente": "El estado inicial Pendiente no pueden ser modificados directamente, realice la asignación correspondiente.",
+        "alertaCerrado":"Los tickets en estado 'Cerrado' no pueden ser modificados."
     }
 }

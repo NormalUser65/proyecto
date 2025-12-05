@@ -1,0 +1,16 @@
+{
+    "cambioEstado": {
+        "titulo": "Ticket Status Change",
+        "nuevoEstadoLabel": "New Status",
+        "estadoLabel": "Status",
+        "comentarioLabel": "Comment",
+        "comentarioPlaceholder": "Enter a comment about the status change (optional)",
+        "imagenLabel": "Image",
+        "usuarioResponsableLabel": "Responsible User",
+        "botonRegresar": "Back",
+        "botonGuardar": "Save",
+        "botonGuardando": "Saving...",
+        "modalTitulo": "Status updated successfully!",
+        "modalDescripcion": "The ticket {{id}} was successfully updated. You will be redirected to the detail page in a few seconds."
+    }
+}

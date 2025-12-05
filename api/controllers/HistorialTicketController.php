@@ -3,32 +3,51 @@ class historiales
 {
     /* Actualizar estado del ticket y registrar historial*/
     public function actualizarEstado()
-    {
-        $response = new Response();
-        try {
-            $request = new Request();
-            $inputJSON = $request->getJSON();
+{
+    $response = new Response();
+    try {
+        $request = new Request();
+        $inputJSON = $request->getJSON();
 
-            // Datos recibidos
-            $ticketId = intval($inputJSON->ticketId ?? 0);
-            $nuevoEstadoId = intval($inputJSON->nuevoEstadoId ?? 0);
-            $usuarioId = intval($inputJSON->usuarioId ?? 0);
-            $comentario = $inputJSON->comentario ?? null;
-            $imagenes = $inputJSON->imagenes ?? [];
+        // error_log(print_r($inputJSON, true)); // depuración correcta
 
-            // Validación de estado
-            if ($ticketId <= 0 || $nuevoEstadoId <= 0 || $usuarioId <= 0) {
-                throw new Exception("Datos incompletos para actualizar estado.");
-            }
+        $ticketId = intval($inputJSON->ticketId ?? 0);
+        $nuevoEstadoId = intval($inputJSON->nuevoEstadoId ?? 0);
+        $usuarioId = intval($inputJSON->usuarioId ?? 0);
+        $comentario = $inputJSON->comentario ?? null;
+        $imagenes = $inputJSON->imagenes ?? [];
 
-            $model = new HistorialTicketModel();
-            $result = $model->registrarCambioEstado($ticketId, $nuevoEstadoId, $usuarioId, $comentario, $imagenes);
-
-            $response->toJSON($result);
-        } catch (Exception $e) {
-            handleException($e);
+        if ($ticketId <= 0 || $nuevoEstadoId <= 0 || $usuarioId <= 0) {
+            throw new Exception("Datos incompletos para actualizar estado.");
         }
+
+        require_once "models/HistorialTicketModel.php";
+        require_once "models/NotificacionModel.php";
+
+        $model = new HistorialTicketModel();
+        $result = $model->registrarCambioEstado($ticketId, $nuevoEstadoId, $usuarioId, $comentario, $imagenes);
+
+        
+        if ($result["success"] === true) {
+            $notifModel = new NotificacionModel();
+
+            $mensaje = "Un encargado cambió el estado de su ticket #$ticketId a $nuevoEstadoId";
+
+            $notifModel->crearNotificacion([
+                "usuarioId" => $usuarioId,
+                "ticketId" => $ticketId,
+                "mensaje" => $mensaje,
+                "visto" => 0
+            ]);
+        }
+
+        $response->toJSON($result);
+
+    } catch (Exception $e) {
+        handleException($e);
     }
+}
+
 
     /*Obtener historial cronológico del ticket*/
     public function obtenerHistorial($ticketId)

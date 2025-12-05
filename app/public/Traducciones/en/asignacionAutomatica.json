@@ -1,0 +1,16 @@
+{
+    "titulo": "Automatic Assignment",
+    "subtitulo": "The system has analyzed pending tickets and automatically assigned technicians based on SLA, priority, workload, specialty, and auto-triage rules.",
+    "sinTicketsTitulo": "No pending tickets to assign",
+    "sinTicketsDescripcion": "All tickets have been processed or assigned.",
+    "ticket": "Ticket",
+    "tecnico": "Technician:",
+    "puntaje": "Score:",
+    "especialidad": "Specialty:",
+    "regla": "Rule:",
+    "sla": "SLA:",
+    "slaVencido": " min overdue",
+    "slaQuedan": " min remaining",
+    "mensajeBackend": "Message:",
+    "botonRegresar": "Back"
+}

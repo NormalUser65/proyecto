@@ -15,6 +15,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import { useTranslation } from "react-i18next";
 
 function obtenerDiaSemana(fecha) {
   const dias = [
@@ -59,6 +60,7 @@ const estadoColor = {
 };
 
 export function VistaSemanalAsignaciones() {
+  const { t } = useTranslation("VistaSemanalAsignaciones");
   const [asignaciones, setAsignaciones] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setCarga] = useState(true);
@@ -106,9 +108,9 @@ export function VistaSemanalAsignaciones() {
 
   return (
     <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-2">Asignaciones Semanales</h1>
+      <h1 className="text-3xl font-bold mb-2">{t("VistaSemanalAsignaciones.titulo")}</h1>
       <p className="text-muted-foreground mb-6">
-        Visualiza el estado de los tickets agrupados por día.
+        {t("VistaSemanalAsignaciones.subtitulo")}
       </p>
 
       <div className="flex justify-end mb-6">
@@ -116,7 +118,7 @@ export function VistaSemanalAsignaciones() {
           asChild
           className="rounded-full bg-secondary text-secondary-foreground hover:bg-secondary/90 font-medium text-sm px-6"
         >
-          <Link to="/asignaciones/gestion">Gestionar Asignaciones</Link>
+          <Link to="/asignaciones/gestion">{t("VistaSemanalAsignaciones.gestionar")}</Link>
         </Button>
       </div>
 
@@ -160,19 +162,19 @@ export function VistaSemanalAsignaciones() {
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <Tag className="h-4 w-4 text-secondary" />
                       <span>
-                        Categoría: {objeto.nombreCategoria ?? "No definida"}
+                        {t("VistaSemanalAsignaciones.categoria")} {objeto.nombreCategoria ?? "No definida"}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
                       <CalendarDays className="h-4 w-4 text-secondary" />
-                      <span>SLA restante: {calcularSLA(objeto)}</span>
+                      <span>{t("VistaSemanalAsignaciones.slaRestante")} {calcularSLA(objeto)}</span>
                     </div>
 
                     <div className="pt-2 border-t">
                       <Progress value={calcularPorcentajeSLA(objeto)} />
                       <p className="text-xs text-muted-foreground mt-1">
-                        {calcularPorcentajeSLA(objeto)}% completado
+                        {calcularPorcentajeSLA(objeto)}{t("VistaSemanalAsignaciones.porcentajeCompletado")}
                       </p>
                     </div>
 
@@ -191,11 +193,11 @@ export function VistaSemanalAsignaciones() {
                                 className="rounded-full bg-primary text-white hover:bg-primary/90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                               >
                                 {objeto.estado?.toLowerCase() === "cerrado" ? (
-                                  <span>Cambiar estado</span>
+                                  <span>{t("VistaSemanalAsignaciones.cambiarEstado")}</span>
                                 ) : (
                                   <Link
                                     to={`/tickets/cambiarEstado/${objeto.IDTicket}`}>
-                                    Cambiar estado
+                                    {t("VistaSemanalAsignaciones.cambiarEstado")}
                                   </Link>
                                 )}
                               </Button>
@@ -203,8 +205,7 @@ export function VistaSemanalAsignaciones() {
                           </TooltipTrigger>
                           {objeto.estado?.toLowerCase() === "cerrado" && (
                             <TooltipContent>
-                              Los tickets en estado "Cerrado" no pueden ser
-                              modificados.
+                              {t("VistaSemanalAsignaciones.cambiarEstadoTooltip")}
                             </TooltipContent>
                           )}
                         </Tooltip>
@@ -215,7 +216,7 @@ export function VistaSemanalAsignaciones() {
                         className="rounded-full bg-primary text-white hover:bg-primary/90 font-medium text-sm px-4"
                       >
                         <Link to={`/asignaciones/detalle/${objeto.id}`}>
-                          Ver detalle
+                          {t("VistaSemanalAsignaciones.verDetalle")}
                         </Link>
                       </Button>
                     </div>

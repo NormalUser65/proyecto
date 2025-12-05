@@ -61,7 +61,7 @@ export function DetalleTicket() {
           {/* Grid de dos columnas */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             <div>
-              <span className="font-semibold">Descripción:</span>
+              <span className="font-semibold">{t("detalleTicket.descripcion")}</span>
               <p className="text-muted-foreground">{data.descripcion}</p>
             </div>
 
@@ -80,13 +80,13 @@ export function DetalleTicket() {
 
             <div className="flex items-center gap-4">
               <AlertCircle className="h-5 w-5 text-secondary" />
-              <span className="font-semibold">Estado:</span>
+              <span className="font-semibold">{t("detalleTicket.estado")}</span>
               <Badge variant="outline">{data.estado_nombre}</Badge>
             </div>
 
             <div className="flex items-center gap-4">
               <Tag className="h-5 w-5 text-secondary" />
-              <span className="font-semibold">Categoría:</span>
+              <span className="font-semibold">{t("detalleTicket.categoria")}</span>
               <p className="text-muted-foreground">
                 {data.categoria_nombre ?? "Sin categoría"}
               </p>
@@ -94,18 +94,18 @@ export function DetalleTicket() {
 
             <div className="flex items-center gap-4">
               <User className="h-5 w-5 text-secondary" />
-              <span className="font-semibold">Solicitante:</span>
+              <span className="font-semibold">{t("detalleTicket.solicitante")}</span>
               <p className="text-muted-foreground">{data.usuario_nombre}</p>
             </div>
 
             <div className="flex items-center gap-4">
               <Timer className="h-5 w-5 text-secondary" />
-              <span className="font-semibold">Prioridad:</span>
+              <span className="font-semibold">{t("detalleTicket.prioridad")}</span>
               <Badge variant="secondary">{data.prioridad_nombre}</Badge>
             </div>
 
             <div>
-              <span className="font-semibold">SLA de Respuesta:</span>
+              <span className="font-semibold">{t("detalleTicket.slaRespuesta")}</span>
               <p className="text-muted-foreground">
                 {data.sla_resp_deadline
                   ? new Intl.DateTimeFormat("es-CR", {
@@ -121,7 +121,7 @@ export function DetalleTicket() {
             </div>
 
             <div>
-              <span className="font-semibold">SLA de Resolución:</span>
+              <span className="font-semibold">{t("detalleTicket.slaResolucion")}</span>
               <p className="text-muted-foreground">
                 {data.sla_resol_deadline
                   ? new Intl.DateTimeFormat("es-CR", {
@@ -138,7 +138,7 @@ export function DetalleTicket() {
 
             {data.resumen_res && (
               <div className="md:col-span-2">
-                <span className="font-semibold">Resumen de resolución:</span>
+                <span className="font-semibold">{t("detalleTicket.resumenResolucion")}</span>
                 <p className="text-muted-foreground">{data.resumen_res}</p>
               </div>
             )}
@@ -156,7 +156,7 @@ export function DetalleTicket() {
         !rounded-2xl"
             >
               <CalendarDays className="w-4 h-4" />
-              Ver historial
+              {t("detalleTicket.verHistorial")}
             </Button>
           </div>
         </CardContent>

@@ -1,0 +1,23 @@
+{
+    "tituloPagina": "Manual Ticket Assignment",
+    "subtituloPagina": "Select a pending ticket, the appropriate technician, and complete the justification.",
+    "ticketsPendientes": "Pending Tickets",
+    "tecnicosDisponibles": "Available Technicians",
+    "ticket": "Ticket",
+    "categoria": "Category",
+    "prioridad": "Priority",
+    "sla": "SLA:",
+    "slaRestantes": "h remaining",
+    "sinCategoria": "Not defined",
+    "sinPrioridad": "Not defined",
+    "justificacion": "Justification",
+    "placeholderJustificacion": "Write the justification...",
+    "imagenTitulo": "Image",
+    "botonAsignar": "Assign Ticket",
+    "asignando": "Assigning...",
+    "volver": "Back",
+    "errorTitulo": "Error",
+    "sinTickets": "There are no pending tickets.",
+    "modalTitulo": "Ticket Successfully Assigned!",
+    "modalDescripcion": "The ticket was assigned successfully.\nYou will be redirected to assignments in a few seconds."
+}

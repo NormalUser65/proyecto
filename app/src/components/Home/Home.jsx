@@ -31,7 +31,7 @@ export function Home() {
 
           <div className="flex justify-center md:justify-start gap-4 pt-2">
             <a
-              href="/movies"
+              href="/tickets/crear"
               className="px-6 py-3 bg-primary text-white rounded-lg font-semibold shadow-lg hover:bg-primary/90 transition !rounded-2xl"
             >
               {t("home.boton_reporte")}

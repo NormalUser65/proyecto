@@ -12,6 +12,11 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 
+import { useTranslation } from "react-i18next";
+
+import NotificacionService from "@/Servicios/NotificacionService";
+
+
 // UI
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +33,7 @@ import TicketService from "../../Servicios/TicketService";
 import { CustomSelect } from "../ui/custom/custom-select";
 
 export function CambioEstado() {
+  const { t } = useTranslation("cambioEstado");
   const navigate = useNavigate();
   const { id } = useParams(); // id del ticket
 
@@ -81,6 +87,8 @@ export function CambioEstado() {
   };
 
   const siguienteEstado = estadoActual ? flujo[estadoActual] : null;
+  const [ticketData, setTicketData] = useState(null);
+
 
   /*** Cargar datos iniciales ***/
   useEffect(() => {
@@ -107,6 +115,7 @@ export function CambioEstado() {
   /*** Submit ***/
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  
   const onSubmit = async (dataForm) => {
     if (isSubmitting) return;
     setIsSubmitting(true);
@@ -120,14 +129,23 @@ export function CambioEstado() {
         imagenes: dataForm.imagenes || [],
       };
 
+      console.log("PAYLOAD ENVIADO AL BACKEND:", payload);
+
+      HistorialTicketService.actualizarEstado(payload);
       const response = await HistorialTicketService.actualizarEstado(payload);
 
       if (response.data.success) {
+        //Se arma toda la notificaci]on
+        await NotificacionService.crearNotificacion({
+          usuarioId: usuarioResponsableId,
+          ticketId: id,
+          mensaje: `Un encargado cambió el estado de su ticket #${id} a ${siguienteEstado.nombre}`,
+        });
+
         setOpenSuccess(true);
 
         setTimeout(() => {
           setOpenSuccess(false);
-          // 🔹 Redirigir al historial en vez del detalle
           navigate(`/tickets/historial/${id}`);
           setIsSubmitting(false);
         }, 2000);
@@ -147,7 +165,7 @@ export function CambioEstado() {
     <div className="py-12 px-4">
       <Card className="p-8 max-w-3xl mx-auto shadow-lg">
         <h2 className="text-2xl font-bold mb-8 text-center">
-          Cambio de Estado del Ticket
+          {t("cambioEstado.titulo")}
         </h2>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -174,10 +192,9 @@ export function CambioEstado() {
             )}
           </div>
 
-          {/* Comentario (opcional) */}
           <div>
             <Label htmlFor="comentario" className="block mb-2 font-semibold">
-              Comentario
+              {t("cambioEstado.comentarioLabel")}
             </Label>
             <Controller
               name="comentario"
@@ -200,7 +217,7 @@ export function CambioEstado() {
           {/* Imágenes */}
           <div>
             <Label htmlFor="imagenes" className="block mb-2 font-semibold">
-              Imagen 
+              {t("cambioEstado.imagenLabel")}
             </Label>
             <Controller
               name="imagenes"
@@ -223,7 +240,7 @@ export function CambioEstado() {
           {usuarioResponsable && (
             <div>
               <Label className="block mb-2 font-semibold">
-                Usuario responsable
+                {t("cambioEstado.usuarioResponsableLabel")}
               </Label>
               <Input value={usuarioResponsable.nombre} disabled />
             </div>
@@ -237,7 +254,7 @@ export function CambioEstado() {
               variant="outline"
               className="flex items-center gap-2"
             >
-              <ArrowLeft className="w-4 h-4" /> Regresar
+              <ArrowLeft className="w-4 h-4" /> {t("cambioEstado.botonRegresar")}
             </Button>
             <Button
               type="submit"
@@ -245,7 +262,7 @@ export function CambioEstado() {
               className="flex items-center gap-2"
             >
               <Save className="w-4 h-4" />{" "}
-              {isSubmitting ? "Guardando..." : "Guardar"}
+              {isSubmitting ? t("cambioEstado.botonGuardando") : t("cambioEstado.botonGuardar")}
             </Button>
           </div>
         </form>
@@ -255,11 +272,10 @@ export function CambioEstado() {
       <Dialog open={openSuccess} onOpenChange={setOpenSuccess}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>¡Estado actualizado con éxito!</DialogTitle>
+            <DialogTitle>{t("cambioEstado.modalTitulo")}</DialogTitle>
             <DialogDescription>
-              El ticket <strong>{id}</strong> fue actualizado correctamente.{" "}
+              {t("cambioEstado.modalDescripcion")}
               <br />
-              Serás redirigido al detalle en unos segundos.
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

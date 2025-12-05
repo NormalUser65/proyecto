@@ -1,15 +1,16 @@
 {
     "VistaSemanalAsignaciones": {
         "titulo": "Asignaciones Semanales",
-        "subtitulo": "Visualiza el estado de los tickets agrupados por día",
+        "subtitulo": "Visualiza el estado de los tickets agrupados por día.",
         "errorCargar": "Error al cargar asignaciones",
         "empty": "No hay asignaciones esta semana.",
+        "gestionar": "Gestionar Asignaciones",
         "ticket": "Ticket",
         "categoria": "Categoría:",
         "slaRestante": "SLA restante:",
         "porcentajeCompletado": "% completado",
         "cambiarEstado": "Cambiar estado",
-        "cambiarEstadoTooltip": "Solo disponible para usuarios con permisos de edición",
+        "cambiarEstadoTooltip": "Los tickets en estado \"Cerrado\" no pueden ser modificados.",
         "verDetalle": "Ver detalle"
     }
 }
