@@ -215,18 +215,19 @@ CREATE TABLE valoracion (
   CONSTRAINT fk_valoracion_client FOREIGN KEY (IDcliente) REFERENCES usuario(id)
 ) ENGINE=InnoDB;
 
--- Inserts
+-- ROLES
 INSERT INTO rol (nombre, description) VALUES
 ('Administrador', 'Acceso total al sistema'),
 ('Técnico', 'Encargado de resolver tickets'),
 ('Cliente', 'Usuario que reporta incidencias');
 
+-- PRIORIDADES
 INSERT INTO prioridad (nombre) VALUES
 ('Alta'),
 ('Media'),
 ('Baja');
 
--- usuario
+-- USUARIOS (5 técnicos)
 INSERT INTO usuario (email, contrasenna, nombre, IDRol, language, activo, disponibilidad)
 VALUES
 ('admin@eduhelp.com', 'admin123', 'Ana Paula Fernández', 2, 'es', 1, 'disponible'),
@@ -289,14 +290,18 @@ VALUES
 (4, 4),
 (5, 5);
 
--- TÉCNICO – ESPECIALIDAD
+-- TÉCNICO – ESPECIALIDAD (todos los 5 técnicos tienen al menos una)
 INSERT INTO Tecnico_especialidad (IDTecnico, IDEspecialidad)
 VALUES
-(2, 1),
-(2, 5),
-(3, 2),
-(3, 3),
-(3, 4);
+(1, 5), -- Ana Paula Fernández → Soporte TI
+(2, 1), -- Carlos Jiménez → Aulas
+(2, 5), -- Carlos Jiménez → TI
+(3, 2), -- Laura Gómez → Finanzas
+(3, 3), -- Laura Gómez → Administración de sistemas
+(3, 4), -- Laura Gómez → Mantenimiento
+(4, 3), -- María López → Administración de sistemas
+(5, 2); -- Luis Herrera → Finanzas
+
 
 INSERT INTO estado (nombre) VALUES
 ('Pendiente'),
@@ -305,27 +310,52 @@ INSERT INTO estado (nombre) VALUES
 ('Resuelto'),
 ('Cerrado');
 
-
-INSERT INTO ticket (Titulo, descripcion, IDUsuario, IDCategoria, IDPrioridad, IDEstado, sla_resp_deadline, sla_resol_deadline, activo)
+-- TICKETS (IDs 1–8)
+INSERT INTO ticket (Titulo, descripcion, IDUsuario, IDCategoria, IDPrioridad, IDEstado, creado_en, sla_resp_deadline, sla_resol_deadline, activo)
 VALUES
-('Proyector sin señal', 'El proyector del aula 302 no muestra imagen.', 4, 1, 2, 1, '2025-10-27 09:30:00', '2025-10-27 12:00:00', 1),
-('Pago de matrícula no procesado', 'El sistema indica error al pagar la matrícula.', 5, 2, 3, 1, '2025-10-27 15:00:00', '2025-10-27 18:00:00', 1),
-('Recuperar contraseña', 'No puedo ingresar a mi cuenta institucional.', 4, 3, 2, 1, '2025-10-28 10:45:00', '2025-10-28 12:00:00', 1),
-('Problemas eléctricos en aula 102', 'Tomacorrientes dañados en varios puestos.', 5, 4, 1, 1, '2025-10-29 11:20:00', '2025-10-29 12:30:00', 1),
-('Consulta general sobre correo institucional', 'Solicitud de acceso a correo de docente.', 4, 5, 3, 1, '2025-10-30 13:15:00', '2025-10-30 14:00:00', 1);
+-- 28/11
+('Proyector sin señal', 'El proyector del aula 302 no muestra imagen.', 4, 1, 2, 2, '2025-11-28 09:00:00', '2025-11-28 10:00:00', '2025-11-28 12:00:00', 1),
+-- 29/11
+('Pago de matrícula no procesado', 'El sistema indica error al pagar la matrícula.', 5, 2, 3, 2, '2025-11-29 11:15:00', '2025-11-29 12:15:00', '2025-11-29 18:00:00', 1),
+-- 30/11
+('Recuperar contraseña', 'No puedo ingresar a mi cuenta institucional.', 4, 3, 2, 2, '2025-11-30 08:45:00', '2025-11-30 09:00:00', '2025-11-30 10:00:00', 1),
+-- 01/12
+('Problemas eléctricos en aula 102', 'Tomacorrientes dañados en varios puestos.', 5, 4, 1, 2, '2025-12-01 14:20:00', '2025-12-01 17:20:00', '2025-12-02 14:20:00', 1),
+-- 02/12
+('Consulta general sobre correo institucional', 'Solicitud de acceso a correo de docente.', 4, 5, 3, 2, '2025-12-02 10:00:00', '2025-12-02 12:00:00', '2025-12-02 16:00:00', 1),
+-- 03/12 (dos tickets)
+('Falla en computadora laboratorio', 'La computadora del puesto 12 no enciende.', 4, 1, 1, 2, '2025-12-03 09:30:00', '2025-12-03 10:30:00', '2025-12-03 14:00:00', 1),
+('Problemas eléctricos en laboratorio', 'Los tomacorrientes no funcionan.', 5, 4, 1, 2, '2025-12-03 15:00:00', '2025-12-03 18:00:00', '2025-12-04 15:00:00', 1),
+-- 04/12
+('Error en recuperación de contraseña', 'No puedo restablecer mi clave.', 4, 3, 2, 2, '2025-12-04 08:30:00', '2025-12-04 09:00:00', '2025-12-04 10:00:00', 1);
 
+
+
+-- HISTORIAL DE CREACIÓN (Pendiente)
+INSERT INTO Historial_ticket (IDticket, from_state, to_state, cambiado_por, comentario, Creado_el)
+VALUES
+(1, NULL, 1, 4, 'Ticket creado por cliente María López', '2025-11-28 09:00:00'),
+(2, NULL, 1, 5, 'Ticket creado por cliente Luis Herrera', '2025-11-29 11:15:00'),
+(3, NULL, 1, 4, 'Ticket creado por cliente María López', '2025-11-30 08:45:00'),
+(4, NULL, 1, 5, 'Ticket creado por cliente Luis Herrera', '2025-12-01 14:20:00'),
+(5, NULL, 1, 4, 'Ticket creado por cliente María López', '2025-12-02 10:00:00'),
+(6, NULL, 1, 5, 'Ticket creado por cliente Luis Herrera', '2025-12-03 09:30:00'),
+(7, NULL, 1, 4, 'Ticket creado por cliente María López', '2025-12-03 15:00:00'),
+(8, NULL, 1, 5, 'Ticket creado por cliente Luis Herrera', '2025-12-04 08:30:00');
+
+-- HISTORIAL DE CAMBIO A ASIGNADO
+INSERT INTO Historial_ticket (IDticket, from_state, to_state, cambiado_por, comentario, Creado_el)
+VALUES
+(1, 1, 2, 1, 'Ticket asignado a soporte de aulas', '2025-11-28 09:10:00'),
+(2, 1, 2, 1, 'Ticket asignado a técnico financiero', '2025-11-29 11:30:00'),
+(3, 1, 2, 1, 'Ticket asignado a administración de sistemas', '2025-11-30 09:00:00'),
+(4, 1, 2, 1, 'Ticket asignado a mantenimiento', '2025-12-01 14:30:00'),
+(5, 1, 2, 1, 'Ticket asignado a soporte TI', '2025-12-02 10:15:00'),
+(6, 1, 2, 1, 'Ticket asignado a soporte de aulas', '2025-12-03 09:45:00'),
+(7, 1, 2, 1, 'Ticket asignado a mantenimiento', '2025-12-03 15:15:00'),
+(8, 1, 2, 1, 'Ticket asignado a administración de sistemas', '2025-12-04 08:45:00');
 
 /*
--- HISTORIAL DE TICKET
-INSERT INTO Historial_ticket (IDticket, from_state, to_state, cambiado_por, comentario)
-VALUES
-(1, 1, 3, 2, 'Asignado a técnico de aulas'),
-(2, 1, 3, 3, 'Revisión en proceso'),
-(3, 1, 4, 3, 'Contraseña restablecida'),
-(4, 1, 3, 3, 'Mantenimiento asignado'),
-(5, 1, 5, 2, 'Consulta atendida');
-
-
 -- IMÁGENES
 INSERT INTO Imagen (IDHistorial, url)
 VALUES
@@ -336,10 +366,17 @@ VALUES
 (5, 'https://eduhelp.com/img/correo.png');
 
 */
--- ASIGNACIONES
+-- ASIGNACIONES (una por cada ticket, hechas por admin ID=1)
 INSERT INTO asignacion (IDTicket, IDTecnico, asignado_por, method, descripcion)
 VALUES
-(1, 2, 1, 'manual', 'Asignado por administrador a soporte de aulas');
+(1, 2, 1, 'manual', 'Asignado a soporte de aulas'),
+(2, 3, 1, 'manual', 'Asignado a técnico financiero'),
+(3, 3, 1, 'manual', 'Asignado a administración de sistemas'),
+(4, 3, 1, 'manual', 'Asignado a mantenimiento'),
+(5, 2, 1, 'manual', 'Asignado a soporte TI'),
+(6, 2, 1, 'manual', 'Asignado a soporte de aulas'),
+(7, 3, 1, 'manual', 'Asignado a mantenimiento'),
+(8, 3, 1, 'manual', 'Asignado a administración de sistemas');
 
 -- REGLAS AUTOTRIAGE
 INSERT INTO Reglas_Autotriage (codigo, nombre, descrripcion, prioridad, urgencia_SLA, weight_load, max_tech_load, activo, creado_por)
