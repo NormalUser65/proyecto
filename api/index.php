@@ -33,6 +33,7 @@ require_once "models/rolModel.php";
 require_once "models/SlaModel.php";
 require_once "models/TicketModel.php";
 require_once "models/UsuarioModel.php";
+require_once "models/GestionUsuarioModel.php";
 
 
 
@@ -51,6 +52,7 @@ require_once "controllers/SlaController.php";
 require_once "controllers/TicketsController.php";
 require_once "controllers/UsuarioController.php";
 require_once "controllers/EspecialidadesController.php";
+require_once "controllers/GestionUsuarioController.php";
 
 //Enrutador
 require_once "routes/RoutesController.php";

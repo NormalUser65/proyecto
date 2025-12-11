@@ -14,8 +14,6 @@ import {
 
 import { useTranslation } from "react-i18next";
 
-import NotificacionService from "@/Servicios/NotificacionService";
-
 
 // UI
 import { Button } from "@/components/ui/button";
@@ -87,7 +85,6 @@ export function CambioEstado() {
   };
 
   const siguienteEstado = estadoActual ? flujo[estadoActual] : null;
-  const [ticketData, setTicketData] = useState(null);
 
 
   /*** Cargar datos iniciales ***/
@@ -131,16 +128,9 @@ export function CambioEstado() {
 
       console.log("PAYLOAD ENVIADO AL BACKEND:", payload);
 
-      HistorialTicketService.actualizarEstado(payload);
       const response = await HistorialTicketService.actualizarEstado(payload);
 
       if (response.data.success) {
-        //Se arma toda la notificaci]on
-        await NotificacionService.crearNotificacion({
-          usuarioId: usuarioResponsableId,
-          ticketId: id,
-          mensaje: `Un encargado cambió el estado de su ticket #${id} a ${siguienteEstado.nombre}`,
-        });
 
         setOpenSuccess(true);
 

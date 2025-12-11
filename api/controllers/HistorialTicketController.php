@@ -22,24 +22,9 @@ class historiales
         }
 
         require_once "models/HistorialTicketModel.php";
-        require_once "models/NotificacionModel.php";
 
         $model = new HistorialTicketModel();
         $result = $model->registrarCambioEstado($ticketId, $nuevoEstadoId, $usuarioId, $comentario, $imagenes);
-
-        
-        if ($result["success"] === true) {
-            $notifModel = new NotificacionModel();
-
-            $mensaje = "Un encargado cambió el estado de su ticket #$ticketId a $nuevoEstadoId";
-
-            $notifModel->crearNotificacion([
-                "usuarioId" => $usuarioId,
-                "ticketId" => $ticketId,
-                "mensaje" => $mensaje,
-                "visto" => 0
-            ]);
-        }
 
         $response->toJSON($result);
 

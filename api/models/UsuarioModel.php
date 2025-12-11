@@ -102,16 +102,36 @@ class UsuarioModel
     public function CrearTecnico($objeto)
     {
         try {
-            // Validar si el correo ya existe
-            if ($this->verificarEmail($objeto->email)) {
-                // En este punto no se crea nada, simplemente devolvemos la lista
-                return $this->ListaUsuarios();
+            // Normalizar correo
+            $emailNorm = strtolower(trim($objeto->email));
+
+            // Validar si el correo ya existe directamente aquí
+            $SqlCheck = "SELECT COUNT(*) as total FROM usuario WHERE email = '$emailNorm'";
+            $resultadoCheck = $this->enlace->ExecuteSQL($SqlCheck);
+
+            if (!empty($resultadoCheck)) {
+                $first = $resultadoCheck[0];
+                $total = is_array($first) ? intval($first['total'] ?? 0) : intval($first->total ?? 0);
+
+                if ($total > 0) {
+                    // Correo ya existe → devolver error claro
+                    return [
+                        "success" => false,
+                        "message" => "El correo ya está registrado",
+                        "data" => null
+                    ];
+                }
             }
 
+            // Encriptar contraseña
+            $hashedPassword = password_hash($objeto->Contrasenna, PASSWORD_BCRYPT);
+
+            // Insertar técnico
             $Sql = "INSERT INTO usuario (email, contrasenna, nombre, IDRol, language, activo, disponibilidad)
-                VALUES ('$objeto->email','$objeto->Contrasenna', '$objeto->NombreTecnico', 2, 'es', 1, 'disponible')";
+                VALUES ('$emailNorm', '$hashedPassword', '$objeto->NombreTecnico', 2, 'es', 1, 'disponible')";
             $idTecnico = $this->enlace->executeSQL_DML_last($Sql);
 
+            // Insertar especialidades
             if (!empty($objeto->Especialidades)) {
                 foreach ($objeto->Especialidades as $item) {
                     $item = intval($item);
@@ -121,16 +141,30 @@ class UsuarioModel
                 }
             }
 
-            return $this->ListaDetalleTecnicos($idTecnico);
+            return [
+                "success" => true,
+                "message" => "Técnico creado correctamente",
+                "data" => $this->ListaDetalleTecnicos($idTecnico)
+            ];
         } catch (Exception $e) {
             handleException($e);
+            return [
+                "success" => false,
+                "message" => "Error al crear técnico",
+                "data" => null
+            ];
         }
     }
+
+
 
     public function verificarEmail($email)
     {
         try {
+            // Normalizar correo
             $emailNorm = strtolower(trim($email));
+
+            // Consulta directa
             $vSql = "SELECT COUNT(*) as total FROM usuario WHERE email = '$emailNorm'";
             $vResultado = $this->enlace->ExecuteSQL($vSql);
 
@@ -139,12 +173,14 @@ class UsuarioModel
             $first = $vResultado[0];
             $total = is_array($first) ? intval($first['total'] ?? 0) : intval($first->total ?? 0);
 
+            // Devuelve true si ya existe, false si está disponible
             return $total > 0;
         } catch (Exception $e) {
             handleException($e);
             return false;
         }
     }
+
 
 
 

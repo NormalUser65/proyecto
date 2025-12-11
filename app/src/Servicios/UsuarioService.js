@@ -21,8 +21,8 @@ class UsuarioService {
   }
 
   ActualizarTecnico(Tecnico) {
-  return axios({
-      method: 'put',
+    return axios({
+      method: "put",
       url: BASE_URL,
       data: JSON.stringify(Tecnico),
     });
@@ -32,14 +32,14 @@ class UsuarioService {
     return axios.post(BASE_URL, JSON.stringify(Tecnico));
   }
 
-  ValEmail(email){
-    return axios.get(`${BASE_URL}/ValEmail/${email}`);
-  }
-  // Nuevo método para técnicos filtrados por categoría
   getTecnicosPorCategoria(categoriaId) {
     return axios.get(`${BASE_URL}/getTecnicosPorCategoria`, {
       params: { categoriaId },
     });
+  }
+
+  ValEmail(email) {
+    return axios.get(`${BASE_URL}/verificarEmail/${email}`);
   }
 }
 

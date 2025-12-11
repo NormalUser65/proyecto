@@ -6,8 +6,8 @@ class RoutesController
 
     public function __construct()
     {
-        // $this->authMiddleware = new AuthMiddleware();
-        // $this->registerRoutes();
+        $this->authMiddleware = new AuthMiddleware();
+        $this->registerRoutes();
         $this->routes();
     }
 
@@ -15,6 +15,12 @@ class RoutesController
     {
         // Registrar rutas protegidas
         //---------------------  Metodo,path (en minuscula),controlador, accion, array de nombres de roles
+
+        // Ruta protegida: lista de categorías (solo Administrador)
+        $this->addProtectedRoute('GET', '/proyecto/categorias', 'categorias', 'index', ['Administrador']);
+
+        // Ruta protegida: detalle de categoría (Administrador y Técnico)
+        $this->addProtectedRoute('GET', '/proyecto/categorias/detalle/{id}', 'categorias', 'detalle', ['Administrador', 'Técnico']);
         $this->addProtectedRoute('GET', '/proyecto/Usuario', 'Usuario', 'index', ['Administrador']);
     }
 

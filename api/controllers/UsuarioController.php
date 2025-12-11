@@ -68,19 +68,6 @@ class Usuario
         }
     }
 
-    public function ValEmail($email)
-    {
-        try {
-            $Usuario = new UsuarioModel();
-            $exists = $Usuario->ValEmail($email);
-            $response = new Response();
-            $response->toJSON(["exists" => $exists]);
-        } catch (Exception $e) {
-            handleException($e);
-        }
-    }
-
-
     public function obtenerusuarioPorId($id)
     {
         try {
@@ -122,21 +109,32 @@ class Usuario
         try {
             $request = new Request();
             $response = new Response();
-            //Obtener json enviado
+
+            // Obtener json enviado
             $inputJSON = $request->getJSON();
-            //Instancia del modelo
+
+            // Instancia del modelo
             $Usuario = new UsuarioModel();
-            //Acción del modelo a ejecutar
+
+            // Acción del modelo a ejecutar
             $result = $Usuario->CrearTecnico($inputJSON);
+
             error_log("DEBUG UsuarioController create ejecutado");
             error_log("DEBUG inputJSON: " . print_r($inputJSON, true));
-            //Dar respuesta
-            $response->toJSON($result);
+
+            // Dar respuesta uniforme
+            return $response->toJSON($result);
         } catch (Exception $e) {
-            $response->toJSON($result);
-            handleException($e);
+            $response = new Response();
+            return $response->toJSON([
+                "success" => false,
+                "status" => 500,
+                "message" => $e->getMessage(),
+                "data" => null
+            ]);
         }
     }
+
 
     public function verificarEmail($email)
     {
