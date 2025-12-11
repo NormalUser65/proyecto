@@ -19,11 +19,11 @@ const schema = yup.object({
   contrasenna: yup
     .string()
     .required("La contraseña es obligatoria")
-    //.min(8, "Debe tener al menos 8 caracteres")
-    //.matches(/[A-Z]/, "Debe contener al menos una letra mayúscula")
-    //.matches(/[a-z]/, "Debe contener al menos una letra minúscula")
-    //.matches(/[0-9]/, "Debe contener al menos un número")
-    //.matches(/[@$!%*?&#^()_\-+=]/, "Debe contener al menos un carácter especial"),
+    .min(8, "Debe tener al menos 8 caracteres")
+    .matches(/[A-Z]/, "Debe contener al menos una letra mayúscula")
+    .matches(/[a-z]/, "Debe contener al menos una letra minúscula")
+    .matches(/[0-9]/, "Debe contener al menos un número")
+    .matches(/[@$!%*?&#^()_\-+=]/, "Debe contener al menos un carácter especial"),
 });
 
 
